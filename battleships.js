@@ -1,3 +1,4 @@
+chatStream = new Meteor.Stream('chat');
 if (Meteor.isClient) {
   Template.hello.greeting = function () {
     return "Welcome to battleships.";
@@ -26,4 +27,3 @@ if (Meteor.isServer) {
     // code to run on server at startup
   });
 }
-chatStream = new Meteor.Stream('chat');
