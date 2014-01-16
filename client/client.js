@@ -12,7 +12,6 @@ var trimInput = function(val) {
 
 Template.login.events({
   'submit .login-form' : function (e, t) {
-    console.log("Logging in.");
     e.preventDefault();
 
     var email = trimInput(t.find('#login-email').value);
@@ -30,10 +29,8 @@ Template.login.events({
     return false;
   }
 });
-
 Template.register.events({
   'submit .register-form' : function (e, t) {
-    console.log("Registering.");
     e.preventDefault();
 
     var email = trimInput(t.find('#register-email').value);
