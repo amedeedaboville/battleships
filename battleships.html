@@ -12,18 +12,9 @@
 <body>
   <div class="container">
     {{#if currentUser}}
-      {{> hello}}
-
+      {{> lobby}}
     {{else}}
-      {{> login}}
-      {{> register}}
-
-      {{#if request-recovery}}
-        {{> recover-password}}
-      {{/if}}
-      {{#if new-password}}
-        {{> new-password}}
-      {{/if}}
+      {{> loginPage}}
     {{/if}}
 
     <script src="https://code.jquery.com/jquery.js"></script>
@@ -31,16 +22,31 @@
   </div>
 </body>
 
-<template name="hello">
-<h1>Hello World!</h1>
-{{greeting}}
-<input type="button" value="Click" />
-<br>
-{{loginButtons}}
+<template name="lobby">
+<h1>Hello {{name}}!</h1>
+  {{greeting}}
+
+
 </template>
+
+<template name="loginPage">
+<div id=loginForms>
+  {{#if requestRecovery}}
+    {{> recover-password}}
+  {{else}}
+    {{#if newPassword}}
+      {{> new-password}}
+      {{else}}
+        {{> login}}
+        {{> register}}
+    {{/if}}
+  {{/if}}
+</div>
+</template>
+
 <template name="login">
 <form class="login-form" role="form">
-  <h2 class="login-form-heading">Please sign in</h2>
+  <h2 class="login-form-heading">Sign in</h2>
   <input type="text" class="form-control" id="login-email" placeholder="Email address" required autofocus>
   <input type="password" class="form-control" id="login-password" placeholder="Password" required>
   <label class="checkbox">
@@ -62,20 +68,18 @@
 </template>
 
 <template name="new-password">
+<h2>Enter your new password</h2>
   <form id="new-password" action="action">
-    <div>
-      <input type="text" id="new-password-password" />
-      <input type="submit" value="Change Password" />
-    </div>
+      <input type="text" class="form-control" id="new-password" placeholder="New Password" required/>
+      <button class="btn btn-lg btn-primary btn-block" type="submit" id="new-password-button">Change Password</button>
   </form>
 </template>
 
 <template name="recover-password">
+  <h2>Recover your password</h2>
   <form id="recovery-request-form" action="action">
-    <div>
-      <input type="text" id="recovery-email" />              
-      <input type="submit" value="Send Reset Instructions" />
-    </div>
+    <input type="text" id="recovery-email" />              
+    <button class="btn btn-lg btn-primary btn-block" type="submit" id="request-recovery-button">Send Reset Instructions</button>
   </form>
 </template>
 
