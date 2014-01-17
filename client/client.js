@@ -1,5 +1,5 @@
 chatStream = new Meteor.Stream('chat'); //This doesn't.
-Template.hello.greeting = function () {
+Template.lobby.greeting = function () {
   return "Welcome to battleships.";
 };
 
