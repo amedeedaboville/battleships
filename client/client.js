@@ -9,16 +9,19 @@ Template.lobby.username = function () {
 
 };
 
-Template.lobby.onlineUsers = function () {
-  Meteor.subscribe("userStatus");
-  var races = Meteor.users.find({"status.online": true}, {username:true}).fetch();
-  var s = "";
-  for (var i=0; i<races.length; i++) {
-    s = s + races[i].username + ", "
-  console.log(s);
-  }
-  return s;
-};
+Template.lobby.helpers({
+	friendsOnline: function() {
+		Meteor.subscribe("userStatus");
+		return Meteor.users.find({"status.online": true}, {username:true}).fetch();
+	},
+	othersOnline: function() {
+		Meteor.subscribe("userStatus");
+		return Meteor.users.find({"status.online": false}, {username:true}).fetch();
+	}
+
+});
+
+
 
 var trimInput = function(val) {
   //from SO: The part to the left matches any leading spaces (^), the part to the right matches any trailing space ($).
