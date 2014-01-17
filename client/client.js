@@ -1,7 +1,27 @@
 chatStream = new Meteor.Stream('chat'); //This doesn't.
-Template.hello.greeting = function () {
+Template.lobby.greeting = function () {
   return "Welcome to battleships.";
 };
+
+Template.lobby.username = function () {
+
+  return Meteor.user().username;
+
+};
+
+Template.lobby.helpers({
+	friendsOnline: function() {
+		Meteor.subscribe("userStatus");
+		return Meteor.users.find({"status.online": true}, {username:true}).fetch();
+	},
+	othersOnline: function() {
+		Meteor.subscribe("userStatus");
+		return Meteor.users.find({"status.online": false}, {username:true}).fetch();
+	}
+
+});
+
+
 
 var trimInput = function(val) {
   //from SO: The part to the left matches any leading spaces (^), the part to the right matches any trailing space ($).
@@ -43,7 +63,7 @@ Template.register.events({
     var name = trimInput(t.find('#register-name').value);
 
     console.log("Register with email " + email + " and password " + password + " and name " + name);
-    Accounts.createUser({email: email, password : password, name: name}, function (err) {
+    Accounts.createUser({email: email, password : password, username: name}, function (err) {
       if (err) {
         console.log("Registration failed with err");
         console.log(err);
@@ -56,7 +76,7 @@ Template.register.events({
   }
 });
 
-Template.hello.events({
+Template.lobby.events({
   'click input' : function () {
     // template data, if any, is available in 'this'
     if (typeof console !== 'undefined')
