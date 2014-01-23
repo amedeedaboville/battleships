@@ -4,10 +4,11 @@ body {
   background-color: #eee;
 }
 
-#loginForms {
-  max-width: 330px;
+#recover-password {
+  max-width: 530px;
   padding: 15px;
   margin: 0 auto;
+  text-align:center;
 }
 #loginForms .login-form-heading,
 #loginForms .checkbox {
@@ -15,6 +16,9 @@ body {
 }
 #loginForms .checkbox {
   font-weight: normal;
+}
+#forgot-button {
+  float:right;
 }
 #loginForms .form-control {
   position: relative;

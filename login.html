@@ -1,14 +1,25 @@
 <template name="loginPage">
 <div id=loginForms>
-  {{#if requestRecovery}}
-    {{> recover-password}}
+  {{#if newPassword}}
+    {{> new-password}}
   {{else}}
-    {{#if newPassword}}
-      {{> new-password}}
-      {{else}}
+    <div class="row">
+      <div class="col-lg-1">
+      </div>
+      <div class="col-lg-4">
         {{> login}}
+      </div>
+      <div class="col-lg-2">
+      </div>
+      <div class="col-lg-4">
         {{> register}}
-    {{/if}}
+      </div>
+      <div class="col-lg-1">
+      </div>
+    </div>
+    <div class="row">
+      {{> recover-password}}
+    </div>
   {{/if}}
 </div>
 </template>
@@ -22,7 +33,7 @@
     <input type="checkbox" value="remember-me"> Remember me
   </label>
   <button class="btn btn-lg btn-primary btn-block" type="submit" id="login-button">Sign in</button>
-  <button class="btn btn-lg btn-primary btn-block" id="forgot-button">Forgot Password</button>
+  <div class="btn" id="forgot-button">(Forgot Password?)</div>
 </form>
 </template>
 
@@ -38,16 +49,18 @@
 
 <template name="new-password">
 <h2>Enter your new password</h2>
-  <form id="new-password" action="action">
-      <input type="text" class="form-control" id="new-password" placeholder="New Password" required/>
-      <button class="btn btn-lg btn-primary btn-block" type="submit" id="new-password-button">Change Password</button>
-  </form>
+<form id="new-password" action="action">
+  <input type="text" class="form-control" id="new-password" placeholder="New Password" required/>
+  <button class="btn btn-lg btn-primary btn-block" type="submit" id="new-password-button">Change Password</button>
+</form>
 </template>
 
 <template name="recover-password">
+<div id="recover-password">
   <h2>Recover your password</h2>
   <form id="recovery-request-form" action="action">
-    <input type="text" id="recovery-email" />              
-    <button class="btn btn-lg btn-primary btn-block" type="submit" id="request-recovery-button">Send Reset Instructions</button>
+    <input type="text" class="form-control" id="recovery-email" placeholder="Your email" required/>              
+    <button class="btn btn-lg btn-primary " type="submit" id="request-recovery-button">Send Reset Instructions</button>
   </form>
+</div>
 </template>
