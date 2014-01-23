@@ -29,9 +29,6 @@ var trimInput = function(val) {
   //with "".
   return val.replace(/^\s*|\s*$/g, ""); 
 }
-Template.loginPage.requestRecovery = function() {
-  return false;
-}
 Template.loginPage.newPassword = function() {
   return false;
 }
