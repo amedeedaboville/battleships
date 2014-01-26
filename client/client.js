@@ -28,8 +28,13 @@ Template.lobby.events({
     // template data, if any, is available in 'this'
     if (typeof console !== 'undefined')
   console.log("You pressed the button");
+  },
+  'click #logout' : function () {
+   Meteor.logout();
   }
 });
+
+
 
 Template.messages.messages = function () {
   return Messages.find({}, { sort: { time: -1 }});
