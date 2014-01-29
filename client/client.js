@@ -24,10 +24,8 @@ Template.lobby.helpers({
 
 
 Template.lobby.events({
-  'click input' : function () {
-    // template data, if any, is available in 'this'
-    if (typeof console !== 'undefined')
-  console.log("You pressed the button");
+  'click .list-group a' : function () {
+	  $('#map-set-up-modal').modal();
   },
   'click #logout' : function () {
    Meteor.logout();

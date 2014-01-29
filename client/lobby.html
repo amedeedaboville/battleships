@@ -1,10 +1,22 @@
 <template name="lobby">
-<h1>{{username}}</h1>
+<nav class="navbar navbar-default" role="navigation">
+  <div class="navbar-header">
+    <a class="navbar-brand" href="#">{{username}}</a>
+  </div>
+
+  <!-- Collect the nav links, forms, and other content for toggling -->
+  <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+    <ul class="nav navbar-nav navbar-right">
+	<button class="btn btn-primary navbar-btn" type="submit" id="logout">Logout</button> 
+    </ul>
+  </div><!-- /.navbar-collapse -->
+</nav>
+
 <div class="col-xs-12 col-sm-9">
 	  {{greeting}}
 </div>
 
-<div> <button class="btn btn-primary" type="submit" id="logout">Logout</button> </div>
+
 
    <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
           <div class="list-group">
@@ -19,5 +31,29 @@
             <a href="#" class="list-group-item">{{this.username}}</a>
             {{/each}}
           </div>
-        </div><!--/span-->
+        </div>
+{{>modal}}                                                                                                  
 </template>
+
+
+<template name="modal">                                                                                 
+<!-- Modal --> 
+<!-- Modal -->
+<div class="modal fade" id="map-set-up-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">Map Setup</h4>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default">Accept</button>
+        <button type="button" class="btn btn-primary">New Map</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal --> 
+</template> 
