@@ -55,7 +55,7 @@ Template.grid.helpers({
 
       }
     }
-    console.log(coralSpots);
+  //  console.log(coralSpots);
 //return [
 //       ['sea', 'sea', 'sea'], 
 //       ['sea', 'sea', 'sea'], 
@@ -66,8 +66,9 @@ Template.grid.helpers({
 
 
 Template.lobby.events({
-  'click .list-group a' : function () {
+  'click .playerlist a' : function () {
 	  $('#map-set-up-modal').modal();
+    console.log(this._id)
   },
   'click #logout' : function () {
    Meteor.logout();
