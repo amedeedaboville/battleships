@@ -14,10 +14,8 @@
 
 <div class="col-xs-12 col-sm-9">
 	  {{greeting}}
-    {{>grid}}
+    {{>userProfile}}
 </div>
-
-
 
 <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
   <div class="list-group playerlist">
@@ -27,11 +25,12 @@
     {{/each}}
   </div>
 </div>
-{{>modal}}                                                                                                  
+{{>modal}}         
 </template>
 
 <template name="userProfile">
-
+  <h3>Name: {{user.username}}</h3>
+  <h3>Account Created on: {{user.createdAt}}<h3>
 </template>
 
 
