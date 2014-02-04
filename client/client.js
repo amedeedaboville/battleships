@@ -13,12 +13,7 @@ Template.lobby.helpers({
 	friendsOnline: function() {
 		Meteor.subscribe("userStatus");
 		return Meteor.users.find({"status.online": true}, {username:true}).fetch();
-	},
-	othersOnline: function() {
-		Meteor.subscribe("userStatus");
-		return Meteor.users.find({"status.online": false}, {username:true}).fetch();
 	}
-
 });
 
 function getRandomInt (min, max) {
@@ -66,9 +61,8 @@ Template.grid.helpers({
 
 
 Template.lobby.events({
-  'click .playerlist a' : function () {
+  'click .onlineplayers' : function () {
 	  $('#map-set-up-modal').modal();
-    console.log(this._id)
   },
   'click #logout' : function () {
    Meteor.logout();
