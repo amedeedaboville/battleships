@@ -1,0 +1,56 @@
+.gamegrid {
+width: 800px;
+height: 800px;
+}
+.square {
+  position: relative;
+  min-height: 1px;
+  color: lightblue;
+  //width: 60px;
+  //height: 60px;
+  width: 3.33%;
+  height: 3.33%;
+
+  float: left;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  background-color: #fff;
+}
+.sea {
+  background-color: lightskyblue;
+}
+.bluebase {
+  background-color: dodgerblue;
+}
+.redbase {
+  background-color: firebrick;
+}
+
+.coral {
+  background-color: pink;
+}
+
+.row {
+  margin-right: -15px;
+  margin-left: -15px;
+}
+
+.row:before,
+.row:after {
+  display: table;
+  content: " ";
+}
+
+.row:after {
+  clear: both;
+}
+
+.row:before,
+.row:after {
+  display: table;
+  content: " ";
+}
+
+.row:after {
+  clear: both;
+}
