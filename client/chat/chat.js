@@ -1,4 +1,5 @@
 chatCollection = new Meteor.Collection(null);
+$('#chatMessages').scrollTop($('#chatMessages').scrollHeight);
 getUsername = function(id) {
   Meteor.subscribe('user-info', id);
   Deps.autorun(function() {
@@ -53,7 +54,7 @@ Template.chat.events({
 
 Template.chat.helpers({
   chatMessage: function() {
-    return chatCollection.find({}, {limit: 10});
+    return chatCollection.find({});
   }
 })
 

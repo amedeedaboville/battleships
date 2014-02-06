@@ -9,12 +9,18 @@ Template.lobby.helpers({
   }
 });
 Template.lobby.events({
-  'click .onlineplayers' : function () {
+  'mouseover .onlineplayers' : function () {
     Session.set("currentProfile", Meteor.users.findOne({_id: this._id}))
   //Sets the global variable to be all of the information for the user
   //we just clicked on. Looks up the user with _this.id
   },
-  'click #logout' : function () {
+  'click .inviteButton' : function () {
+    Session.set("currentProfile", Meteor.users.findOne({_id: this._id}))
+    sendInvite(this._id);
+  //Sets the global variable to be all of the information for the user
+  //we just clicked on. Looks up the user with _this.id
+  },
+  'click #logoutButton' : function () {
     Meteor.logout();
   }
 });
