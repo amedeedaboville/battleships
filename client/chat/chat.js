@@ -22,16 +22,16 @@ chatStream.on('chat', function(message) {
 
 Template.chat.events({
   'keypress .chatArea': function (evt) {    
-    var messageText = $trim('#chatMessage').val();
-    if (messageText.length > 1)  {
-      if (evt.which === 13)
-      {
-        chatCollection.insert({
-          username: Meteor.user().username,
-          message: messageText
-        });
-        $('#chatMessage').val('');
-        chatStream.emit('chat', messageText);
+    var messageText = $('#chatMessage').val();
+    if (evt.which === 13)
+    {
+      if (messageText.length > 1){
+         chatCollection.insert({
+        username: Meteor.user().username,
+        message: messageText
+      });
+      $('#chatMessage').val('');
+      chatStream.emit('chat', messageText);
       }
     };
   },
