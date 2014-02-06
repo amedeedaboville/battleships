@@ -25,7 +25,7 @@ Template.chat.events({
       var messageText = $('#chatMessage').val();
       if (messageText.length > 1) {
         chatCollection.insert({
-          user: Meteor.user().username,
+          username: Meteor.user().username,
           message: messageText
         });
         $('#chatMessage').val('');
@@ -38,7 +38,7 @@ Template.chat.events({
       var messageText = $('#chatMessage').val();
       if (messageText.length > 1) {
         chatCollection.insert({
-          user: Meteor.user().username,
+          username: Meteor.user().username,
           message: messageText
         });
         $('#chatMessage').val('');
