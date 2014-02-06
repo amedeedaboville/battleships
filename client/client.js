@@ -1,6 +1,11 @@
 chatCollection = new Meteor.Collection(null);
-chatStream = new Meteor.Stream('chat'); //This doesn't.
-
+chatStream.on('chat', function(message) {
+    chatCollection.insert({
+          userId: this.userId, //this is the userId of the sender
+          subscriptionId: this.subscriptionId, //this is the subscriptionId of the sender
+          message: message
+        });
+});
 Template.lobby.greeting = function () {
   return "Welcome to battleships.";
 };
@@ -19,7 +24,7 @@ Template.lobby.helpers({
 });
 Template.chat.helpers({
         chatMessage: function() {
-                return []//chatCollection.find();
+                return chatCollection.find();
         }
 })
 
@@ -28,7 +33,7 @@ Template.chat.events({
   'click #sendMessage' : function () {
           var messageText = $('#chatMessage').val();
           chatCollection.insert({
-              user: Meteor.user().username,
+              username: Meteor.user().username,
               message: messageText
           });
           $('#chatMessage').val('');
@@ -96,8 +101,6 @@ Template.lobby.events({
 	 Session.set("currentProfile", Meteor.users.findOne({_id: this._id}))
      //Sets the global variable to be all of the information for the user
      //we just clicked on. Looks up the user with _this.id
-
-    //$('#map-set-up-modal').modal();
   },
   'click #logout' : function () {
    Meteor.logout();
