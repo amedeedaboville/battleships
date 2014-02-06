@@ -37,6 +37,7 @@ Template.chat.events({
               message: messageText
           });
           $('#chatMessage').val('');
+          chatStream.emit('chat', messageText);
   },
 
   'click #logout' : function () {
