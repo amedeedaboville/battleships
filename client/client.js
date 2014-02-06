@@ -15,12 +15,7 @@ Template.lobby.helpers({
 	friendsOnline: function() {
 		Meteor.subscribe("userStatus");
 		return Meteor.users.find({"status.online": true}, {username:true}).fetch();
-	},
-	othersOnline: function() {
-		Meteor.subscribe("userStatus");
-		return Meteor.users.find({"status.online": false}, {username:true}).fetch();
 	}
-
 });
 Template.chat.helpers({
         chatMessage: function() {
@@ -48,6 +43,13 @@ Template.chat.events({
 function getRandomInt (min, max) {
       return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+
+Template.userProfile.helpers({
+  user: function () {
+    return Session.get("currentProfile");
+  }
+})
+
 Template.grid.helpers({
   rows: function () {
     var grid = [];
@@ -79,7 +81,7 @@ Template.grid.helpers({
 
       }
     }
-    console.log(coralSpots);
+  //  console.log(coralSpots);
 //return [
 //       ['sea', 'sea', 'sea'], 
 //       ['sea', 'sea', 'sea'], 
@@ -90,8 +92,12 @@ Template.grid.helpers({
 
 
 Template.lobby.events({
-  'click .list-group a' : function () {
-	  $('#map-set-up-modal').modal();
+  'click .onlineplayers' : function () {
+	 Session.set("currentProfile", Meteor.users.findOne({_id: this._id}))
+     //Sets the global variable to be all of the information for the user
+     //we just clicked on. Looks up the user with _this.id
+
+    //$('#map-set-up-modal').modal();
   },
   'click #logout' : function () {
    Meteor.logout();
@@ -99,15 +105,6 @@ Template.lobby.events({
 });
 
 
-
 Template.messages.messages = function () {
   return Messages.find({}, { sort: { time: -1 }});
 }
-sendChat = function(message) {
-  chatStream.emit('message', message);
-  console.log('me: ' + message);
-};
-
-chatStream.on('message', function(message) {
-  console.log('user: ' + message);
-});
