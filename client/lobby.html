@@ -13,31 +13,41 @@
 </nav>
 
 <div class="col-xs-12 col-sm-9">
-	  {{greeting}}
+	  {{>chat}}
 </div>
 
 
 
-   <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
-          <div class="list-group">
-            <a href="#" class="list-group-item active">Friends</a>
-            {{#each friendsOnline}}
-            <a href="#" class="list-group-item">{{this.username}}</a>
-            {{/each}}
-			{{#if othersOnline}}
-            <a href="#" class="list-group-item active">Others</a>
-            {{/if}}
-            {{#each othersOnline}}
-            <a href="#" class="list-group-item">{{this.username}}</a>
-            {{/each}}
-          </div>
-        </div>
-{{>modal}}                                                                                                  
+<div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
+  <div class="list-group">
+    <a href="#" class="list-group-item active">Friends</a>
+    {{#each friendsOnline}}
+      <a href="#" class="list-group-item">{{this.username}}</a>
+    {{/each}}
+
+    {{#if othersOnline}}
+      <a href="#" class="list-group-item active">Others</a>
+    {{/if}}
+
+    {{#each othersOnline}}
+      <a href="#" class="list-group-item">{{this.username}}</a>
+    {{/each}}
+  </div>
+</div>
+{{>modal}}
 </template>
 
+<template name="chat">
+    <h3>messages</h3>
+    {{#each chatMessage}}
+        {{this.username }}:{{this.message}}
+        <br>
+    {{/each}}
+    <textarea id='chatMessage' rows=1 cols=80></textarea><br>
+    <button class='btn btn-primary' id='sendMessage'>Send</button>
+</template>
 
-<template name="modal">                                                                                 
-<!-- Modal --> 
+<template name="modal">
 <!-- Modal -->
 <div class="modal fade" id="map-set-up-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
