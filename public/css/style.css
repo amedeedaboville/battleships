@@ -3,6 +3,10 @@ body {
   padding-bottom: 40px;
   background-color: #eee;
 }
+#inviteButton {
+    float:right;
+    margin-top:-5px;
+}
 
 #recover-password {
   max-width: 530px;

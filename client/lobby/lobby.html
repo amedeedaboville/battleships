@@ -24,12 +24,13 @@
         <div class="col-md-4">{{>userProfile}}</div>
 
         <div class="col-md-4">
-            <div class="list-group playerlist">
+            <ul class="list-group playerlist">
                 <a href="#" class="list-group-item active">Friends</a>
                 {{#each friendsOnline}}
-                <a href="#" class="list-group-item onlineplayers">{{this.username}}</a>
+                <li class="list-group-item onlineplayers">{{this.username}}
+                <button class="btn btn-sm btn-danger" id="inviteButton">Challenge</button></li>
                 {{/each}}
-            </div>
+            </ul>
         </div>
     </div>
 </div>
