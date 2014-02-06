@@ -19,10 +19,6 @@ chatStream.on('chat', function(message) {
     message: message
   });
 });
-Template.lobby.greeting = function () {
-  return "Welcome to battleships.";
-};
-
 Template.lobby.username = function () {
   return Meteor.user().username;
 };
