@@ -1,4 +1,3 @@
-chatStream = new Meteor.Stream('chat'); //This doesn't.
 Template.lobby.greeting = function () {
   return "Welcome to battleships.";
 };
@@ -81,15 +80,6 @@ Template.lobby.events({
 });
 
 
-
 Template.messages.messages = function () {
   return Messages.find({}, { sort: { time: -1 }});
 }
-sendChat = function(message) {
-  chatStream.emit('message', message);
-  console.log('me: ' + message);
-};
-
-chatStream.on('message', function(message) {
-  console.log('user: ' + message);
-});
