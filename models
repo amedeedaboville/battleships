@@ -1,0 +1,20 @@
+On the grid:
+ships have
+  size
+  armor: array of length [size] with values [BROKEN, NORMAL, SUPER]
+  cannons
+  radar
+  sonar
+  position
+  speed
+  turn zone: list of potential final positions and the empty squares needed to get there
+  sunk or not?
+  abilities:
+    mine pickup/dropoff
+    radar increase
+    torpedo
+mines
+base
+  radar
+  health: array of length [size] with values [BROKEN, NORMAL]
+coral

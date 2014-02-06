@@ -1,0 +1,47 @@
+class server {
+
+clearSquares?() -> true or closest square and square hit
+moveShip() -> clearSquares, if hit->stop at closest square, if square hit was a mine, explode it
+turnShip() -> clearsSquares, if hit-> fail, if square hit was a mine, expode it
+torpedo() -> clearSquares, if hit-> explode thing, if square hit was a mine, expode it
+
+  moveShip(ship, newposition) {
+  squares between ship and new position
+  if (swapShip(ship, newPosition)){
+    return true;
+  }
+  else {
+  
+  }
+  notifyUser(CollisionHappened, collisionType);
+      moveShip(ship, closestClearPosition);
+    }
+  }
+  swapShip(ship, emptySquares,  newOrientation) {
+    if(SquaresAreEmpty(emptySquares))
+    {
+
+        old_grid_squares = ship.gridsquares
+        old_grid_sqaures = sea
+
+        ship.position = newOrientation
+        grid_squares_at_new_position = ship
+        return true
+      }
+      else{
+      return false;
+      }
+  }
+  fireCannon(position) {
+    square = gridSquare_AtPosition(position);
+    if square is sea {
+    notifyUsers(Missed)
+    }
+    if square is ship {
+    square.ship.health--;
+    NotifyUsers(Hit);
+    }
+}
+
+
+gridsquares.find( where visibleToPlayer1 ==true)
