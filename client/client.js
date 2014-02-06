@@ -1,10 +1,23 @@
 chatCollection = new Meteor.Collection(null);
+
+getUsername = function(id) {
+  Meteor.subscribe('user-info', id);
+  Deps.autorun(function() {
+    var user = Meteor.users.findOne(id);
+    if(user) {
+      Session.set('user-' + id, user.username);
+    }
+  });
+}
+
 chatStream.on('chat', function(message) {
-    chatCollection.insert({
-          username: this.userId, //this is the userId of the sender
-          subscriptionId: this.subscriptionId, //this is the subscriptionId of the sender
-          message: message
-        });
+    getUsername(this.userId);
+    var uname = Session.get('user-' + this.userId);
+  chatCollection.insert({
+    username: uname, //this is the userId of the sender
+    subscriptionId: this.subscriptionId, //this is the subscriptionId of the sender
+    message: message
+  });
 });
 Template.lobby.greeting = function () {
   return "Welcome to battleships.";
@@ -15,37 +28,37 @@ Template.lobby.username = function () {
 };
 
 Template.lobby.helpers({
-	friendsOnline: function() {
-		Meteor.subscribe("userStatus");
-		return Meteor.users.find({"status.online": true}, {username:true}).fetch();
-	}
+  friendsOnline: function() {
+    Meteor.subscribe("userStatus");
+    return Meteor.users.find({"status.online": true}, {username:true}).fetch();
+  }
 });
 Template.chat.helpers({
-        chatMessage: function() {
-                return chatCollection.find();
-        }
+  chatMessage: function() {
+    return chatCollection.find();
+  }
 })
 
 
 Template.chat.events({
   'click #sendMessage' : function () {
-          var messageText = $('#chatMessage').val();
-          chatCollection.insert({
-              username: Meteor.user().username,
-              message: messageText
-          });
-          $('#chatMessage').val('');
-          chatStream.emit('chat',messageText);
+    var messageText = $('#chatMessage').val();
+    chatCollection.insert({
+      username: Meteor.user().username,
+      message: messageText
+    });
+    $('#chatMessage').val('');
+    chatStream.emit('chat',messageText);
   },
 
   'click #logout' : function () {
-   Meteor.logout();
+    Meteor.logout();
   }
 });
 
 
 function getRandomInt (min, max) {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 Template.userProfile.helpers({
@@ -68,7 +81,7 @@ Template.grid.helpers({
       grid[i+10][0]  = "bluebase";
       grid[i+10][29] = "redbase";
     }
-    
+
     var coralSpots = [];
     while(coralSpots.length < 24) {
       var newSpot = [getRandomInt(3,26), getRandomInt(10,20)];
@@ -85,28 +98,23 @@ Template.grid.helpers({
 
       }
     }
-  //  console.log(coralSpots);
-//return [
-//       ['sea', 'sea', 'sea'], 
-//       ['sea', 'sea', 'sea'], 
-//       ['sea', 'sea', 'sea']
-//       ]
+    //  console.log(coralSpots);
+    //return [
+    //       ['sea', 'sea', 'sea'], 
+    //       ['sea', 'sea', 'sea'], 
+    //       ['sea', 'sea', 'sea']
+    //       ]
     return grid;
-}});
+  }});
 
 
 Template.lobby.events({
   'click .onlineplayers' : function () {
-	 Session.set("currentProfile", Meteor.users.findOne({_id: this._id}))
-     //Sets the global variable to be all of the information for the user
-     //we just clicked on. Looks up the user with _this.id
+    Session.set("currentProfile", Meteor.users.findOne({_id: this._id}))
+  //Sets the global variable to be all of the information for the user
+  //we just clicked on. Looks up the user with _this.id
   },
   'click #logout' : function () {
-   Meteor.logout();
+    Meteor.logout();
   }
 });
-
-
-Template.messages.messages = function () {
-  return Messages.find({}, { sort: { time: -1 }});
-}
