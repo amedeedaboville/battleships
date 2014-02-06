@@ -27,7 +27,7 @@ Template.chat.events({
       if (evt.which === 13)
       {
         chatCollection.insert({
-          user: Meteor.user().username,
+          username: Meteor.user().username,
           message: messageText
         });
         $('#chatMessage').val('');
