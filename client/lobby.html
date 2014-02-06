@@ -13,8 +13,7 @@
 </nav>
 
 <div class="col-xs-12 col-sm-9">
-	  {{greeting}}
-    {{>grid}}
+	  {{>chat}}
 </div>
 
 
@@ -35,12 +34,20 @@
     {{/each}}
   </div>
 </div>
-{{>modal}}                                                                                                  
+{{>modal}}
 </template>
 
+<template name="chat">
+    <h3>messages</h3>
+    {{#each chatMessage}}
+        {{this.username }}:{{this.message}}
+        <br>
+    {{/each}}
+    <textarea id='chatMessage' rows=1 cols=80></textarea><br>
+    <button class='btn btn-primary' id='sendMessage'>Send</button>
+</template>
 
-<template name="modal">                                                                                 
-<!-- Modal --> 
+<template name="modal">
 <!-- Modal -->
 <div class="modal fade" id="map-set-up-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
