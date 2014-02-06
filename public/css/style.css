@@ -7,7 +7,9 @@ body {
     float:right;
     margin-top:-5px;
 }
-
+#logoutButton {
+    margin-right:15px;
+}
 #recover-password {
   max-width: 530px;
   padding: 15px;
