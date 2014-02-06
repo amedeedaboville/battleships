@@ -1,7 +1,7 @@
 chatCollection = new Meteor.Collection(null);
 chatStream.on('chat', function(message) {
     chatCollection.insert({
-          userId: this.userId, //this is the userId of the sender
+          username: this.userId, //this is the userId of the sender
           subscriptionId: this.subscriptionId, //this is the subscriptionId of the sender
           message: message
         });
@@ -11,9 +11,7 @@ Template.lobby.greeting = function () {
 };
 
 Template.lobby.username = function () {
-
   return Meteor.user().username;
-
 };
 
 Template.lobby.helpers({
@@ -37,6 +35,7 @@ Template.chat.events({
               message: messageText
           });
           $('#chatMessage').val('');
+          chatStream.emit('chat',messageText);
   },
 
   'click #logout' : function () {
