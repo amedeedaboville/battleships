@@ -30,6 +30,18 @@ Template.chat.events({
           chatStream.emit('chat', messageText);
   },
 
+   'keypress .chatArea': function (evt) {
+    if (evt.which === 13) {
+      var messageText = $('#chatMessage').val();
+          chatCollection.insert({
+              user: Meteor.user().username,
+              message: messageText
+          });
+          $('#chatMessage').val('');
+          chatStream.emit('chat', messageText);
+    }
+  },
+
   'click #logout' : function () {
     Meteor.logout();
   }
