@@ -1,3 +1,6 @@
+chatCollection = new Meteor.Collection(null);
+chatStream = new Meteor.Stream('chat'); //This doesn't.
+
 Template.lobby.greeting = function () {
   return "Welcome to battleships.";
 };
@@ -14,6 +17,28 @@ Template.lobby.helpers({
 		return Meteor.users.find({"status.online": true}, {username:true}).fetch();
 	}
 });
+Template.chat.helpers({
+        chatMessage: function() {
+                return []//chatCollection.find();
+        }
+})
+
+
+Template.chat.events({
+  'click #sendMessage' : function () {
+          var messageText = $('#chatMessage').val();
+          chatCollection.insert({
+              user: Meteor.user().username,
+              message: messageText
+          });
+          $('#chatMessage').val('');
+  },
+
+  'click #logout' : function () {
+   Meteor.logout();
+  }
+});
+
 
 function getRandomInt (min, max) {
       return Math.floor(Math.random() * (max - min + 1)) + min;
