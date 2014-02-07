@@ -35,3 +35,7 @@ Template.grid.helpers({
         }
         return grid;
     }});
+
+Template.grid.rendered = function(){
+    //$('#chatMessages').scrollTop($('#chatMessages').prop('scrollHeight'));
+}

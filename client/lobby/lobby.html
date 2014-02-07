@@ -26,12 +26,13 @@
                 <a href="#" class="list-group-item active">Friends</a>
                 {{#each friendsOnline}}
                 <li class="list-group-item onlineplayers">{{this.username}}
-                <button class="btn btn-sm btn-danger" id="inviteButton">Challenge</button></li>
+                <button class="btn btn-sm btn-danger inviteButton" id="{{this._id}}">Challenge</button></li>
                 {{/each}}
             </ul>
         </div>
     </div>
 </div>
+{{>modal}}
 </template>
 
 <template name="modal">
@@ -40,15 +41,15 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <button type="button" class="close" id="closeMapButton" data-dismiss="modal" aria-hidden="true">&times;</button>
                 <h4 class="modal-title" id="myModalLabel">Map Setup</h4>
             </div>
             <div class="modal-body">
-                ...
+                {{>grid}}
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default">Accept</button>
-                <button type="button" class="btn btn-primary">New Map</button>
+                <button type="button" class="btn btn-default" id="acceptMapButton">Accept</button>
+                <button type="button" class="btn btn-primary" id="newMapButton">New Map</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

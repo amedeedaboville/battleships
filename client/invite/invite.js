@@ -1,10 +1,11 @@
-inviteStream.on('invite', function(messgae) {
+inviteStream.on(Meteor.userId(), function(otherUser, otherUsername) {
     console.log('received invite');
-    $.UIkit.notify({
-    message : '<button>accept</button>' + this.userId + ' wants to challenge you to a battleship duel!', 
-    status  : 'info',
-    timeout : 5000,
-    pos     : 'bottom-center'
+    new ui.Confirmation({message: otherUsername + " wants to challenge you to a battleship duel!"}).show(function(accept){
+        if (accept) {
+            serverStream.emit('generate-map', Meteor.userId(), otherUser); 
+        };
     });
-})
+});
+
+
 
