@@ -1,5 +1,4 @@
 chatCollection = new Meteor.Collection(null);
-$('#chatMessages').scrollTop($('#chatMessages').scrollHeight);
 getUsername = function(id) {
   Meteor.subscribe('user-info', id);
   Deps.autorun(function() {
@@ -20,22 +19,28 @@ chatStream.on('chat', function(message) {
   });
 });
 
+Template.chat.rendered = function(){
+    $('#chatMessages').scrollTop($('#chatMessages').prop('scrollHeight'));
+}
+
 Template.chat.events({
   'keypress .chatArea': function (evt) {    
     var messageText = $('#chatMessage').val();
-    if (evt.which === 13)
+    if (evt.which == 13)
     {
-      if (messageText.length > 1){
-         chatCollection.insert({
+	evt.preventDefault();
+      $('#chatMessage').val('');
+
+	if ($.trim(messageText)){
+        chatCollection.insert({
         username: Meteor.user().username,
         message: messageText
       });
-      $('#chatMessage').val('');
       chatStream.emit('chat', messageText);
-      }
+	}
+
     };
   },
-
   'click #logout' : function () {
     Meteor.logout();
   }
