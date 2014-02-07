@@ -12,3 +12,11 @@ chatStream.permissions.read(function(eventName) {
 chatStream.permissions.write(function(eventName) {
     return eventName == 'chat';
 });
+
+inviteStream.permissions.read(function(eventName) {
+    return eventName == 'invite';
+});
+ 
+inviteStream.permissions.write(function(eventName) {
+    return eventName == 'invite';
+});

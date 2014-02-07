@@ -8,7 +8,7 @@ getUsername = function(id) {
       Session.set('user-' + id, user.username);
     }
   });
-}
+};
 
 chatStream.on('chat', function(message) {
     getUsername(this.userId);
