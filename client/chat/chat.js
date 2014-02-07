@@ -21,28 +21,17 @@ chatStream.on('chat', function(message) {
 });
 
 Template.chat.events({
-  'click #sendMessage' : function () {
-      var messageText = $('#chatMessage').val();
-      if (messageText.length > 1) {
-        chatCollection.insert({
-          username: Meteor.user().username,
-          message: messageText
-        });
-        $('#chatMessage').val('');
-        chatStream.emit('chat', messageText);
-      };
-  },
-
-  'keypress .chatArea': function (evt) {
-    if (evt.which === 13) {
-      var messageText = $('#chatMessage').val();
-      if (messageText.length > 1) {
-        chatCollection.insert({
-          username: Meteor.user().username,
-          message: messageText
-        });
-        $('#chatMessage').val('');
-        chatStream.emit('chat', messageText);
+  'keypress .chatArea': function (evt) {    
+    var messageText = $('#chatMessage').val();
+    if (evt.which === 13)
+    {
+      if (messageText.length > 1){
+         chatCollection.insert({
+        username: Meteor.user().username,
+        message: messageText
+      });
+      $('#chatMessage').val('');
+      chatStream.emit('chat', messageText);
       }
     };
   },
