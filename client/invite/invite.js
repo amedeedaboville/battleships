@@ -4,7 +4,7 @@ inviteStream.on(Meteor.userId(), function(otherUser, otherUsername) {
         if (accept) {
             serverStream.emit('generate-map', Meteor.userId(), otherUser); 
         };
-    });
+    }).hide(5555);
 });
 
 
