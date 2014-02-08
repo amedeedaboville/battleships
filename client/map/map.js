@@ -1,4 +1,6 @@
-mapStream.on(Meteor.userId(), function (message, opponent){
+Deps.autorun(function (){
+	mapStream.on(Meteor.userId(), function (message, opponent){
+	console.log("I am: " + Meteor.userId() + " and the other is: " + opponent);
 	if (message == 'add')
 	{
 		Session.set("enemy", opponent);
@@ -22,4 +24,6 @@ mapStream.on(Meteor.userId(), function (message, opponent){
 		//redirect to game...
 		$('#map-set-up-modal').modal('hide');
 	}
+});
+
 });

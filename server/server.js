@@ -1,8 +1,8 @@
 Meteor.publish("userStatus", function() {
-  return Meteor.users.find({"status.online": true}, {emails:true});
+  return Meteor.users.find({}, {username:true});
 });
 Meteor.publish("user-info", function(id) {
-    return Meteor.users.find({_id: id}, {fields: {username: 1}});
+    return Meteor.users.find({_id: id}, {username: true});
 });
 
 chatStream.permissions.read(function(eventName) {
@@ -36,8 +36,10 @@ serverStream.permissions.write(function(eventName) {
     return true;
 });
 
+Deps.autorun(function (){
 //serverStream: responses
 serverStream.on('generate-map', function (thisUser, otherUser){
+	console.log("I will generate a map between " + thisUser + " and " + otherUser);
     mapStream.emit(thisUser, 'add', otherUser);
     mapStream.emit(otherUser, 'add', thisUser);
 });
@@ -57,6 +59,7 @@ serverStream.on('doneMap', function (thisUser, otherUser){
     mapStream.emit(otherUser, 'done', thisUser);
 });
 
+});
 
 /**Stream: controls the flow between clients for the creation of map configurations**/
 
