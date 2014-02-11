@@ -25,50 +25,10 @@ inviteStream.permissions.write(function(eventName) {
     return true;
 });
 
-
-/**Stream: controls the flow between clients for the creation of map configurations**/
-
-serverStream.permissions.read(function(eventName) {
-    return eventName == 'generate-map' || eventName == 'closeMap' || eventName == 'newMap' || eventName == 'doneMap';
-});
- 
-serverStream.permissions.write(function(eventName) {
-    return true;
+Meteor.publish('game', function(id) {
+    return gameCollection.find({},{$or: [{player1ID: id}, {player2ID: id}]});
 });
 
-Deps.autorun(function (){
-//serverStream: responses
-serverStream.on('generate-map', function (thisUser, otherUser){
-	console.log("I will generate a map between " + thisUser + " and " + otherUser);
-    mapStream.emit(thisUser, 'add', otherUser);
-    mapStream.emit(otherUser, 'add', thisUser);
+Meteor.publish('invite', function(id){
+  return inviteCollection.find({}, {opponent : id});
 });
-
-serverStream.on('closeMap', function (thisUser, otherUser){
-    mapStream.emit(thisUser, 'close', otherUser);
-    mapStream.emit(otherUser, 'close', thisUser);
-});
-
-serverStream.on('newMap', function (thisUser, otherUser){
-    mapStream.emit(thisUser, 'new', otherUser);
-    mapStream.emit(otherUser, 'new', thisUser);
-});
-
-serverStream.on('doneMap', function (thisUser, otherUser){
-    mapStream.emit(thisUser, 'done', otherUser);
-    mapStream.emit(otherUser, 'done', thisUser);
-});
-
-});
-
-/**Stream: controls the flow between clients for the creation of map configurations**/
-
-mapStream.permissions.read(function(eventName) {
-    return eventName == this.userId || eventName == this.subscriptionId;
-});
- 
-mapStream.permissions.write(function(eventName) {
-    return true;
-});
-
-	
