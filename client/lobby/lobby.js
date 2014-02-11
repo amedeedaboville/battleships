@@ -16,8 +16,8 @@ Template.lobby.events({
         console.log("this is your id: " + Meteor.userId());
     },
     'click .inviteButton' : function (evt) {
-        console.log("sent invitation to " + evt.target.id + " from " + Meteor.user().username);
-       inviteStream.emit(evt.target.id, Meteor.userId(), Meteor.user().username);
+       console.log('sent invitation to ' + evt.target.id + ' from ' + Meteor.user().username);
+       inviteCollection.insert({challenger: Meteor.userId(), opponent: evt.target.id});
     },
 
     'click #logoutButton' : function () {

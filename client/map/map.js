@@ -1,29 +1,19 @@
 Deps.autorun(function (){
-	mapStream.on(Meteor.userId(), function (message, opponent){
-	console.log("I am: " + Meteor.userId() + " and the other is: " + opponent);
-	if (message == 'add')
-	{
-		Session.set("enemy", opponent);
-		$('#map-set-up-modal').modal();
-	}
-	else if (message == 'close')
-	{
-		delete Session.keys["enemy"];
-		$('#map-set-up-modal').modal('hide');
-	}
-	
-	else if (message == 'new')
-	{
-		//alter grid
-		$('.gamegrid').empty();
-		
+    Meteor.subscribe('games', Meteor.userId());
+    var currentGame = gameCollection.findOne({}, {active: true});
 
-	}
-	else if (message == 'done')
+	if (!currentGame.active)
 	{
-		//redirect to game...
+		//delete Session.keys["enemy"];
 		$('#map-set-up-modal').modal('hide');
+        //hide the game elements
 	}
-});
-
+    else if (!currentGame.mapAccepted) {
+        $('#map-set-up-modal').modal();
+	}
+	else if (currentGame.mapAccepted)
+	{
+		$('#map-set-up-modal').modal('hide');
+        //Draw the actual game
+	}
 });

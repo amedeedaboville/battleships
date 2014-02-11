@@ -26,9 +26,9 @@ inviteStream.permissions.write(function(eventName) {
 });
 
 Meteor.publish('game', function(id) {
-    return gameCollection.find({},{$or: [{player1ID: id}, {player2ID: id}]});
+    return gameCollection.find({$or: [{player1ID: id}, {player2ID: id}]});
 });
 
 Meteor.publish('invite', function(id){
-  return inviteCollection.find({}, {opponent : id});
+  return inviteCollection.find({opponent : id});
 });
