@@ -27,18 +27,18 @@ Template.lobby.events({
 
 Template.modal.events({
 	    'click #newMapButton' : function (evt) {
-       serverStream.emit('newMap', Session.get("enemy"), Meteor.userId());
+       //serverStream.emit('newMap', Session.get("enemy"), Meteor.userId());
+       askForNewMap(currentGame);
     },
 
     'click #acceptMapButton' : function (evt) {
-       serverStream.emit('doneMap', Session.get("enemy"), Meteor.userId());
+       //acceptMap(currentGame, Meteor.userId());
+       inviteCollection.update({id: currentGame.id}, {$inc: accepted});
     },
 
     'click #closeMapButton' : function () {
 		//emit to stream that we are closing the modals
-        serverStream.emit('closeMap', Session.get("enemy"), Meteor.userId());
+        //serverStream.emit('closeMap', Session.get("enemy"), Meteor.userId());
     },
 
 });
-
-

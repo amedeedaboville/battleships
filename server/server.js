@@ -1,5 +1,5 @@
 Meteor.publish("userStatus", function() {
-  return Meteor.users.find({}, {username:true});
+    return Meteor.users.find({}, {username:true});
 });
 Meteor.publish("user-info", function(id) {
     return Meteor.users.find({_id: id}, {username: true});
@@ -8,7 +8,7 @@ Meteor.publish("user-info", function(id) {
 chatStream.permissions.read(function(eventName) {
     return eventName == 'chat';
 });
- 
+
 chatStream.permissions.write(function(eventName) {
     return eventName == 'chat';
 });
@@ -30,5 +30,24 @@ Meteor.publish('game', function(id) {
 });
 
 Meteor.publish('invite', function(id){
-  return inviteCollection.find({opponent : id});
+    return inviteCollection.find({opponent : id});
+});
+
+inviteCollection.find({}).observeChanges({
+    updated: function(id, fields) {
+        if (fields.accepted) {
+            game = new Game();
+            gameCollection.insert(game);
+
+
+        }
+    }
+});
+
+Meteor.methods({
+    askForNewMap: function() {
+        game.map = new Map();
+        game.mapsLeft--;
+        gameCollection.update({id: game.id}, {$set: {map: new Map()}}, {$inc: {mapsLeft: -1}});
+    }
 });
