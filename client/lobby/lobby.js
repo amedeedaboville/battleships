@@ -29,7 +29,9 @@ Template.modal.events({
 
     'click #acceptMapButton' : function (evt) {
        //acceptMap(currentGame, Meteor.userId());
+       Session.set('inGame', true);
        inviteCollection.update({id: currentGame.id}, {$inc: accepted});
+    
     },
 
     'click #closeMapButton' : function () {
@@ -37,4 +39,8 @@ Template.modal.events({
         //serverStream.emit('closeMap', Session.get("enemy"), Meteor.userId());
     },
 
+});
+
+Handlebars.registerHelper('isInGame',function(input){
+  return Session.get("inGame") == true;
 });
