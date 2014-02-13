@@ -1,6 +1,7 @@
 Deps.autorun(function (){
-    Meteor.subscribe('games', Meteor.userId());
-    var currentGame = gameCollection.findOne({active: true}, {});
+    //Meteor.subscribe('games', Meteor.userId());
+    //var currentGame = gameCollection.findOne({active: true}, {});
+    var currentGame = new Game(Meteor.userId(), );
     if (currentGame) {
 	if (!currentGame.active)
 	{
