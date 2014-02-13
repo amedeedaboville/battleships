@@ -16,6 +16,7 @@
 <body>
   <div class="container">
     {{#if currentUser}}
+      {{> header}}
       {{> lobby}}
     {{else}}
       {{> loginPage}}

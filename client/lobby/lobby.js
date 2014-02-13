@@ -1,7 +1,3 @@
-Template.lobby.username = function () {
-    return Meteor.user().username;
-};
-
 Template.lobby.helpers({
     friendsOnline: function() {
         Meteor.subscribe("userStatus");
