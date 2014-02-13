@@ -1,13 +1,26 @@
-.gamegrid {
-width: 560px;
-height: 560px;
+#playerMenu {
+    background: lightblue;
 }
+
+#opponentMenu {
+    background: pink;
+}
+
+.largegrid {
+    width: 700px;
+   height: 700px;
+   margin: auto;
+}
+
+.smallgrid {
+    width: 560px;
+    height: 560px;
+}
+
 .square {
   position: relative;
   min-height: 1px;
   color: lightblue;
-  //width: 60px;
-  //height: 60px;
   width: 3.33%;
   height: 3.33%;
 
@@ -16,6 +29,7 @@ height: 560px;
   border-radius: 3px;
   background-color: #fff;
 }
+
 .sea {
   background-color: lightskyblue;
 }
