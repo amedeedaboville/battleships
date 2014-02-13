@@ -1,7 +1,7 @@
+currentGame = new Game(Meteor.userId());
 Deps.autorun(function (){
     //Meteor.subscribe('games', Meteor.userId());
     //var currentGame = gameCollection.findOne({active: true}, {});
-    currentGame = new Game(Meteor.userId());
     if (currentGame) {
 	if (!currentGame.active)
 	{
@@ -16,15 +16,26 @@ Deps.autorun(function (){
 	{
             //Success
 		$('#map-set-up-modal').modal('hide');
-                Session.set('inGame', true);
+        Session.set('inGame', true);
+        if(currentGame.turn == Meteor.userId()) {
+            Session.set('currentTurn', true);
+        }
+        else {
+            Session.set('currentTurn', false);
+        }
         //Draw the actual game
 
 	}
     }
 });
 
-Template.game.helpers = {
+Template.game.helpers({
    possibleMoves : function() {
+       console.log("current game is ");
+       console.log(currentGame);
        return currentGame.moveArray;
-}
-};
+    },
+    currentTurn: function() {
+        return Session.get('currentTurn');
+    }
+});
