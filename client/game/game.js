@@ -1,7 +1,7 @@
 Deps.autorun(function (){
     //Meteor.subscribe('games', Meteor.userId());
     //var currentGame = gameCollection.findOne({active: true}, {});
-    var currentGame = new Game(Meteor.userId(), );
+    currentGame = new Game(Meteor.userId());
     if (currentGame) {
 	if (!currentGame.active)
 	{
@@ -14,8 +14,17 @@ Deps.autorun(function (){
 	}
 	else if (currentGame.mapAccepted)
 	{
+            //Success
 		$('#map-set-up-modal').modal('hide');
+                Session.set('inGame', true);
         //Draw the actual game
+
 	}
     }
 });
+
+Template.game.helpers = {
+   possibleMoves : function() {
+       return currentGame.moveArray;
+}
+};
