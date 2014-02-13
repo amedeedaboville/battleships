@@ -26,5 +26,8 @@ Deps.autorun(function (){
 Template.game.helpers = {
    possibleMoves : function() {
        return currentGame.moveArray;
-}
+},
+    currentTurn : function() {
+        return Session.get('currentTurn');
+    }
 };
