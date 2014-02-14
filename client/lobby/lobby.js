@@ -14,10 +14,6 @@ Template.lobby.events({
     'click .inviteButton' : function (evt) {
        console.log('sent invitation to ' + evt.target.id + ' from ' + Meteor.user().username);
        inviteCollection.insert({challenger: Meteor.userId(), opponent: evt.target.id});
-    },
-
-    'click #logoutButton' : function () {
-        Meteor.logout();
     }
 });
 
@@ -29,9 +25,11 @@ Template.modal.events({
 
     'click #acceptMapButton' : function (evt) {
        //acceptMap(currentGame, Meteor.userId());
+	     //THIS needs to go into inviteCollection.on... observe update
+       $('#map-set-up-modal').modal('hide');
        Session.set('inGame', true);
-       inviteCollection.update({id: currentGame.id}, {$inc: accepted});
-    
+       //inviteCollection.update({}, {$inc: 'accepted'});
+       
     },
 
     'click #closeMapButton' : function () {
