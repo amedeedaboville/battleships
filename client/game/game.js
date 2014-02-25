@@ -7,15 +7,15 @@ Deps.autorun(function (){
 	{
 		//delete Session.keys["enemy"];
         //hide the game elements
-		$('#map-set-up-modal').modal('hide');
+		$('#mapModal').modal('hide');
 	}
     else if (!currentGame.mapAccepted) {
-        $('#map-set-up-modal').modal();
+        $('#mapModal').modal();
 	}
 	else if (currentGame.mapAccepted)
 	{
             //Success
-		$('#map-set-up-modal').modal('hide');
+		$('#mapModal').modal('hide');
         Session.set('inGame', true);
         if(currentGame.turn == Meteor.userId()) {
             Session.set('currentTurn', true);

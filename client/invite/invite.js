@@ -20,7 +20,7 @@ Deps.autorun(function() {
     inviteCollection.find({$or: [{opponent : Meteor.userId()}, {challenger: Meteor.userId()} ]}).observeChanges({
         changed: function(id, fields) {
             if (fields.accepted == true) {
-                $('#map-set-up-modal').modal();
+                $('#mapModal').modal();
             }
         }
     });
