@@ -2,6 +2,16 @@
 <div id="gameui">
     <div id="playerMenu" class="col-sm-2">
         These are your options
+        {{#if currentTurn}}
+        It's your turn, here are you possible moves. 
+        <ul>
+            {{#each possibleMoves}}
+            <li> {{this}} </li>
+            {{/each}}
+        </ul>
+        {{else}}
+            Waiting for your opponent
+        {{/if}}
     </div>
     <div class="col-sm-8">
     <div class="largegrid">
