@@ -26,7 +26,7 @@ Template.modal.events({
     'click #acceptMapButton' : function (evt) {
        //acceptMap(currentGame, Meteor.userId());
 	     //THIS needs to go into inviteCollection.on... observe update
-       $('#map-set-up-modal').modal('hide');
+       $('#mapModal').modal('hide');
        Session.set('inGame', true);
        //inviteCollection.update({}, {$inc: 'accepted'});
        
