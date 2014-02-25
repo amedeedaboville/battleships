@@ -17,8 +17,11 @@
   <div class="container">
     {{#if currentUser}}
       {{> header}}
-      {{! lobby}}
+      {{#if isInGame}}
       {{> game}}
+      {{else}}
+      {{> lobby}}
+      {{/if}}
     {{else}}
       {{> loginPage}}
     {{/if}}
