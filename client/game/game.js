@@ -1,4 +1,4 @@
-currentGame = new Game(Meteor.userId());
+currentGame = false;//new Game(Meteor.userId());
 Deps.autorun(function (){
     //Meteor.subscribe('games', Meteor.userId());
     //var currentGame = gameCollection.findOne({active: true}, {});
