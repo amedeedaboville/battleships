@@ -36,8 +36,8 @@ Meteor.publish('invite', function(id){
 inviteCollection.find({}).observeChanges({
     changed: function(id, fields) {
         if (fields.accepted) {
-            var aGame = new Game(fields.P1, fields.P2);
-            var gameID = gameCollection.insert({game: aGame});
+            var aGame = new Game(fields.challenger, fields.opponent);
+            var gameID = gameCollection.insert(aGame);
             console.log("created game with id " + gameID);
             inviteCollection.update({_id: id}, {$set: {gameID: gameID}});
         }
