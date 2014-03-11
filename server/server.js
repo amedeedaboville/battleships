@@ -38,7 +38,8 @@ inviteCollection.find({}).observeChanges({
         if (fields.accepted) {
             var aGame = new Game(fields.P1, fields.P2);
             var gameID = gameCollection.insert({game: aGame});
-            inviteCollection.update({_id: id}, {$set: {gameID: gameID, accepted: true, P1: this.userId, P2: fields.challenger}});
+            console.log("created game with id " + gameID);
+            inviteCollection.update({_id: id}, {$set: {gameID: gameID}});
         }
     }
 });

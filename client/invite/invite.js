@@ -17,13 +17,15 @@ Deps.autorun(function() {
         }
     });
 
-inviteCollection.find({$or: [{opponent : Meteor.userId()}, {challenger: Meteor.userId()} ]}).observeChanges({
-    changed: function(id, fields) {
-        if (fields.accepted) {
-            //show map selection
-            $('#mapModal').modal();
-
+    inviteCollection.find({$or: [{opponent : Meteor.userId()}, {challenger: Meteor.userId()} ]}).observeChanges({
+        changed: function(id, fields) {
+            if (fields.gameID != 0) {
+                //show map selection
+                $('#mapModal').modal();
+                console.log(fields.gameID);
+                currentGame = gameCollection.find({_id: fields.gameID}).fetch();
+                console.log(currentGame);
+            }
         }
-    }
-});
+    });
 });

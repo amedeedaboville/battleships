@@ -13,7 +13,7 @@ Template.lobby.events({
     },
     'click .inviteButton' : function (evt) {
        console.log('sent invitation to ' + evt.target.id + ' from ' + Meteor.user().username);
-       inviteCollection.insert({challenger: Meteor.userId(), opponent: evt.target.id});
+       inviteCollection.insert({challenger: Meteor.userId(), opponent: evt.target.id, gameID: 0});
     }
 });
 
