@@ -7,7 +7,7 @@ Deps.autorun(function() {
             new ui.Confirmation({message: Meteor.users.findOne(fields.challenger).username + ' wants to challenge you to a battleship duel!'}).show(function(accept){
                 if (accept) {
                     this.hide();
-                    inviteCollection.update({_id: id}, {$set: {accepted: true, P1: Meteor.userId(), P2: challenger}});
+                    inviteCollection.update({_id: id}, {$set: {accepted: true, P1: Meteor.userId(), P2: fields.challenger}});
                 }
                 else {
                     inviteCollection.update({_id: id}, {$set: {accepted: false}});
@@ -23,10 +23,8 @@ Deps.autorun(function() {
                 $('#mapModal').modal();
 
                 //insert into gameCollection
-                aGame = new Game();
-               gameCollection.insert({player1ID: fields.player1ID, player2ID: fields.player2ID, game: aGame});
-
-
+                aGame = new Game(fields.P1, fields.P2);
+               gameCollection.insert({game: aGame});
             }
         }
     });
