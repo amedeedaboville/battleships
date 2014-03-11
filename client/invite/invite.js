@@ -6,9 +6,8 @@ Deps.autorun(function() {
             console.log(fields);
             new ui.Confirmation({message: Meteor.users.findOne(fields.challenger).username + ' wants to challenge you to a battleship duel!'}).show(function(accept){
                 if (accept) {
-                    console.log('one here')
                     this.hide();
-                    inviteCollection.update({_id: id}, {$set: {accepted: true}});
+                    inviteCollection.update({_id: id}, {$set: {accepted: true, P1: Meteor.userId(), P2: challenger}});
                 }
                 else {
                     inviteCollection.update({_id: id}, {$set: {accepted: false}});
@@ -20,7 +19,14 @@ Deps.autorun(function() {
     inviteCollection.find({$or: [{opponent : Meteor.userId()}, {challenger: Meteor.userId()} ]}).observeChanges({
         changed: function(id, fields) {
             if (fields.accepted == true) {
+                //show map selection
                 $('#mapModal').modal();
+
+                //insert into gameCollection
+                aGame = new Game();
+               gameCollection.insert({player1ID: fields.player1ID, player2ID: fields.player2ID, game: aGame});
+
+
             }
         }
     });

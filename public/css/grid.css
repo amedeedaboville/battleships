@@ -44,6 +44,26 @@
   background-color: pink;
 }
 
+.p1ship {
+  background-color: firebrick;
+}
+
+.p2ship {
+  background-color: dodgerblue;
+}
+
+.ship {
+  background-color: black;
+}
+
+.shipP1 {
+  background-color: firebrick;
+}
+
+.shipP2 {
+  background-color: dodgerblue;
+}
+
 .row {
   margin-right: -15px;
   margin-left: -15px;
