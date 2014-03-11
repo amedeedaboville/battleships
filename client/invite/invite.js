@@ -20,8 +20,9 @@ Deps.autorun(function() {
             if (fields.gameID != 0) {
                 //show map selection
                 $('#mapModal').modal();
-                currentGame = gameCollection.find({_id: fields.gameID}).fetch();
+                currentGame = gameCollection.find({_id: fields.gameID}).fetch()[0];
                 console.log(currentGame);
+                Session.set('currentGame', currentGame);
             }
         }
     });
