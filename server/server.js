@@ -34,12 +34,11 @@ Meteor.publish('invite', function(id){
 });
 
 inviteCollection.find({}).observeChanges({
-    updated: function(id, fields) {
+    changed: function(id, fields) {
         if (fields.accepted) {
-            game = new Game();
-            gameCollection.insert(game);
-
-
+            var aGame = new Game(fields.P1, fields.P2);
+            var gameID = gameCollection.insert({game: aGame});
+            inviteCollection.update({_id: id}, {$set: {gameID: gameID, accepted: true, P1: this.userId, P2: fields.challenger}});
         }
     }
 });
