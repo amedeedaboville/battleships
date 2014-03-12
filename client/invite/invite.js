@@ -21,7 +21,6 @@ Deps.autorun(function() {
                 //accept the invite
                 $('#mapModal').modal();
                 currentGame = gameCollection.find({_id: fields.gameID}).fetch()[0];
-                console.log(currentGame);
                 Session.set('currentGame', currentGame);
             }
         }
@@ -30,9 +29,7 @@ Deps.autorun(function() {
     if(Session.get('currentGame')) {
         gameCollection.find({_id:Session.get('currentGame')._id}).observeChanges({
             changed: function(id, fields) {
-                console.log('current game changed:  ' + currentGame._id);
                 if(fields.mapAccepted) {
-                    console.log("Map accepted, hiding");
                     Session.set('inGame', true);
                     $('#mapModal').modal('hide');
                 }

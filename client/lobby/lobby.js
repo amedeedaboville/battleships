@@ -9,10 +9,8 @@ Template.lobby.events({
         //Sets the global variable to be all of the information for the user.
         //we just clicked on. Looks up the user with _this.id
         Session.set("currentProfile", Meteor.users.findOne({_id: this._id}));
-        console.log("this is your id: " + Meteor.userId());
     },
     'click .inviteButton' : function (evt) {
-        console.log('sent invitation to ' + evt.target.id + ' from ' + Meteor.user().username);
         inviteCollection.insert({challenger: Meteor.userId(), opponent: evt.target.id, gameID: 0});
     }
 });
@@ -26,7 +24,6 @@ Template.modal.events({
     'click #acceptMapButton' : function (evt) {
         //By the time we are on the accept map modal, currentGame exists.
         gameCollection.update({_id: Session.get('currentGame')._id},{$set: {mapAccepted: true}});
-        console.log('map accepted');
         //inviteCollection.update({_id: inviteID}, {$set: {accepted: true}});
         //THIS needs to go into inviteCollection.on... observe update
         //$('#mapModal').modal('hide');

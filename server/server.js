@@ -38,7 +38,6 @@ inviteCollection.find({}).observeChanges({
         if (fields.accepted) {
             var aGame = new Game(fields.challenger, fields.opponent);
             var gameID = gameCollection.insert(aGame);
-            console.log("created game with id " + gameID);
             inviteCollection.update({_id: id}, {$set: {gameID: gameID}});
         }
     }
@@ -48,12 +47,10 @@ gameCollection.allow({
     update: function(userId, doc, fieldNames, modifier) {
         if(fieldNames[0] == 'mapAccepted'){
             console.log("Accepting update to document ");
-            console.log(doc);
             return true;
         }
         else {
-            console.log("Accepting update to document ");
-            console.log(doc);
+            console.log("Denying update to document ");
             return false;
         }
     }
