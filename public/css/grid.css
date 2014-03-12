@@ -70,11 +70,11 @@
   background-color: black;
 }
 
-.shipP1 {
+.ship .challenger {
   background-color: firebrick;
 }
 
-.shipP2 {
+.ship .opponent {
   background-color: dodgerblue;
 }
 
