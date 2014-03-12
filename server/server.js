@@ -44,6 +44,21 @@ inviteCollection.find({}).observeChanges({
     }
 });
 
+gameCollection.allow({
+    update: function(userId, doc, fieldNames, modifier) {
+        if(fieldNames[0] == 'mapAccepted'){
+            console.log("Accepting update to document ");
+            console.log(doc);
+            return true;
+        }
+        else {
+            console.log("Accepting update to document ");
+            console.log(doc);
+            return false;
+        }
+    }
+});
+
 Meteor.methods({
     askForNewMap: function() {
         game.map = new Map();

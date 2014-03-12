@@ -18,7 +18,7 @@ Deps.autorun(function() {
     inviteCollection.find({$or: [{opponent : Meteor.userId()}, {challenger: Meteor.userId()} ]}).observeChanges({
         changed: function(id, fields) {
             if (fields.gameID != 0) {
-                //show map selection
+                //accept the invite
                 $('#mapModal').modal();
                 currentGame = gameCollection.find({_id: fields.gameID}).fetch()[0];
                 console.log(currentGame);
@@ -26,4 +26,18 @@ Deps.autorun(function() {
             }
         }
     });
+
+    if(Session.get('currentGame')) {
+        gameCollection.find({_id:Session.get('currentGame')._id}).observeChanges({
+            changed: function(id, fields) {
+                console.log('current game changed:  ' + currentGame._id);
+                if(fields.mapAccepted) {
+                    console.log("Map accepted, hiding");
+                    Session.set('inGame', true);
+                    $('#mapModal').modal('hide');
+                }
+            }
+        });
+    }
+
 });
