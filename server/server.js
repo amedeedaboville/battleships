@@ -1,19 +1,34 @@
-Meteor.publish("userStatus", function() {
+  Meteor.startup(function() {
+
+    return Meteor.methods({
+
+        removeAllInvites: function(aOpponent, aChallanger) {
+
+        return inviteCollection.remove({$or: [{opponent :aOpponent}, {challenger: aChallanger} ]});
+
+    }
+
+});
+
+});
+
+
+  Meteor.publish("userStatus", function() {
     return Meteor.users.find({}, {username:true});
 });
-Meteor.publish("user-info", function(id) {
+  Meteor.publish("user-info", function(id) {
     return Meteor.users.find({_id: id}, {username: true});
 });
 
-chatStream.permissions.read(function(eventName) {
+  chatStream.permissions.read(function(eventName) {
     return eventName == 'chat';
 });
 
-chatStream.permissions.write(function(eventName) {
+  chatStream.permissions.write(function(eventName) {
     return eventName == 'chat';
 });
 
-/**inviteStream: controls the flow between clients for the invitation process**/
+  /**inviteStream: controls the flow between clients for the invitation process**/
 
 //only targeted clients can listen to the invitation response
 inviteStream.permissions.read(function(eventName) {

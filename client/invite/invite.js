@@ -13,7 +13,7 @@ Deps.autorun(function() {
                     else {
                         inviteCollection.update({_id: inviteID}, {$set: {accepted: false}});
                     }
-                }).hide(555500);
+                }).hide(4000);
             };
         }
     });
@@ -21,6 +21,10 @@ Deps.autorun(function() {
     inviteCollection.find({$or: [{opponent : Meteor.userId()}, {challenger: Meteor.userId()} ]}).observeChanges({
         changed: function(id, fields) {
             if (fields.gameID != 0) {
+
+                //remove everything from inviteCollection
+                Meteor.call("removeAllInvites", Meteor.userId(), Meteor.userId())
+
                 //accept the invite
                 $('#mapModal').modal();
                 currentGame = gameCollection.find({_id: fields.gameID}).fetch()[0];
