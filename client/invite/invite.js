@@ -3,15 +3,18 @@ Deps.autorun(function() {
     inviteCollection.find({opponent : Meteor.userId()}).observeChanges({ //Hotfix for only showing when you're challenged to
         added: function(id, fields) {
             var inviteID = id;
-            new ui.Confirmation({message: Meteor.users.findOne(fields.challenger).username + ' wants to challenge you to a battleship duel!'}).show(function(accept){
-                if (accept) {
-                    this.hide();
-                    inviteCollection.update({_id: inviteID}, {$set: {accepted: true}});
-                }
-                else {
-                    inviteCollection.update({_id: inviteID}, {$set: {accepted: false}});
-                }
-            }).hide(555500);
+            user = Meteor.users.findOne(fields.challenger)
+            if (user != undefined){
+                new ui.Confirmation({message: user.username + ' wants to challenge you to a battleship duel!'}).show(function(accept){
+                    if (accept) {
+                        this.hide();
+                        inviteCollection.update({_id: inviteID}, {$set: {accepted: true}});
+                    }
+                    else {
+                        inviteCollection.update({_id: inviteID}, {$set: {accepted: false}});
+                    }
+                }).hide(555500);
+            };
         }
     });
 
