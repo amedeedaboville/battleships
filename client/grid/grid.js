@@ -4,7 +4,6 @@ Template.grid.helpers({
         if (game != undefined){
         return game.map.grid.grid;
         }
-//return Session.get("Map").grid;
     }
 });
 

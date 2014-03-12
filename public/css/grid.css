@@ -17,9 +17,23 @@
     height: 560px;
 }
 
-.square {
+.modalSquare {
   position: relative;
   min-height: 1px;
+  color: lightblue;
+  width: 2px;
+  height: 2px;
+
+  float: left;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  background-color: #fff;
+}
+
+.square {
+  position: relative;
+  min-height: 17px;
+  min-width: 17px;
   color: lightblue;
   width: 3.33%;
   height: 3.33%;
