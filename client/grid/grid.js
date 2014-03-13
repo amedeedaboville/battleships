@@ -15,20 +15,16 @@ Template.grid.rendered = function(){
 Template.grid.events({
     'click .square.ship' : function (evt) {
 	    	console.log('square was clicked');
-            var position = parsePositions($(evt.target).attr('position'));
+            var posString = parsePositions($(evt.target).attr('position'));
+            var position = JSON.parse(posString);
             console.log(position[0] + " and " + position[1]);
     },
 
     'mouseenter .square.ship' : function (evt) {
 	    	console.log('square in focus');
-            var position = parsePositions($(evt.target).attr('position'));
+            var posString = parsePositions($(evt.target).attr('position'));
+            var position = JSON.parse(posString);
             console.log(position[0] + " and " + position[1]);
     }
 
 })
-
-parsePositions = function(pos){
-            var fin = JSON.parse(pos);
-            return fin;
-
-}
