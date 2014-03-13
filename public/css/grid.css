@@ -66,6 +66,14 @@
   background-color: dodgerblue;
 }
 
+.ship.challenger.bow {
+  background-color: red;
+}
+
+.ship.opponent.bow {
+  background-color: yellow;
+}
+
 .row {
   margin-right: -15px;
   margin-left: -15px;
