@@ -53,7 +53,8 @@ inviteCollection.find({}).observeChanges({
         if (fields.accepted) {
             console.log("creating game");
             var aGame = new Game(fields.challenger, fields.opponent);
-            console.log(aGame);
+            console.log(aGame.map);
+            console.log(aGame.map.shipDictionary);
             var gameID = gameCollection.insert(aGame);
             console.log("done creating game");
             inviteCollection.update({_id: id}, {$set: {gameID: gameID}});
