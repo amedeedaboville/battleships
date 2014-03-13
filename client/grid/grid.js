@@ -13,27 +13,38 @@ Template.grid.rendered = function(){
 }
 
 Template.grid.events({
-    'click .square.ship' : function (evt) {
-        console.log('square was clicked');
-        //get the position of the square and parse it
-        var posString = $(evt.target).attr('position');
-        var position = JSON.parse(posString);
+    'click .square.ship.challenger' : function (evt) {
+        g = Session.get('currentGame');
+        if (g.challenger == Meteor.userId()){
+            //get shipName from this square and find the ship
+            var ship = g.map.shipDictionary[this.shipName];
+            Session.set('selectedShip', ship)
+        }
 
-        //in the grid we need to get the object at the position we located
-        var grid = Session.get('currentGame').map.grid;
-        grid.__proto__ = new Grid();
-        var square = grid.getObjectAtPosition(position);
-
-        //get shipName from this square and find the ship
-        var ship = Session.get('currentGame').map.shipDictionary[square.shipName];
-        Session.set('selectedShip', ship)
+        else{
+            //handle clicking opponent's ship
+            Session.set('selectedShip', undefined);
+        }
     },
 
-    'mouseenter .square.ship' : function (evt) {
-        console.log('square in focus');
-        var posString = $(evt.target).attr('position');
-        var position = JSON.parse(posString);
-        console.log(position[0] + " and " + position[1]);
+    'click .square.ship.opponent' : function (evt) {
+        g = Session.get('currentGame');
+        if (g.opponent == Meteor.userId()){
+            var ship = g.map.shipDictionary[this.shipName];
+            Session.set('selectedShip', ship)
+        }
+
+
+    },
+
+    'click .square.sea' : function (evt){
+        Session.set('selectedShip', undefined);
+    },
+
+    'click .square.coral' : function (evt){
+        Session.set('selectedShip', undefined);
     }
 
+    //     'mouseenter .square.ship' : function (evt) {
+    // }
 })
