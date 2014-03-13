@@ -40,6 +40,7 @@ Template.contextMenu.helpers({
 Template.contextMenu.events({
     'click .actionButton' : function(evt) {
         var action = evt.target.id;
-        Meteor.call(action);
+        Session.set('selectedAction', action);
+        //Meteor.call(action, ship, position);
     }
 });
