@@ -28,19 +28,6 @@ Deps.autorun(function (){
 });
 
 Template.contextMenu.helpers({
-    possibleMoves : function() {
-        console.log("calculating possible moves");
-        test = ["Move","Rotate"];
-        var ship = Session.get('selectedShip');
-        if(ship) {
-            console.log("ship exists, looking for actions:");
-            var actions =  ship.actions.map(function(a) { return a.name});
-            console.log(actions);
-            return acions;
-        }
-
-        return test;
-    },
     currentTurn: function() {
         return Session.get('currentTurn');
     },
@@ -50,3 +37,9 @@ Template.contextMenu.helpers({
     },
 });
 
+Template.contextMenu.events({
+    'click .actionButton' : function(evt) {
+        var action = evt.target.id;
+        Meteor.call(action);
+    }
+});
