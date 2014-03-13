@@ -48,16 +48,13 @@ Meteor.publish('invite', function(id){
     return inviteCollection.find({opponent : id});
 });
 
-inviteCollection.find({}).observeChanges({
-    changed: function(id, fields) {
-        if (fields.accepted) {
-            console.log("creating game");
-            var aGame = new Game(fields.challenger, fields.opponent);
-            console.log(aGame.map);
-            console.log(aGame.map.shipDictionary);
+inviteCollection.find({}).observe({
+    changed: function(oldDocument) {
+        if (oldDocument.accepted) {
+            var aGame = new Game(oldDocument.challenger, oldDocument.opponent);
             var gameID = gameCollection.insert(aGame);
             console.log("done creating game");
-            inviteCollection.update({_id: id}, {$set: {gameID: gameID}});
+            inviteCollection.update({_id: oldDocument._id}, {$set: {gameID: gameID}});
         }
     }
 });
