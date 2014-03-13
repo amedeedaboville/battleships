@@ -15,7 +15,7 @@ Template.grid.rendered = function(){
 Template.grid.events({
     'click .square.ship' : function (evt) {
         console.log('square was clicked');
-        var posString = parsePositions($(evt.target).attr('position'));
+        var posString = $(evt.target).attr('position');
         var position = JSON.parse(posString);
         var grid = Session.get('currentGame').map.grid;
         grid.__proto__ = new Grid();
@@ -26,7 +26,7 @@ Template.grid.events({
 
     'mouseenter .square.ship' : function (evt) {
         console.log('square in focus');
-        var posString = parsePositions($(evt.target).attr('position'));
+        var posString = $(evt.target).attr('position');
         var position = JSON.parse(posString);
         console.log(position[0] + " and " + position[1]);
     }
