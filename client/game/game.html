@@ -16,6 +16,7 @@
 
 
 <template name="contextMenu">
+{{#with selectedShip}}
     <div class="column-md-2">
         <div class="row">
             <div class = "square ship">
@@ -24,13 +25,13 @@
             </div>
         </div>
         <div class="row top-buffer">
-            Speed: 0/0
+            Speed: {{this.speed}}
         </div>
 
-        {{#each possibleMoves}}
+        {{#each this.actions}}
         <div class="row top-buffer">
             <div class="span">
-                <button class="btn btn-block btn-danger">{{this}}</button>
+                <button class="btn btn-block btn-danger">{{this.name}}</button>
             </div>
         </div>
         {{/each}}
@@ -54,6 +55,7 @@
             Waiting for your opponent
         {{/if}}
     -->
+{{/with}}
 </template>
 
 <template name="opponentMenu">
