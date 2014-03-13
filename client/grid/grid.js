@@ -17,7 +17,11 @@ Template.grid.events({
         console.log('square was clicked');
         var posString = parsePositions($(evt.target).attr('position'));
         var position = JSON.parse(posString);
+        var grid = Session.get('currentGame').map.grid;
+        grid.__proto__ = new Grid();
+        var square = grid.getObjectAtPosition(position);
         console.log(position[0] + " and " + position[1]);
+        console.log(square);
     },
 
     'mouseenter .square.ship' : function (evt) {
