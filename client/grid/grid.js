@@ -14,22 +14,21 @@ Template.grid.rendered = function(){
 
 Template.grid.events({
     'click .square.ship' : function (evt) {
-	    	console.log('square was clicked');
-            var position = parsePositions(evt.target.className);
-            console.log(position.x + " and " + position.y); 
+        console.log('square was clicked');
+        var posString = parsePositions($(evt.target).attr('position'));
+        var position = JSON.parse(posString);
+        var grid = Session.get('currentGame').map.grid;
+        grid.__proto__ = new Grid();
+        var square = grid.getObjectAtPosition(position);
+        console.log(position[0] + " and " + position[1]);
+        console.log(square);
     },
 
     'mouseenter .square.ship' : function (evt) {
-	    	console.log('square in focus');
-            var position = parsePositions(evt.target.className);
-            console.log(position.x + " and " + position.y); 
+        console.log('square in focus');
+        var posString = parsePositions($(evt.target).attr('position'));
+        var position = JSON.parse(posString);
+        console.log(position[0] + " and " + position[1]);
     }
 
 })
-
-parsePositions = function(pos){
-            var temp = pos.split('{');
-            var fin = JSON.parse('{' + temp[1]);
-            return fin;
-
-}
