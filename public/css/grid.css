@@ -47,12 +47,6 @@
 .sea {
   background-color: lightskyblue;
 }
-.bluebase {
-  background-color: dodgerblue;
-}
-.redbase {
-  background-color: firebrick;
-}
 
 .coral {
   background-color: pink;
@@ -72,6 +66,14 @@
 
 .ship.opponent.bow {
   background-color: yellow;
+}
+
+.ship.challenger.base {
+  background-color: #280000;
+}
+
+.ship.opponent.base {
+  background-color: darkblue;
 }
 
 .row {
