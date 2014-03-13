@@ -19,10 +19,10 @@
 {{#with selectedShip}}
     <div class="column-md-2">
         <div class="row">
-            <div class = "square ship">
+            {{#each this.shipSquares}}
+            <div class = "square ship {{this.owner}}">
             </div>
-            <div class = "square ship">
-            </div>
+            {{/each}}
         </div>
         <div class="row top-buffer">
             Speed: {{this.speed}}
