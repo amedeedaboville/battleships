@@ -24,7 +24,9 @@
             </div>
         </div>
         <div class="row top-buffer">
-            Speed: 0/0
+            {{#with selectedShip}}
+            Speed: {{this.speed}}
+            {{/with}}
         </div>
 
         {{#each possibleMoves}}

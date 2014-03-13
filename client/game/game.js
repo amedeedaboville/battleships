@@ -39,5 +39,11 @@ Template.contextMenu.helpers({
     },
     currentTurn: function() {
         return Session.get('currentTurn');
-    }
+    },
+
+    selectedShip: function(){
+        return Session.get('selectedShip');
+    },
+
 });
+
