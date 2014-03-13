@@ -11,3 +11,25 @@ Template.grid.helpers({
 Template.grid.rendered = function(){
     console.log('Grid rendered');
 }
+
+Template.grid.events({
+    'click .square.ship' : function (evt) {
+	    	console.log('square was clicked');
+            var position = parsePositions(evt.target.className);
+            console.log(position.x + " and " + position.y); 
+    },
+
+    'mouseenter .square.ship' : function (evt) {
+	    	console.log('square in focus');
+            var position = parsePositions(evt.target.className);
+            console.log(position.x + " and " + position.y); 
+    }
+
+})
+
+parsePositions = function(pos){
+            var temp = pos.split('{');
+            var fin = JSON.parse('{' + temp[1]);
+            return fin;
+
+}

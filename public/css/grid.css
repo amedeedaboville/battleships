@@ -102,3 +102,11 @@
 .row:after {
   clear: both;
 }
+
+.top-buffer {
+  margin-top: 20px;
+}
+
+.right-buffer {
+  margin-right: 10px;
+}

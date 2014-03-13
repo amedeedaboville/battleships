@@ -29,11 +29,13 @@ Deps.autorun(function (){
     }
 });
 
-Template.game.helpers({
+Template.contextMenu.helpers({
    possibleMoves : function() {
+        test = ["Move","Rotate"];
        console.log("current game is ");
-       console.log(currentGame);
-       return currentGame.moveArray;
+       console.log(Session.currentGame);
+       return test;
+//       return currentGame.moveArray;
     },
     currentTurn: function() {
         return Session.get('currentTurn');
