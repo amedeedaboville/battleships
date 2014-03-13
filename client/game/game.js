@@ -31,7 +31,7 @@ Deps.autorun(function (){
 
 Template.contextMenu.helpers({
    possibleMoves : function() {
-        test = ["Move","Rotate"];
+       test = ["Move","Rotate"];
        console.log("current game is ");
        console.log(Session.currentGame);
        return test;
