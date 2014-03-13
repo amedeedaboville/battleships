@@ -58,23 +58,15 @@
   background-color: pink;
 }
 
-.p1ship {
-  background-color: firebrick;
-}
-
-.p2ship {
-  background-color: dodgerblue;
-}
-
 .ship {
   background-color: black;
 }
 
-.ship .challenger {
+.ship.challenger {
   background-color: firebrick;
 }
 
-.ship .opponent {
+.ship.opponent {
   background-color: dodgerblue;
 }
 
