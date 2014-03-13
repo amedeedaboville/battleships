@@ -58,10 +58,6 @@
   background-color: pink;
 }
 
-.ship {
-  background-color: black;
-}
-
 .ship.challenger {
   background-color: firebrick;
 }
