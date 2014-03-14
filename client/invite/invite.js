@@ -20,6 +20,11 @@ Deps.autorun(function() {
 
     inviteCollection.find({$or: [{opponent : Meteor.userId()}, {challenger: Meteor.userId()} ]}).observeChanges({
         changed: function(id, fields) {
+            console.log('indeed here');
+            console.log(fields);
+            console.log(fields.gameID);
+            console.log(fields.gameID !=0);
+
             if (fields.gameID != 0) {
 
                 //remove everything from inviteCollection
@@ -27,6 +32,7 @@ Deps.autorun(function() {
 
                 $('#mapModal').modal();
                 currentGame = gameCollection.find({_id: fields.gameID}).fetch()[0];
+                console.log(currentGame);
                 Session.set('currentGame', currentGame);
 
             }
