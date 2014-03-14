@@ -13,6 +13,14 @@ Template.grid.rendered = function(){
 }
 
 Template.grid.events({
+    'click .square' : function(evt) {
+        var action = Session.get('selectedAction');
+        if(action != undefined && action !== "") {
+            console.log("completing action " + action);
+            Meteor.call(action, Session.get('selectedShip'), evt.target.position);
+        }
+        Session.set('selectedAction', "");
+    },
     'click .square.ship.challenger' : function (evt) {
         g = Session.get('currentGame');
         if (g.challenger == Meteor.userId()){
