@@ -4,7 +4,7 @@ Deps.autorun(function() {
         added: function(id, fields) {
             user = Meteor.users.findOne(fields.challenger)
             if (user != undefined){
-                var notification = $.UIkit.notify(user.username + " challenges to a duel!<button id='acceptInviteButton' class='btn btn-default left-buffer right-buffer'>Ok</button><button id='cancelInviteButton' class='btn btn-default right-buffer'>cancel</button>",
+                var notification = $.UIkit.notify(user.username + " challenges you to a battleship duel!<button id='acceptInviteButton' class='btn btn-default left-buffer right-buffer'>Ok</button><button id='cancelInviteButton' class='btn btn-default right-buffer'>cancel</button>",
                     {status: 'info'});
                 $('#acceptInviteButton').click(function(){
                     inviteCollection.update({_id: id}, {$set: {accepted: true}});
@@ -20,13 +20,19 @@ Deps.autorun(function() {
 
     inviteCollection.find({$or: [{opponent : Meteor.userId()}, {challenger: Meteor.userId()} ]}).observeChanges({
         changed: function(id, fields) {
-            if (fields.gameID != 0) {
+            console.log('indeed here');
+            console.log(id);
+            console.log(fields.gameID);
+            console.log(fields.gameID !=0 && fields.gameID != undefined);
+
+            if (fields.gameID != 0 && fields.gameID != undefined) {
 
                 //remove everything from inviteCollection
                 Meteor.call("removeAllInvites", Meteor.userId(), Meteor.userId())
 
                 $('#mapModal').modal();
                 currentGame = gameCollection.find({_id: fields.gameID}).fetch()[0];
+                console.log(currentGame);
                 Session.set('currentGame', currentGame);
 
             }
@@ -39,6 +45,9 @@ Deps.autorun(function() {
                 if(fields.mapAccepted) {
                     Session.set('inGame', true);
                     $('#mapModal').modal('hide');
+                }
+                else {
+                    Session.set('currentGame', gameCollection.findOne({_id:id}));
                 }
             },
             removed: function(id, collection){

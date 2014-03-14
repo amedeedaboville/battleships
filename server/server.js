@@ -40,12 +40,12 @@ inviteStream.permissions.write(function(eventName) {
     return true;
 });
 
-Meteor.publish('game', function(id) {
-    return gameCollection.find({});
+Meteor.publish('games', function(id) {
+    return gameCollection.find({$or: [{opponent : id}, {challenger: id} ]});
 });
 
-Meteor.publish('invite', function(id){
-    return inviteCollection.find({opponent : id});
+Meteor.publish('invites', function(id) {
+    return inviteCollection.find({$or: [{opponent : id}, {challenger: id} ]});
 });
 
 inviteCollection.find({}).observe({
@@ -53,18 +53,16 @@ inviteCollection.find({}).observe({
         if (oldDocument.accepted) {
             var aGame = new Game(oldDocument.challenger, oldDocument.opponent);
             var gameID;
-            console.log(oldDocument.gameID);
-            console.log('indeed');
-            console.log(oldDocument.gameID == 0);
-            if (oldDocument.gameID == 0){
+            if (oldDocument.gameID == 0) {
                 gameID = gameCollection.insert(aGame);
+                console.log("done creating game with ID " + gameID);
             }
-            else{
+            else {
                 gameID = oldDocument.gameID;
             }
 
-            console.log("done creating game");
             inviteCollection.update({_id: oldDocument._id}, {$set: {gameID: gameID}});
+            console.log("updated invitation with id " + oldDocument._id);
         }
     }
 });
