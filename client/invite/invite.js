@@ -21,11 +21,11 @@ Deps.autorun(function() {
     inviteCollection.find({$or: [{opponent : Meteor.userId()}, {challenger: Meteor.userId()} ]}).observeChanges({
         changed: function(id, fields) {
             console.log('indeed here');
-            console.log(fields);
+            console.log(id);
             console.log(fields.gameID);
-            console.log(fields.gameID !=0);
+            console.log(fields.gameID !=0 && fields.gameID != undefined);
 
-            if (fields.gameID != 0) {
+            if (fields.gameID != 0 && fields.gameID != undefined) {
 
                 //remove everything from inviteCollection
                 Meteor.call("removeAllInvites", Meteor.userId(), Meteor.userId())
@@ -44,8 +44,10 @@ Deps.autorun(function() {
             changed: function(id, fields) {
                 if(fields.mapAccepted) {
                     Session.set('inGame', true);
-                    Session.set('currentGame', gameCollection.findOne({_id:id}));
                     $('#mapModal').modal('hide');
+                }
+                else {
+                    Session.set('currentGame', gameCollection.findOne({_id:id}));
                 }
             },
             removed: function(id, collection){
