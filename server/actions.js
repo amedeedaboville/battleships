@@ -40,12 +40,14 @@ Meteor.methods({
     fireCannon: function(gameID, ship, targetPosition){
         console.log("Got request in game" +gameID+" to KILL A MOTHERFUCKER AT POSITION "+targetPosition+" WITH A FUCKING CANNON AUUAARRGGHHHH")
             var game = gameCollection.findOne({_id:gameID});
+            var map = game.map;
+                            map.__proto__ = new Map();
             map.grid.__proto__ = new Grid();
             if (game){
-                map.__proto__ = new Map();
                 map.fireCannon(ship, targetPosition);
 
                 console.log("done with the map operation.");
+                game.map.shipDictionary[ship.id] = ship;
 
                 gameCollection.update({_id:gameID}, game);
                 console.log("done updating game, square should be shot")
