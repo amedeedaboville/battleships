@@ -20,7 +20,7 @@ Meteor.methods({
     },
     turnShip: function(gameID, ship, position) {
         console.log("Got request to turn ship.");
-    }
+    },
     fireCannon: function(gameID, ship, targetPosition){
         console.log("Got request in game" +gameID+" to KILL A MOTHERFUCKER AT POSITION "+targetPosition+" WITH A FUCKING CANNON AUUAARRGGHHHH")
             var game = gameCollection.findOne({_id:gameID});
