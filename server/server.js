@@ -44,8 +44,7 @@ Meteor.publish('games', function(id) {
     return gameCollection.find({$or: [{opponent : id}, {challenger: id} ]});
 });
 
-Meteor.publish('invites', function(id){
-    console.log(id);
+Meteor.publish('invites', function(id) {
     return inviteCollection.find({$or: [{opponent : id}, {challenger: id} ]});
 });
 
@@ -54,18 +53,16 @@ inviteCollection.find({}).observe({
         if (oldDocument.accepted) {
             var aGame = new Game(oldDocument.challenger, oldDocument.opponent);
             var gameID;
-            console.log(oldDocument.gameID);
-            console.log('indeed');
-            console.log(oldDocument.gameID == 0);
-            if (oldDocument.gameID == 0){
+            if (oldDocument.gameID == 0) {
                 gameID = gameCollection.insert(aGame);
-                console.log("done creating game");
+                console.log("done creating game with ID " + gameID);
             }
-            else{
+            else {
                 gameID = oldDocument.gameID;
             }
 
             inviteCollection.update({_id: oldDocument._id}, {$set: {gameID: gameID}});
+            console.log("updated invitation with id " + oldDocument._id);
         }
     }
 });
