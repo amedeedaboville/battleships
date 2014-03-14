@@ -40,6 +40,8 @@ Template.contextMenu.helpers({
 Template.contextMenu.events({
     'click .actionButton' : function(evt) {
         var action = evt.target.id;
+        console.log('selected action:');
+        console.log(action);
         Session.set('selectedAction', action);
     }
 });

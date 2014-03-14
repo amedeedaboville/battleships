@@ -4,7 +4,7 @@ Deps.autorun(function() {
         added: function(id, fields) {
             user = Meteor.users.findOne(fields.challenger)
             if (user != undefined){
-                var notification = $.UIkit.notify(user.username + " challenges you to a battleship duel!<button id='acceptInviteButton' class='btn btn-default left-buffer right-buffer'>Ok</button><button id='cancelInviteButton' class='btn btn-default right-buffer'>cancel</button>",
+                var notification = $.UIkit.notify(user.username + " challenged you to a battleship duel!<button id='acceptInviteButton' class='btn btn-default left-buffer right-buffer'>Ok</button><button id='cancelInviteButton' class='btn btn-default right-buffer'>cancel</button>",
                     {status: 'info'});
                 $('#acceptInviteButton').click(function(){
                     inviteCollection.update({_id: id}, {$set: {accepted: true}});
