@@ -20,10 +20,6 @@ Deps.autorun(function() {
 
     inviteCollection.find({$or: [{opponent : Meteor.userId()}, {challenger: Meteor.userId()} ]}).observeChanges({
         changed: function(id, fields) {
-            console.log('indeed here');
-            console.log(id);
-            console.log(fields.gameID);
-            console.log(fields.gameID !=0 && fields.gameID != undefined);
 
             if (fields.gameID != 0 && fields.gameID != undefined) {
 
