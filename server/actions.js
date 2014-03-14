@@ -9,10 +9,6 @@ var turnShip = function(gameID, ship, direction) {
             console.log("done with map operation")
             game.map.shipDictionary[ship.id] = ship;
             gameCollection.update({_id:gameID}, game);
-            //console.log(ship);
-            console.log("collection ship is");
-            console.log(gameCollection.findOne({_id:gameID}).map.shipDictionary[ship.id]);
-            //console.log(gameCollection.findOne({_id:gameID}).map.shipDictionary[ship.ip]);
         }
         else {
             console.log("Error game does not exist");
