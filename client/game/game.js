@@ -41,6 +41,5 @@ Template.contextMenu.events({
     'click .actionButton' : function(evt) {
         var action = evt.target.id;
         Session.set('selectedAction', action);
-        //Meteor.call(action, ship, position);
     }
 });

@@ -52,7 +52,17 @@ inviteCollection.find({}).observe({
     changed: function(oldDocument) {
         if (oldDocument.accepted) {
             var aGame = new Game(oldDocument.challenger, oldDocument.opponent);
-            var gameID = gameCollection.insert(aGame);
+            var gameID;
+            console.log(oldDocument.gameID);
+            console.log('indeed');
+            console.log(oldDocument.gameID == 0);
+            if (oldDocument.gameID == 0){
+                gameID = gameCollection.insert(aGame);
+            }
+            else{
+                gameID = oldDocument.gameID;
+            }
+
             console.log("done creating game");
             inviteCollection.update({_id: oldDocument._id}, {$set: {gameID: gameID}});
         }
@@ -67,6 +77,14 @@ gameCollection.allow({
         }
         else {
             console.log("Denying update to document ");
+            return false;
+        }
+    },
+    remove: function(userId, doc) {
+        if (userId == doc.opponent || userId == doc.challenger){
+            return true;
+        }
+        else{
             return false;
         }
     }

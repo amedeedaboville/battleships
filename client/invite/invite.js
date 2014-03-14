@@ -11,6 +11,8 @@ Deps.autorun(function() {
                 });
                 $('#cancelInviteButton').click(function(){
                     notification.close();
+                    //remove everything from inviteCollection
+                    Meteor.call("removeAllInvites", Meteor.userId(), Meteor.userId())
                 });
             }
         }
@@ -36,6 +38,13 @@ Deps.autorun(function() {
             changed: function(id, fields) {
                 if(fields.mapAccepted) {
                     Session.set('inGame', true);
+                    $('#mapModal').modal('hide');
+                }
+            },
+            removed: function(id, collection){
+                if (Session.get('currentGame')._id == id){
+                    Session.set('currentGame', undefined);
+                    Session.set('inGame', false);
                     $('#mapModal').modal('hide');
                 }
             }
