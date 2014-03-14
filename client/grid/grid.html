@@ -1,7 +1,7 @@
 <template name="grid">
   {{#each rows}}
     {{#each this}}
-    <div class="square {{this.css}}" {{this.attributes}}>
+    <div class="square {{this.css}}" {{this.attributes}} {{this.visibility}}>
     </div>
     {{/each}}
   {{/each}}
