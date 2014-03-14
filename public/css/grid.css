@@ -17,6 +17,10 @@
     height: 560px;
 }
 
+.damagedSquare {
+  background: orange;
+}
+
 .modalSquare {
   position: relative;
   min-height: 1px;
