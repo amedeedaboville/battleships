@@ -12,6 +12,9 @@ Template.lobby.events({
     },
     'click .inviteButton' : function (evt) {
         inviteCollection.insert({challenger: Meteor.userId(), opponent: evt.target.id, gameID: 0});
+    },
+    'click .someButton' : function (evt){
+        console.log('lol');
     }
 });
 

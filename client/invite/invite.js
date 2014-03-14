@@ -2,19 +2,17 @@ Deps.autorun(function() {
     Meteor.subscribe('invites', Meteor.userId());
     inviteCollection.find({opponent : Meteor.userId()}).observeChanges({ //Hotfix for only showing when you're challenged to
         added: function(id, fields) {
-            var inviteID = id;
             user = Meteor.users.findOne(fields.challenger)
             if (user != undefined){
-                new ui.Confirmation({message: user.username + ' wants to challenge you to a battleship duel!'}).show(function(accept){
-                    if (accept) {
-                        this.hide();
-                        inviteCollection.update({_id: inviteID}, {$set: {accepted: true}});
-                    }
-                    else {
-                        inviteCollection.update({_id: inviteID}, {$set: {accepted: false}});
-                    }
-                }).hide(4000);
-            };
+                var notification = $.UIkit.notify(user.username + " challenges to a duel!<button id='acceptInviteButton' class='btn btn-default left-buffer right-buffer'>Ok</button><button id='cancelInviteButton' class='btn btn-default right-buffer'>cancel</button>",
+                    {status: 'info'});
+                $('#acceptInviteButton').click(function(){
+                    inviteCollection.update({_id: id}, {$set: {accepted: true}});
+                });
+                $('#cancelInviteButton').click(function(){
+                    notification.close();
+                });
+            }
         }
     });
 
@@ -25,10 +23,10 @@ Deps.autorun(function() {
                 //remove everything from inviteCollection
                 Meteor.call("removeAllInvites", Meteor.userId(), Meteor.userId())
 
-                //accept the invite
                 $('#mapModal').modal();
                 currentGame = gameCollection.find({_id: fields.gameID}).fetch()[0];
                 Session.set('currentGame', currentGame);
+
             }
         }
     });
