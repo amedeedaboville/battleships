@@ -1,5 +1,9 @@
 currentGame = false;//new Game(Meteor.userId());
 Deps.autorun(function (){
+    if(Session.get('lol') != undefined){
+        console.log();
+    }
+
     Meteor.subscribe('games', Meteor.userId());
     //var currentGame = gameCollection.findOne({active: true}, {});
     if (currentGame) {

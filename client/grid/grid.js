@@ -49,7 +49,7 @@ Template.grid.events({
         if(action != undefined && action !== "") {
             var position = JSON.parse($(evt.target).attr('position'))
     console.log("completing action " + action + " with position " + position);
-Meteor.call(action, Session.get('currentGame')._id, Session.get('selectedShip'), position);
+    Meteor.call(action, Session.get('currentGame')._id, Session.get('selectedShip'), position, function(error,result){if(result)$.UIkit.notify('Cruiser fired a cannonShot at position (' + position[0] + "," + position[1]+')')});
         }
         Session.set('selectedAction', "");
     },

@@ -55,9 +55,11 @@ Meteor.methods({
 
                 gameCollection.update({_id:gameID}, game);
                 console.log("done updating game, square should be shot")
+                return true;
             } else {
                 console.log("Error game does not exist");
                 console.log(game);
+                return false;
             }
     }
 });
