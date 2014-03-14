@@ -42,7 +42,7 @@ Meteor.methods({
         turnShip(gameID, ship, "clockwise");
     },
     fireCannon: function(gameID, ship, targetPosition){
-        console.log("Got request in game" +gameID+" to KILL A MOTHERFUCKER AT POSITION "+targetPosition+" WITH A FUCKING CANNON AUUAARRGGHHHH")
+        console.log("Got request in game" +gameID+" to shoot "+targetPosition+" a cannon")
             var game = gameCollection.findOne({_id:gameID});
             var map = game.map;
                             map.__proto__ = new Map();
