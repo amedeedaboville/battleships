@@ -10,27 +10,32 @@ Template.grid.helpers({
 
 Template.grid.rendered = function(){
     console.log('Grid rendered');
-    var m = Session.get('currentGame').map;
-    m.__proto__ = new Map();
-    var visibleSquares;
+    if (Session.get('currentGame') != undefined)
+    {
+        var m = Session.get('currentGame').map;
+        m.__proto__ = new Map();
+        var visibleSquares;
 
-    if (Meteor.userId() == Session.get('currentGame').challenger){
-        visibleSquares = m.getVisibleSquares('challenger');
-    }
+        if (Meteor.userId() == Session.get('currentGame').challenger){
+            visibleSquares = m.getVisibleSquares('challenger');
+        }
 
-    if (Meteor.userId() == Session.get('currentGame').opponent){
-        visibleSquares = m.getVisibleSquares('opponent');
-    }
+        if (Meteor.userId() == Session.get('currentGame').opponent){
+            visibleSquares = m.getVisibleSquares('opponent');
+        }
 
-    keys = Object.keys(visibleSquares);
-    for (var i=0; i < keys.length; i++){
-        keyvar = JSON.parse(keys[i]);
-        var squareVisible = m.grid.squares[keyvar[0]][keyvar[1]];
-        console.log(squareVisible);
-        squareVisible.visibility = "id=paco";
-        console.log(squareVisible);
+        keys = Object.keys(visibleSquares);
+        for (var i=0; i < keys.length; i++){
+            keyvar = JSON.parse(keys[i]);
+            var squareVisible = m.grid.squares[keyvar[0]][keyvar[1]];
+            squareVisible = new Square();
+            squareVisible
+            console.log(squareVisible);
+            squareVisible.visibility = "id=visible";
+            console.log(squareVisible);
+        }
+        console.log('Grid rendered YO!');
     }
-    console.log('Grid rendered YO!');
 }
 
 Template.grid.events({
