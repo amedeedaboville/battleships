@@ -38,6 +38,7 @@ Deps.autorun(function() {
             changed: function(id, fields) {
                 if(fields.mapAccepted) {
                     Session.set('inGame', true);
+                    Session.set('currentGame', gameCollection.findOne({_id:id}));
                     $('#mapModal').modal('hide');
                 }
             },
