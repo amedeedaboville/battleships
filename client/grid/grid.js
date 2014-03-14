@@ -30,11 +30,8 @@ Template.grid.rendered = function(){
             var squareVisible = m.grid.squares[keyvar[0]][keyvar[1]];
             squareVisible = new Square();
             squareVisible
-            console.log(squareVisible);
             squareVisible.visibility = "id=visible";
-            console.log(squareVisible);
         }
-        console.log('Grid rendered YO!');
     }
 }
 
