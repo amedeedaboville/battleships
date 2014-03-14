@@ -18,8 +18,24 @@ Meteor.methods({
             console.log(game);
         }
     },
-    turnShip: function(gameID, ship, position) {
-        console.log("Got request to turn ship.");
+    turnShip: function(gameID, ship, direction) {
+        console.log("Got request to turn " + ship.id + " in game " + gameID + " in direction " + direction);
+        var game = gameCollection.findOne({_id:gameID});
+        var map = game.map;
+        map.__proto__ = new Map();
+        map.grid.__proto__ = new Grid();
+        if(game) {
+            map.turnShip(ship, direction);
+
+            console.log("done with map operation")
+
+            game.map.shipDictionary[ship.id] = ship;
+            gameCollection.update({_id:gameID}, game);
+        }
+        else {
+            console.log("Error game does not exist");
+            console.log(game);
+        }
     }
 });
 
