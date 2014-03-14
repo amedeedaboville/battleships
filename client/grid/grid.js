@@ -16,8 +16,9 @@ Template.grid.events({
     'click .square' : function(evt) {
         var action = Session.get('selectedAction');
         if(action != undefined && action !== "") {
-            console.log("completing action " + action);
-            Meteor.call(action, Session.get('selectedShip'), evt.target.position);
+            var position = JSON.parse($(evt.target).attr('position'))
+            console.log("completing action " + action + " with position " + position);
+            Meteor.call(action, currentGame._id, Session.get('selectedShip'), position);
         }
         Session.set('selectedAction', "");
     },
