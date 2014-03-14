@@ -35,8 +35,7 @@ Template.modal.events({
     },
 
     'click #closeMapButton' : function () {
-        //emit to stream that we are closing the modals
-        //serverStream.emit('closeMap', Session.get("enemy"), Meteor.userId());
+        gameCollection.remove({_id: Session.get('currentGame')._id})
     },
 
 });
