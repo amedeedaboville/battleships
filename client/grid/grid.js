@@ -37,8 +37,7 @@ Template.grid.rendered = function(){
             keyvar = JSON.parse(keys[i]);
             var squareVisible = m.grid.squares[keyvar[0]][keyvar[1]];
             squareVisible = new Square();
-            squareVisible
-                squareVisible.visibility = "id=visible";
+            squareVisible.visibility = "id=visible";
         }
     }
 }
