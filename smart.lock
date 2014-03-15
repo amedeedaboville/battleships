@@ -5,7 +5,8 @@
       "streams": {},
       "user-status": {},
       "bootstrap-3": {},
-      "uikit": {}
+      "uikit": {},
+      "three.js": {}
     },
     "packages": {
       "streams": {
@@ -20,13 +21,18 @@
       },
       "bootstrap-3": {
         "git": "https://github.com/mangasocial/meteor-bootstrap-3.git",
-        "tag": "v3.1.0-1",
-        "commit": "329dccb08bfc18c635676dea600ac9953162cda9"
+        "tag": "v3.1.1-1",
+        "commit": "63dd38968828bb8963636df93e9a1c45e2dfe67e"
       },
       "uikit": {
         "git": "https://github.com/qasz/meteor-uikit.git",
         "tag": "v1.0.0",
         "commit": "407ace8ab900d622b635651510f0721368317447"
+      },
+      "three.js": {
+        "git": "https://github.com/nozpheratu/three-meteor",
+        "tag": "v0.0.1",
+        "commit": "a437d4e0314b055b19cfc60fa9e1ddfac844a0d9"
       }
     }
   }
