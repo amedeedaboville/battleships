@@ -23,16 +23,14 @@ Template.modal.events({
 
     'click #acceptMapButton' : function (evt) {
         //By the time we are on the accept map modal, currentGame exists.
-        gameCollection.update({_id: Session.get('currentGame')._id},{$set: {mapAccepted: true}});
-        //inviteCollection.update({_id: inviteID}, {$set: {accepted: true}});
-        //THIS needs to go into inviteCollection.on... observe update
-        //$('#mapModal').modal('hide');
-        //inviteCollection.update({}, {$inc: 'accepted'});
+        var currentGame = gameCollection.find().fetch()[0];
+        gameCollection.update({_id: currentGame._id},{$set: {mapAccepted: true}});
 
     },
 
     'click #closeMapButton' : function () {
-        gameCollection.remove({_id: Session.get('currentGame')._id})
+        var currentGame = gameCollection.find().fetch()[0];
+        gameCollection.remove({_id: currentGGame._id})
     },
 
 });

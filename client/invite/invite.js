@@ -25,35 +25,22 @@ Deps.autorun(function() {
 
                 //remove everything from inviteCollection
                 Meteor.call("removeAllInvites", Meteor.userId(), Meteor.userId())
-
                 $('#mapModal').modal();
-                currentGame = gameCollection.find({_id: fields.gameID}).fetch()[0];
-                console.log(currentGame);
-                Session.set('currentGame', currentGame);
-
             }
         }
     });
 
-    if(Session.get('currentGame')) {
-        gameCollection.find({_id:Session.get('currentGame')._id}).observeChanges({
+        gameCollection.find().observeChanges({
             changed: function(id, fields) {
                 if(fields.mapAccepted) {
                     Session.set('inGame', true);
                     $('#mapModal').modal('hide');
                 }
-                else {
-                    Session.set('currentGame', gameCollection.findOne({_id:id}));
-                }
             },
             removed: function(id, collection){
-                if (Session.get('currentGame')._id == id){
-                    Session.set('currentGame', undefined);
                     Session.set('inGame', false);
                     $('#mapModal').modal('hide');
-                }
             }
         });
-    }
 
 });
