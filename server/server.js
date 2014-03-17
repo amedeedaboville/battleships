@@ -3,10 +3,16 @@
     return Meteor.methods({
 
         removeAllInvites: function(aOpponent, aChallanger) {
+            console.log(aOpponent);
+            console.log(this.userId);
 
         return inviteCollection.remove({$or: [{opponent :aOpponent}, {challenger: aChallanger} ]});
 
-    }
+    },
+
+        removeAllGames: function(){
+            return gameCollection.remove({});
+        }
 
 });
 
@@ -71,6 +77,7 @@ gameCollection.allow({
     update: function(userId, doc, fieldNames, modifier) {
         if(fieldNames[0] == 'mapAccepted'){
             console.log("Accepting update to document ");
+            console.log(doc);
             return true;
         }
         else {

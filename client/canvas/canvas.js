@@ -1,20 +1,29 @@
 Canvas = function(){
 
   this.container;
-  this.camera = new THREE.PerspectiveCamera( 22, window.innerWidth / (window.innerHeight), 1, 27000 )
+  this.camera;
   this.renderer;
+  this.pointerDetectRay;
   this.projector, this.plane, this.scene;
   this.mouse2D, this.mouse3D, this.raycaster, this.objectHovered;
   this.isMouseDown = false;
-  this.onMouseDownPosition = new THREE.Vector2(), this.onMouseDownPhi = 135, this.onMouseDownTheta = 0;
-  this.radius = 1800, this.theta = 0, this.phi = 135;
+  this.onMouseDownPosition = new THREE.Vector2(), this.onMouseDownPhi = 135 , this.onMouseDownTheta = 0;
+  this.radius = 1500, this.theta = 0, this.phi = 35;
   this.cameraTarget = new THREE.Vector3( 0, 20, 0 );
   this.ships = new THREE.Object3D();
+  this.objectHovered;
   var FURTHEST = 4500;
   var CLOSEST = 1000;
+  var RENDER_HEIGHT = window.innerHeight; 
+  var RENDER_WIDTH = window.innerWidth;
 
 //  drawCanvas();
-  this.drawCanvas = function() {
+  this.drawCanvas = function(shipDictionary) {
+    console.log($(window).width())
+    console.log($(window).height())
+    console.log($('#myChart').innerHeight())
+    console.log($('#myChart').height())
+    this.camera = new THREE.PerspectiveCamera( 22, RENDER_WIDTH / RENDER_HEIGHT, 1, 27000 )
     this.camera.position.x = this.radius * Math.sin( this.theta * Math.PI / 360 ) * Math.cos( this.phi * Math.PI / 360 )
     this.camera.position.y = this.radius * Math.sin( this.phi * Math.PI / 360 )
     this.camera.position.z =this.radius * Math.cos( this.theta * Math.PI / 360 ) * Math.cos( this.phi * Math.PI / 360 )
@@ -40,34 +49,42 @@ Canvas = function(){
     this.scene.add( line )
 
     // Plane
-    this.projector = new THREE.Projector()
-
-    this.plane = new THREE.Mesh( new THREE.PlaneGeometry( 10000, 10000 ), new THREE.MeshBasicMaterial({wireframe:true}) )
+    this.plane = new THREE.Mesh( new THREE.PlaneGeometry( 750, 750 ), new THREE.MeshBasicMaterial({wireframe:true}) )
     this.plane.rotation.x = - Math.PI / 2
     this.plane.visible = true
+    this.plane.name = 'plane'
     this.scene.add( this.plane )
 
-    this.mouse2D = new THREE.Vector3( 0, 10000, 0.5 )
+    this.raycaster = new THREE.Raycaster();
+    this.raycaster.ray.direction.set( 0,0,0);
+    this.projector = new THREE.Projector();
+    this.mouse2D = new THREE.Vector3( 0, 0, 0 );
 
-    for (i=10;i<20;i++){
-      var s = new Ship3D(0, i, 5);
+
+    //addShips
+    this.addShips(shipDictionary);
+
+    console.log($('#myChart')[0]);
+    this.renderer = new THREE.WebGLRenderer();//$('#myChart')[0]);
+    this.renderer.setSize( RENDER_WIDTH-40, RENDER_HEIGHT-180-5)
+    console.log(this.renderer);
+
+    $('#myChart').append(this.renderer.domElement)
+    this.render();
+}
+
+  this.addShips = function(shipDictionary){
+    for (ship in shipDictionary){
+      var start = [shipDictionary[ship].sternPosition[0],shipDictionary[ship].sternPosition[1]];
+      var s = new Ship3D(start[1], start[0], shipDictionary[ship].shipLength, shipDictionary[ship].name, shipDictionary[ship].orientation);
+
       s.createShip();
+      s.ship.shipInfo = shipDictionary[ship];
       this.ships.add(s.ship);
-      var ss = new Ship3D(25, i, 5);
-      ss.createShip()
-      this.ships.add(ss.ship);
     }
     this.scene.add(this.ships);
+  }
 
-
-    this.renderer = new THREE.WebGLRenderer()
-    this.renderer.setSize( window.innerWidth/2.7, window.innerHeight/2 )
-
-    $("#myChart").append(this.renderer.domElement)
-    this.render();
-
-    window.addEventListener( 'resize', onWindowResize, false )
-}
 
   this.zoom = function(delta) {
     var origin = {x: 0, y: 0, z: 0}
@@ -80,34 +97,22 @@ Canvas = function(){
     if (delta > 0 && tooFar) return
     if (delta < 0 && tooClose) return
    this.radius = distance // for mouse drag calculations to be correct
-    this.camera.translateZ( delta )
+    this.camera.translateZ( delta)
     this.camera.updateMatrixWorld(true);
     this.render()
 
   }
-//    if ( window.location.hash ) buildFromHash()
-
   this.render = function() {
         this.camera.lookAt( this.cameraTarget );
-        //console.log(mouse2D.clone());
         this.raycaster = this.projector.pickingRay( this.mouse2D.clone(), this.camera )
         this.renderer.render( this.scene, this.camera );
     }
 
-
-  function onWindowResize() {
-
-    this.camera.aspect = window.innerWidth / window.innerHeight
-   this.camera.updateProjectionMatrix()
-
-    this.renderer.setSize( window.innerWidth, window.innerHeight )
-    this.interact()
-  }
     this.onMouseMove = function( event ) {
 
     event.preventDefault()
     if ( this.isMouseDown ) {
-    $('body').css( 'cursor', 'all-scroll' );
+    $('body').css( 'cursor', 'all-scroll' ); 
 
       this.theta = - ( ( event.clientX - this.onMouseDownPosition.x ) * 0.5 ) + this.onMouseDownTheta
       this.phi = ( ( event.clientY - this.onMouseDownPosition.y ) * 0.5 ) + this.onMouseDownPhi
@@ -118,33 +123,52 @@ Canvas = function(){
       this.camera.position.y =this.radius * Math.sin( this.phi * Math.PI / 360 )
       this.camera.position.z =this.radius * Math.cos( this.theta * Math.PI / 360 ) * Math.cos( this.phi * Math.PI / 360 )
       this.camera.updateMatrix()
+      this.camera.lookAt( this.cameraTarget );
 
     }
 
-    this.mouse2D.x = ( event.clientX / window.innerWidth ) * 2 - 1
-    this.mouse2D.y = - ( event.clientY / window.innerHeight ) * 2 + 1
+    this.mouse2D.x = ( event.clientX / (RENDER_WIDTH) ) * 2 - 1;
+    this.mouse2D.y = - ( event.clientY / RENDER_HEIGHT ) * 2 + 1;
+    this.mouse2D.z = 0.5;
 
-
+        this.raycaster = this.projector.pickingRay( this.mouse2D.clone(), this.camera )
     this.interact()
     this.camera.updateMatrixWorld(true);
+  //      this.renderer.render( this.scene, this.camera );
     this.render()
   }
 
   this.onMouseDown = function( event ) {
-    event.preventDefault()
+    event.preventDefault();
     this.isMouseDown = true
     this.onMouseDownTheta = this.theta
     this.onMouseDownPhi = this.phi
-    this.onMouseDownPosition.x = event.clientX
+    this.onMouseDownPosition.x = event.clientX;
     this.onMouseDownPosition.y = event.clientY
   }
 
+  this.findParentShip = function(element){
+    if(element == undefined){
+      return undefined;
+    }
+
+    var parent = element.object;
+    while(parent != undefined)
+    {
+        if (parent.name.length != 0){
+          return parent;
+        }
+          parent = parent.parent;
+
+    }
+      return undefined;
+  }
 
   this.getIntersecting = function() {
-    var intersectable = this.scene.children.map(function(c) { if (c.isVoxel) return c.children[0]; return c; })
-    var intersections = this.raycaster.intersectObjects( intersectable )
+   // this.raycaster = this.projector.pickingRay( this.mouse2D.clone(), this.camera )
+    var intersections = this.raycaster.intersectObjects( this.scene.children, true )
     if (intersections.length > 0) {
-      var intersect = intersections[ 0 ].object.isBrush ? intersections[ 1 ] : intersections[ 0 ]
+      var intersect = this.findParentShip(intersections[1]);//only 1 ship ever intersects
       return intersect
     }
   }
@@ -153,72 +177,36 @@ Canvas = function(){
     if (typeof this.raycaster === 'undefined') return
 
     if ( this.objectHovered ) {
-      this.objectHovered.material.opacity = 1
+      this.objectHovered.traverse( function (node){
+        if (node.material){
+          node.material.opacity = 1;
+          node.material.transparent = true;
+        }
+      })
+
+      Session.set('selectedShip', this.objectHovered.shipInfo);
+
       this.objectHovered = null
     }
 
     var intersect = this.getIntersecting()
 
-//     if ( intersect ) {
-//       var normal = intersect.face.normal.clone()
-//       // normal.applyMatrix4( intersect.object.matrixRotationWorld )
-//       // var position = new THREE.Vector3().addVectors( intersect.point, normal )
-      
-//       // var newCube = [   Math.floor( position.x / 50 ), 
-//       //                   Math.floor( position.y / 50 ), 
-//       //                   Math.floor( position.z / 50 )]
-
-//       function updateBrush() {
-//         if (!isComplexBrush){
-//                 brush.position.x = Math.floor( position.x / 50 ) * 50 + 25*$("#hslider").slider("value")
-//                 brush.position.y = Math.floor( position.y / 50 ) * 50 + 25*$("#vslider").slider("value")//1 50 2 75 3 100
-//                 brush.position.z = Math.floor( position.z / 50 ) * 50 + 25*$("#zslider").slider("value")
-//             }
-            
-//         else{
-//                 complexBrush.position.x = Math.floor( position.x / 50 ) * 50 + 25//*$("#hslider").slider("value")
-//                 complexBrush.position.y = Math.floor( position.y / 50 ) * 50 + 25//*$("#vslider").slider("value")//1 50 2 75 3 100
-//                 complexBrush.position.z = Math.floor( position.z / 50 ) * 50 + 25//*$("#zslider").slider("value")
-//         }
-//       }
-
-//       if (isAltDown) {
-//         if (!brush.currentCube) {
-// //            brush.currentCube = newCube
-//         }
-//         if (brush.currentCube.join('') !== newCube.join('')) {
-//           if ( isShiftDown ) {
-//             if ( intersect.object !== plane ) {
-//                 //remove from saveData
-//             changeVoxelColor(intersect.object.parent, undefined)
-//               scene.remove( intersect.object.parent )
-//             }
-//           } else {
-//             addVoxel()
-//           }
-//         }
-//         updateBrush()
-//         return brush.currentCube = newCube
-//       } else if ( isShiftDown ) {
-//         if ( intersect.object !== plane ) {
-//           objectHovered = intersect.object
-//           changeVoxelColor(objectHovered.parent, undefined)
-//           objectHovered.material.opacity = 0.5
-//           return
-//         }
-//       } else {
-//         updateBrush()
-//         return
-//       }
-//     }
-    //brush.position.y = 22000
+    if ( intersect ) {
+      this.objectHovered = intersect;
+      this.objectHovered.traverse( function (node){
+        if (node.material){
+          node.material.opacity = 0.5; 
+          node.material.transparent = true;
+        }
+      })
+    }
   }
 
 
 
   this.onMouseUp = function( event ) {
     event.preventDefault()
-    this.isMouseDown = false
+    this.isMouseDown = false;
     $('body').css( 'cursor', 'auto' );
     this.onMouseDownPosition.x = event.clientX - this.onMouseDownPosition.x
     this.onMouseDownPosition.y = event.clientY - this.onMouseDownPosition.y
@@ -245,56 +233,5 @@ Canvas = function(){
 
    this.render()
   this.interact()
-  }
-
-  function onDocumentKeyDown( event ) {
-    switch( event.keyCode ) {
-      case 189: zoom(100); break
-      case 187: zoom(-100); break
-      // case 48: exports.setColor(0); break
-      // case 49: exports.setColor(1); break
-      // case 50: exports.setColor(2); break
-      // case 51: exports.setColor(3); break
-      // case 52: exports.setColor(4); break
-      // case 53: exports.setColor(5); break
-      // case 54: exports.setColor(6); break
-      // case 55: exports.setColor(7); break
-      // case 56: exports.setColor(8); break
-      // case 57: exports.setColor(9); break
-      // case 192: exports.setColor(10); break
-      //left arrow
-      case 37: console.log(this.camera); this.camera.translateX(100); break;//if (this.camera.position.x > 15) {this.camera.position.x-=15; this.camera.position.z+=15; } break;
-      case 65: console.log(this.camera.position.x); this.camera.position.x+=45; this.camera.updateMatrix(); break;//not yet working ~ish
-/*      //up arrow
-      case 38: if (this.camera.position.z > 15){ this.camera.position.z-=15; this.camera.position.x-=15; } break;
-      case 87: if (this.camera.position.z > 50) {this.camera.position.z-=50; } break;
-      //right arrow
-      case 39: if (this.camera.position.z > 15){this.camera.position.x+=15; this.camera.position.z-=15; } break;
-      case 68: if (this.camera.position.x >= 25){this.camera.position.x-=25; } break;
-      //down arrow
-      case 40: this.camera.position.z+=15; this.camera.position.x+=15; break;
-      case 83: this.camera.position.z+=50; break;
-     */ 
-      case 16: isShiftDown = true; break
-      case 17: isCtrlDown = true; break
-      case 18: isAltDown = true; break
-      
-      //firefox zoom
-      case 173: zoom(100); break
-      case 61: zoom(-100); break
-      default: console.log(event.keyCode)
-    }
-
-  }
-
-  function onDocumentKeyUp( event ) {
-
-    switch( event.keyCode ) {
-
-      case 16: isShiftDown = false; break
-      case 17: isCtrlDown = false; break
-      case 18: isAltDown = false; break
-
-    }
   }
 }

@@ -8,18 +8,18 @@
 </head>
 
 <body>
-  <div class="container">
     {{#if currentUser}}
-      {{> header}}
       {{#if isInGame}}
-      {{> game}}
+        {{> header}}
+        {{> game}}
       {{else}}
-      {{> lobby}}
-      {{/if}}
-    {{else}}
+        {{> header}}
+        {{> lobby}}
+    {{/if}}
+    
+    {{else}} 
       {{> loginPage}}
     {{/if}}
-  </div>
 </body>
 
 <template name="messages">

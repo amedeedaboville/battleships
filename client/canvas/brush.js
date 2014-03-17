@@ -1,5 +1,12 @@
-Brush = function Brush(z, x){
-    var cube = new THREE.CubeGeometry( 25, 25, 15, 1, 1, 1  );
+Brush = function Brush(z, x, cubeX, cubeY, cubeZ){
+    var cubeSizes;
+    if (cubeX){
+        var cubeSizes = [cubeX, cubeY, cubeZ];
+    }
+    else
+        var cubeSizes = [25,25,15];
+
+    var cube = new THREE.CubeGeometry( cubeSizes[0], cubeSizes[1], cubeSizes[2], 1, 1, 1  ) ;
     var brushMaterials = [
       new THREE.MeshBasicMaterial( { color: 0x000000, vertexColors: THREE.VertexColors, wireframe: true, wireframeLinewidth: 2 } ),
       new THREE.MeshBasicMaterial( { color: 0xb22222, vertexColors: THREE.VertexColors, wireframe: false, wireframeLinewidth: 4 } )

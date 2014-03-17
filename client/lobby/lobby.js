@@ -24,6 +24,7 @@ Template.modal.events({
     'click #acceptMapButton' : function (evt) {
         //By the time we are on the accept map modal, currentGame exists.
         var currentGame = gameCollection.find().fetch()[0];
+        console.log(currentGame);
         gameCollection.update({_id: currentGame._id},{$set: {mapAccepted: true}});
 
     },

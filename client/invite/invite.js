@@ -20,6 +20,7 @@ Deps.autorun(function() {
 
     inviteCollection.find({$or: [{opponent : Meteor.userId()}, {challenger: Meteor.userId()} ]}).observeChanges({
         changed: function(id, fields) {
+            console.log('invitation changed!');
 
             if (fields.gameID != 0 && fields.gameID != undefined) {
 
@@ -32,6 +33,7 @@ Deps.autorun(function() {
 
         gameCollection.find().observeChanges({
             changed: function(id, fields) {
+                console.log('game changed!');
                 if(fields.mapAccepted) {
                     Session.set('inGame', true);
                     $('#mapModal').modal('hide');

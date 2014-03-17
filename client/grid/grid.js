@@ -16,11 +16,17 @@ Template.grid.helpers({
     }
 });
 
-canvas = new Canvas();
+canvas = undefined;
 
 Template.grid.rendered = function(){
-    canvas.drawCanvas();
-    // var currentGame = gameCollection.find().fetch()[0];
+    canvas = new Canvas();
+    var currentGame = gameCollection.find().fetch()[0];
+    if (currentGame == undefined){
+        console.log('... *sighs');
+    }
+    else{
+        canvas.drawCanvas(currentGame.map.shipDictionary);
+    }
     // if (currentGame != undefined)
     // {
     //     var m = currentGame.map;
@@ -61,7 +67,7 @@ Template.grid.events({
     if (currentGame.challenger == Meteor.userId()){
         //get shipName from this square and find the ship
         var ship = currentGame.map.shipDictionary[this.shipName];
-        Session.set('selectedShip', ship)
+        Session.set('selectedShip', ship); 
     }
 
     else{
@@ -101,7 +107,7 @@ Template.grid.events({
     },
 
     'mousewheel canvas' : function (evt){
-        canvas.zoom(evt.wheelDeltaY/10);
+        canvas.zoom(evt.wheelDeltaY/6);
     }
 })
 

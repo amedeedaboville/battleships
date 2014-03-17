@@ -1,16 +1,7 @@
 <template name="game">
-<div id="gameui" class="container-fluid">
-  <div class="row">
-    <div class="col-md-2 right-buffer">
-        {{>contextMenu}}
-    </div>
-    <div class="col-md-7 well">
-        {{> grid}}
-    </div>
-    <div class="col-md-2">
-        {{>opponentMenu}}
-    </div>
-  </div>
+{{> grid}}
+<div id="contextMenu">
+{{> contextMenu}}
 </div>
 </template>
 
