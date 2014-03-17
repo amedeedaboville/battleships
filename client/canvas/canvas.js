@@ -11,19 +11,23 @@ Canvas = function(){
   this.radius = 1500, this.theta = 0, this.phi = 35;
   this.cameraTarget = new THREE.Vector3( 0, 20, 0 );
   this.ships = new THREE.Object3D();
+  this.shipDictionary;
+  this.corals = new THREE.Object3D();
+  this.coralArray;
   this.objectHovered;
-  var FURTHEST = 4500;
-  var CLOSEST = 1000;
-  var RENDER_HEIGHT = window.innerHeight; 
-  var RENDER_WIDTH = window.innerWidth;
+  this.FURTHEST = 4500;
+  this.CLOSEST = 1000;
+  this.RENDER_HEIGHT = window.innerHeight; 
+  this.RENDER_WIDTH = window.innerWidth;
+  this.directionVector = new THREE.Vector3();
 
 //  drawCanvas();
-  this.drawCanvas = function(shipDictionary) {
-    console.log($(window).width())
-    console.log($(window).height())
-    console.log($('#myChart').innerHeight())
-    console.log($('#myChart').height())
-    this.camera = new THREE.PerspectiveCamera( 22, RENDER_WIDTH / RENDER_HEIGHT, 1, 27000 )
+  this.drawCanvas = function(shipDictionary, coralArray) {
+    console.log('drawing canvas');
+    this.shipDictionary = shipDictionary;
+    this.coralArray = coralArray;
+
+    this.camera = new THREE.PerspectiveCamera( 22, this.RENDER_WIDTH / this.RENDER_HEIGHT, 1, 27000 )
     this.camera.position.x = this.radius * Math.sin( this.theta * Math.PI / 360 ) * Math.cos( this.phi * Math.PI / 360 )
     this.camera.position.y = this.radius * Math.sin( this.phi * Math.PI / 360 )
     this.camera.position.z =this.radius * Math.cos( this.theta * Math.PI / 360 ) * Math.cos( this.phi * Math.PI / 360 )
@@ -36,20 +40,20 @@ Canvas = function(){
 
     var geometry = new THREE.Geometry()
     for ( var i = - size; i <= size; i += step ) {
-      geometry.vertices.push( new THREE.Vector3( - size, 0, i ) )
-      geometry.vertices.push( new THREE.Vector3(   size, 0, i ) )
-      geometry.vertices.push( new THREE.Vector3( i, 0, - size ) )
-      geometry.vertices.push( new THREE.Vector3( i, 0,   size ) )
+      geometry.vertices.push( new THREE.Vector3( - size, 13, i ) )
+      geometry.vertices.push( new THREE.Vector3(   size, 13, i ) )
+      geometry.vertices.push( new THREE.Vector3( i, 13, - size ) )
+      geometry.vertices.push( new THREE.Vector3( i, 13,   size ) )
     }
 
-    var material = new THREE.LineBasicMaterial( { color: 0x000000, opacity: 0.2 } )
+    var material = new THREE.LineBasicMaterial( { color: 0x191970, linewidth: 2 } )
 
-    var line = new THREE.Line( geometry, material )
+    var line = new THREE.Line( geometry, material, THREE.LinePieces )
     line.type = THREE.LinePieces
     this.scene.add( line )
 
     // Plane
-    this.plane = new THREE.Mesh( new THREE.PlaneGeometry( 750, 750 ), new THREE.MeshBasicMaterial({wireframe:true}) )
+    this.plane = new THREE.Mesh( new THREE.CubeGeometry( 750, 750, 25 ), new THREE.MeshBasicMaterial({color:0x4169E1, wireframe:false, opacity: 0.9}) )
     this.plane.rotation.x = - Math.PI / 2
     this.plane.visible = true
     this.plane.name = 'plane'
@@ -60,14 +64,14 @@ Canvas = function(){
     this.projector = new THREE.Projector();
     this.mouse2D = new THREE.Vector3( 0, 0, 0 );
 
+    //addCorals
+    this.addCorals(coralArray);
 
     //addShips
     this.addShips(shipDictionary);
 
-    console.log($('#myChart')[0]);
     this.renderer = new THREE.WebGLRenderer();//$('#myChart')[0]);
-    this.renderer.setSize( RENDER_WIDTH-40, RENDER_HEIGHT-180-5)
-    console.log(this.renderer);
+    this.renderer.setSize( this.RENDER_WIDTH-40, this.RENDER_HEIGHT-180-5)
 
     $('#myChart').append(this.renderer.domElement)
     this.render();
@@ -75,30 +79,32 @@ Canvas = function(){
 
   this.addShips = function(shipDictionary){
     for (ship in shipDictionary){
-      var start = [shipDictionary[ship].sternPosition[0],shipDictionary[ship].sternPosition[1]];
-      var s = new Ship3D(start[1], start[0], shipDictionary[ship].shipLength, shipDictionary[ship].name, shipDictionary[ship].orientation);
-
-      s.createShip();
+      var s = new Ship3D();
+      s.fromShip(shipDictionary[ship]);
       s.ship.shipInfo = shipDictionary[ship];
       this.ships.add(s.ship);
     }
     this.scene.add(this.ships);
   }
 
+  this.addCorals = function(coralArray){
+    for (var i=0; i < coralArray.length;i++){
+      var c = new coral3D(coralArray[i][1],coralArray[i][0] )
+      this.corals.add(c.coral);
+    }
+    this.scene.add(this.corals);
+
+  }
 
   this.zoom = function(delta) {
     var origin = {x: 0, y: 0, z: 0}
     var distance = this.camera.position.distanceTo(origin)
-    console.log(distance);
-
-    console.log(this.camera.position);
     var tooFar = distance  > FURTHEST
     var tooClose = distance < CLOSEST
     if (delta > 0 && tooFar) return
     if (delta < 0 && tooClose) return
    this.radius = distance // for mouse drag calculations to be correct
     this.camera.translateZ( delta)
-    this.camera.updateMatrixWorld(true);
     this.render()
 
   }
@@ -107,45 +113,6 @@ Canvas = function(){
         this.raycaster = this.projector.pickingRay( this.mouse2D.clone(), this.camera )
         this.renderer.render( this.scene, this.camera );
     }
-
-    this.onMouseMove = function( event ) {
-
-    event.preventDefault()
-    if ( this.isMouseDown ) {
-    $('body').css( 'cursor', 'all-scroll' ); 
-
-      this.theta = - ( ( event.clientX - this.onMouseDownPosition.x ) * 0.5 ) + this.onMouseDownTheta
-      this.phi = ( ( event.clientY - this.onMouseDownPosition.y ) * 0.5 ) + this.onMouseDownPhi
-
-      this.phi = Math.min( 135, Math.max( 0, this.phi ) )
-
-      this.camera.position.x =this.radius * Math.sin( this.theta * Math.PI / 360 ) * Math.cos( this.phi * Math.PI / 360 )
-      this.camera.position.y =this.radius * Math.sin( this.phi * Math.PI / 360 )
-      this.camera.position.z =this.radius * Math.cos( this.theta * Math.PI / 360 ) * Math.cos( this.phi * Math.PI / 360 )
-      this.camera.updateMatrix()
-      this.camera.lookAt( this.cameraTarget );
-
-    }
-
-    this.mouse2D.x = ( event.clientX / (RENDER_WIDTH) ) * 2 - 1;
-    this.mouse2D.y = - ( event.clientY / RENDER_HEIGHT ) * 2 + 1;
-    this.mouse2D.z = 0.5;
-
-        this.raycaster = this.projector.pickingRay( this.mouse2D.clone(), this.camera )
-    this.interact()
-    this.camera.updateMatrixWorld(true);
-  //      this.renderer.render( this.scene, this.camera );
-    this.render()
-  }
-
-  this.onMouseDown = function( event ) {
-    event.preventDefault();
-    this.isMouseDown = true
-    this.onMouseDownTheta = this.theta
-    this.onMouseDownPhi = this.phi
-    this.onMouseDownPosition.x = event.clientX;
-    this.onMouseDownPosition.y = event.clientY
-  }
 
   this.findParentShip = function(element){
     if(element == undefined){
@@ -162,6 +129,18 @@ Canvas = function(){
 
     }
       return undefined;
+  }
+
+  this.translateShip = function(name,x,z){
+    if(x)
+      this.getShip(name).translateX(x);
+    if(z)
+      this.getShip(name).translateZ(z);
+    this.render();
+  }
+
+  this.getShip = function(shipName){
+    return this.ships.getObjectByName(shipName);//this.ships;
   }
 
   this.getIntersecting = function() {
@@ -184,17 +163,30 @@ Canvas = function(){
         }
       })
 
-      Session.set('selectedShip', this.objectHovered.shipInfo);
-
-      this.objectHovered = null
+      this.objectHovered = null;
     }
 
     var intersect = this.getIntersecting()
 
     if ( intersect ) {
+
       this.objectHovered = intersect;
+
+      // if (this.objectHovered != undefined)
+      // {
+      //   if (Session.get('selectedShip')){
+      //    var orientation = Session.get('selectedShip').orientation; 
+      //     if (this.objectHovered.name == Session.get('selectedShip').id){
+      //       this.directionVector.setX(orientation[1]);;
+      //       this.directionVector.setZ(orientation[0]);
+      //      this.objectHovered.translateOnAxis(this.directionVector,10);
+      //     }
+      //   }
+
+      // }
+
       this.objectHovered.traverse( function (node){
-        if (node.material){
+      if (node.material){
           node.material.opacity = 0.5; 
           node.material.transparent = true;
         }
@@ -202,36 +194,25 @@ Canvas = function(){
     }
   }
 
-
-
-  this.onMouseUp = function( event ) {
-    event.preventDefault()
-    this.isMouseDown = false;
-    $('body').css( 'cursor', 'auto' );
-    this.onMouseDownPosition.x = event.clientX - this.onMouseDownPosition.x
-    this.onMouseDownPosition.y = event.clientY - this.onMouseDownPosition.y
-
-    if ( this.onMouseDownPosition.length() > 5 ) return
-
-    var intersect = this.getIntersecting()
-
-    if ( intersect ) {
-
-      if ( isShiftDown ) {
-
-        if ( intersect.object != plane ) {
-
-          this.scene.remove( intersect.object.parent )
-
-        }
-      } else {
-        ;//addVoxel()
-      }
-
-    }
-
-
-   this.render()
-  this.interact()
+  this.moveShip = function(aShip) {
+    if (typeof this.raycaster === 'undefined') return
+      var orientation = aShip.orientation;
+      this.directionVector.setX(orientation[1]); 
+      this.directionVector.setZ(orientation[0]);
+      this.getShip(aShip.id).translateOnAxis(this.directionVector,25);
   }
+
+  this.rotateShip= function(aShip, axis, radians) {
+    rotObjectMatrix = new THREE.Matrix4();
+    rotObjectMatrix.makeRotationAxis(axis.normalize(), radians);
+    var aShip3D = this.getShip(aShip.id);
+    console.log(aShip3D);
+    aShip3D.matrix.multiply(rotObjectMatrix);
+    aShip3D.rotation.setEulerFromRotationMatrix(aShip3D.matrix);
+  }
+
+  this.setShipVisible = function(object, bool){
+    object.traverse (function(node){if (node){node.visible = bool}})
+  }
+
 }
