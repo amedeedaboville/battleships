@@ -40,24 +40,44 @@ Canvas = function(){
 
     var geometry = new THREE.Geometry()
     for ( var i = - size; i <= size; i += step ) {
-      geometry.vertices.push( new THREE.Vector3( - size, 13, i ) )
-      geometry.vertices.push( new THREE.Vector3(   size, 13, i ) )
-      geometry.vertices.push( new THREE.Vector3( i, 13, - size ) )
-      geometry.vertices.push( new THREE.Vector3( i, 13,   size ) )
+      geometry.vertices.push( new THREE.Vector3( - size, 27, i ) );
+      geometry.vertices.push( new THREE.Vector3(   size, 27, i ) );
+      geometry.vertices.push( new THREE.Vector3( i, 27, - size ) );
+      geometry.vertices.push( new THREE.Vector3( i, 27,   size ) );
     }
+    var material = new THREE.LineBasicMaterial( { color: 0x191970, linewidth: 2 } );
 
-    var material = new THREE.LineBasicMaterial( { color: 0x191970, linewidth: 2 } )
+    var line = new THREE.Line( geometry, material, THREE.LinePieces);
+    line.type = THREE.LinePieces;
+    this.scene.add(line);
 
-    var line = new THREE.Line( geometry, material, THREE.LinePieces )
-    line.type = THREE.LinePieces
-    this.scene.add( line )
-
+//0x4169E1
     // Plane
-    this.plane = new THREE.Mesh( new THREE.CubeGeometry( 750, 750, 25 ), new THREE.MeshBasicMaterial({color:0x4169E1, wireframe:false, opacity: 0.9}) )
-    this.plane.rotation.x = - Math.PI / 2
-    this.plane.visible = true
-    this.plane.name = 'plane'
-    this.scene.add( this.plane )
+    aPlaneGeometry = new THREE.CubeGeometry( 27, 27, 52);
+    aPlaneMaterial = new THREE.MeshLambertMaterial({color: 0x2100E1, ambient:0x4169E1, wireframe:false, opacity: 1});
+
+    var seaPlane = new THREE.Mesh(new THREE.CubeGeometry( 750, 750, 25), new THREE.MeshBasicMaterial({color:0x4169E1, wireframe:false, opacity: 1}));
+    seaPlane.rotation.x = - Math.PI / 2;
+    this.scene.add(seaPlane);
+
+
+    this.plane = new THREE.Object3D();
+
+    console.log(coralArray)
+    for (i=0;i<30;i++){
+      for (j=0;j<30;j++){
+        var aPlane = new THREE.Mesh( aPlaneGeometry, aPlaneMaterial);
+        aPlane.position.x =-25*14-12.5 + i*25;
+        aPlane.position.y = 0;
+        aPlane.position.z =-25*14-12.5 + j*25;
+        aPlane.rotation.x = - Math.PI / 2;
+
+        aPlane.visible = true;
+        this.plane.add(aPlane);
+      }
+    }
+    this.plane.name = 'plane';
+    this.scene.add(this.plane);
 
     this.raycaster = new THREE.Raycaster();
     this.raycaster.ray.direction.set( 0,0,0);
@@ -145,7 +165,7 @@ Canvas = function(){
 
   this.getIntersecting = function() {
    // this.raycaster = this.projector.pickingRay( this.mouse2D.clone(), this.camera )
-    var intersections = this.raycaster.intersectObjects( this.scene.children, true )
+    var intersections = this.raycaster.intersectObjects( this.ships.children, true )
     if (intersections.length > 0) {
       var intersect = this.findParentShip(intersections[1]);//only 1 ship ever intersects
       return intersect
@@ -213,6 +233,10 @@ Canvas = function(){
 
   this.setShipVisible = function(object, bool){
     object.traverse (function(node){if (node){node.visible = bool}})
+  }
+
+  this.setVisible = function(x,y, bool){
+    this.plane.children[x+30*y].visible = bool;
   }
 
 }

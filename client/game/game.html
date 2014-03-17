@@ -8,6 +8,7 @@
 
 <template name="contextMenu">
 {{#with selectedShip}}
+{{#if selectableShip}}
     <div class="column-md-2">
         <div class="row">
             <h3>
@@ -39,6 +40,7 @@
         </div>
 
     </div>
+{{/if}}
 {{/with}}
 </template>
 

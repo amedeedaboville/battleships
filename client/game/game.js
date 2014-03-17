@@ -11,6 +11,12 @@ Template.contextMenu.helpers({
         if (Session.get('selectedShip'))
             return Session.get('selectedShip');
     },
+    selectableShip: function(){
+        var currentGame = gameCollection.find().fetch()[0];
+        var player = (Meteor.userId == currentGame.opponent)? 'opponent': 'challenger'; 
+        return (Session.get('selectedShip').owner == player);
+
+    }
 });
 
 Template.contextMenu.events({
