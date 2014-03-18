@@ -13,12 +13,15 @@ Canvas = function(){
   this.ships = new THREE.Object3D();
   this.shipDictionary;
   this.corals = new THREE.Object3D();
+  this.water ;
+  this.controls;
+
   this.coralArray;
   this.VisibilityBoxes = []; 
 
   this.objectHovered;
   this.FURTHEST = 4500;
-  this.CLOSEST = 1000;
+  this.CLOSEST = 500;
   this.RENDER_HEIGHT = window.innerHeight; 
   this.RENDER_WIDTH = window.innerWidth;
   this.directionVector = new THREE.Vector3();
@@ -35,24 +38,26 @@ Canvas = function(){
     this.camera.position.z =this.radius * Math.cos( this.theta * Math.PI / 360 ) * Math.cos( this.phi * Math.PI / 360 )
 
     this.scene = new THREE.Scene()
+
     // Grid
     var squares = 25;
 
     var line = new THREE.GridHelper(squares*15, squares);
-    line.position = new THREE.Vector3(0,27,0);
+    line.position = new THREE.Vector3(0,13,0);
     var material = new THREE.LineBasicMaterial( { color: 0x191970, linewidth: 2 } );
     line.material = material;//.color.setHex(0x191970);
 //    line.type = THREE.LinePieces;
+    line.name = 'grid';
     this.scene.add(line);
 
 //0x4169E1
     // Plane
     aPlaneGeometry = new THREE.CubeGeometry( 27, 27, 52);
-    aPlaneMaterial = new THREE.MeshPhongMaterial({ambient:0x4169E1});
+    aPlaneMaterial = new THREE.MeshPhongMaterial({color: 0x3366CC, ambient:0x4169E1, shininess: 77}); 
 
     var seaPlane = new THREE.Mesh(new THREE.CubeGeometry( 750, 750, 25), new THREE.MeshBasicMaterial({color:0x4169E1, wireframe:false, opacity: 1}));
     seaPlane.rotation.x = - Math.PI / 2;
-    this.scene.add(seaPlane);
+    //this.scene.add(seaPlane);
 
 
     this.plane = new THREE.Object3D();
@@ -71,7 +76,7 @@ Canvas = function(){
       }
     }
     this.plane.name = 'plane';
-    this.scene.add(this.plane);
+    //this.scene.add(this.plane);
 
     this.raycaster = new THREE.Raycaster(); 
     this.raycaster.ray.direction.set( 0,0,0);
@@ -88,6 +93,9 @@ Canvas = function(){
     m.__proto__ = new Map();
     this.setVisibleFromName(m);
 
+
+
+
     this.renderer = new THREE.WebGLRenderer();//$('#myChart')[0]);
     this.renderer.setSize( this.RENDER_WIDTH-40, this.RENDER_HEIGHT-180-5)
 
@@ -102,6 +110,7 @@ Canvas = function(){
       s.ship.shipInfo = shipDictionary[ship];
       this.ships.add(s.ship);
     }
+    this.ships.name = 'ships';
     this.scene.add(this.ships);
   }
 
@@ -110,6 +119,7 @@ Canvas = function(){
       var c = new coral3D(coralArray[i][1],coralArray[i][0] )
       this.corals.add(c.coral);
     }
+    this.corals.name = 'corals';
     this.scene.add(this.corals);
 
   }
@@ -250,5 +260,133 @@ Canvas = function(){
     }
   }
 
+
+//EXTERNAL CODE!!!!
+  this.loadSkyBox = function() {
+    var aCubeMap = THREE.ImageUtils.loadTextureCube([
+      'img/px.jpg',
+      'img/nx.jpg',
+      'img/py.jpg',
+      'img/ny.jpg',
+      'img/pz.jpg',
+      'img/nz.jpg'
+    ]);
+    aCubeMap.format = THREE.RGBFormat;
+
+    var aShader = THREE.ShaderLib['cube'];
+    aShader.uniforms['tCube'].value = aCubeMap;
+
+    var aSkyBoxMaterial = new THREE.ShaderMaterial({
+      fragmentShader: aShader.fragmentShader,
+      vertexShader: aShader.vertexShader,
+      uniforms: aShader.uniforms,
+      depthWrite: false,
+      side: THREE.BackSide
+    });
+
+    var aSkybox = new THREE.Mesh(
+      new THREE.CubeGeometry(5050, 5050, 5050),
+      aSkyBoxMaterial
+    );
+    aSkybox.name = 'skybox';
+
+    this.scene.add(aSkybox);
+  }
+
+  this.loadWater = function(){
+    //Add light
+    var directionalLight = new THREE.DirectionalLight(0xffff55, 1);
+    directionalLight.position.set(-600, 300, 600); 
+    directionalLight.name = 'light'
+    this.scene.add(directionalLight);
+
+    // Load textures    
+    var waterNormals = new THREE.ImageUtils.loadTexture('waternormals.jpg');
+    waterNormals.wrapS = waterNormals.wrapT = THREE.RepeatWrapping; 
+
+    // Create the water effect
+    this.water = new THREE.Water(this.renderer, this.camera, this.scene, {
+      textureWidth: 256,
+      textureHeight: 256,
+      waterNormals: waterNormals,
+      alpha:  1.0,
+      sunDirection: directionalLight.position.normalize(),
+      sunColor: 0xffffff,
+      waterColor: 0x001e0f,
+      betaVersion: 0
+    });
+    //this.water.position.y +=5;
+
+    var aMeshMirror = new THREE.Mesh(
+      new THREE.CubeGeometry(5050, 5050, 25, 1, 1), 
+      this.water.material
+    );
+    aMeshMirror.add(this.water);
+    aMeshMirror.rotation.x = - Math.PI * 0.5;
+    aMeshMirror.name = 'mirror';
+
+    this.scene.add(aMeshMirror);
+    this.loadSkyBox();
+  }
+
+
+  this.loadClouds = function(){
+    var geometry = new THREE.Geometry();
+
+    var texture = THREE.ImageUtils.loadTexture( 'cloud10.png', null, mainLoop );
+    texture.magFilter = THREE.LinearMipMapLinearFilter;
+    //texture.minFilter = THREE.LinearMipMapLinearFilter;
+    
+    var fog = new THREE.Fog( 0x4584b4, 0, 3000 );
+
+    var material = new THREE.ShaderMaterial( {
+
+      uniforms: {
+
+        "map": { type: "t", value: texture }, 
+        "fogColor" : { type: "c", value: fog.color },
+        "fogNear" : { type: "f", value: fog.near },
+        "fogFar" : { type: "f", value: fog.far },
+
+      },
+      vertexShader: document.getElementById( 'vs' ).textContent,
+      fragmentShader: document.getElementById( 'fs' ).textContent,
+      depthWrite: false, 
+      depthTest: false,
+      transparent: true
+
+    } );
+
+    var plane = new THREE.Mesh( new THREE.PlaneGeometry( 27, 27) );
+    // var max = 25*14-12.5- 700;
+    // var min = 25*14-12.5-725;  
+    for (var j=0; j< 1500; j++){
+//      for ( var i = 0; i < 9; i++ ) {
+          plane.position.x = Math.random() * 1000 - 500;
+          plane.position.y = Math.random() * 1000 - 500;
+          plane.position.z = j;
+          plane.rotation.z = Math.random() * Math.PI;
+          plane.scale.x = plane.scale.y = Math.random() * Math.random() * 10 + 0.5;
+        THREE.GeometryUtils.merge( geometry, plane );
+ //     }
+    }
+
+    var mesh = new THREE.Mesh( geometry, material );
+    this.scene.add( mesh );
+
+    mesh = new THREE.Mesh( geometry, material );
+    mesh.position.z = - 8000;
+    this.scene.add( mesh );
+  }
+
+  this.displayThing = function() {
+    //this.water.render();
+    this.render();
+  }
+
+  this.updateThing = function() {
+    this.water.material.uniforms.time.value += 1.0 / 60.0;
+    this.displayThing();
+  }
 
 }
