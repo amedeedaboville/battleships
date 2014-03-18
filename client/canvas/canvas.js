@@ -14,6 +14,8 @@ Canvas = function(){
   this.shipDictionary;
   this.corals = new THREE.Object3D();
   this.coralArray;
+  this.VisibilityBoxes = []; 
+
   this.objectHovered;
   this.FURTHEST = 4500;
   this.CLOSEST = 1000;
@@ -33,28 +35,20 @@ Canvas = function(){
     this.camera.position.z =this.radius * Math.cos( this.theta * Math.PI / 360 ) * Math.cos( this.phi * Math.PI / 360 )
 
     this.scene = new THREE.Scene()
-
     // Grid
     var squares = 25;
-    var size = squares*15, step = squares
 
-    var geometry = new THREE.Geometry()
-    for ( var i = - size; i <= size; i += step ) {
-      geometry.vertices.push( new THREE.Vector3( - size, 27, i ) );
-      geometry.vertices.push( new THREE.Vector3(   size, 27, i ) );
-      geometry.vertices.push( new THREE.Vector3( i, 27, - size ) );
-      geometry.vertices.push( new THREE.Vector3( i, 27,   size ) );
-    }
+    var line = new THREE.GridHelper(squares*15, squares);
+    line.position = new THREE.Vector3(0,27,0);
     var material = new THREE.LineBasicMaterial( { color: 0x191970, linewidth: 2 } );
-
-    var line = new THREE.Line( geometry, material, THREE.LinePieces);
-    line.type = THREE.LinePieces;
+    line.material = material;//.color.setHex(0x191970);
+//    line.type = THREE.LinePieces;
     this.scene.add(line);
 
 //0x4169E1
     // Plane
     aPlaneGeometry = new THREE.CubeGeometry( 27, 27, 52);
-    aPlaneMaterial = new THREE.MeshLambertMaterial({color: 0x2100E1, ambient:0x4169E1, wireframe:false, opacity: 1});
+    aPlaneMaterial = new THREE.MeshPhongMaterial({ambient:0x4169E1});
 
     var seaPlane = new THREE.Mesh(new THREE.CubeGeometry( 750, 750, 25), new THREE.MeshBasicMaterial({color:0x4169E1, wireframe:false, opacity: 1}));
     seaPlane.rotation.x = - Math.PI / 2;
@@ -62,24 +56,24 @@ Canvas = function(){
 
 
     this.plane = new THREE.Object3D();
+    var aPlane = new THREE.Mesh( aPlaneGeometry, aPlaneMaterial);
+    aPlane.position.x =-25*14-12.5;
+    aPlane.position.y = 0;
+    aPlane.position.z =-25*14-12.5;
+    aPlane.rotation.x = - Math.PI / 2;
 
-    console.log(coralArray)
     for (i=0;i<30;i++){
       for (j=0;j<30;j++){
-        var aPlane = new THREE.Mesh( aPlaneGeometry, aPlaneMaterial);
-        aPlane.position.x =-25*14-12.5 + i*25;
-        aPlane.position.y = 0;
-        aPlane.position.z =-25*14-12.5 + j*25;
-        aPlane.rotation.x = - Math.PI / 2;
-
-        aPlane.visible = true;
-        this.plane.add(aPlane);
+        var somePlane = aPlane.clone();
+        somePlane.position.x += i*25
+        somePlane.position.z += j*25
+        this.plane.add(somePlane);
       }
     }
     this.plane.name = 'plane';
     this.scene.add(this.plane);
 
-    this.raycaster = new THREE.Raycaster();
+    this.raycaster = new THREE.Raycaster(); 
     this.raycaster.ray.direction.set( 0,0,0);
     this.projector = new THREE.Projector();
     this.mouse2D = new THREE.Vector3( 0, 0, 0 );
@@ -89,6 +83,10 @@ Canvas = function(){
 
     //addShips
     this.addShips(shipDictionary);
+
+    var m = (gameCollection.find().fetch()[0]).map;
+    m.__proto__ = new Map();
+    this.setVisibleFromName(m);
 
     this.renderer = new THREE.WebGLRenderer();//$('#myChart')[0]);
     this.renderer.setSize( this.RENDER_WIDTH-40, this.RENDER_HEIGHT-180-5)
@@ -236,7 +234,21 @@ Canvas = function(){
   }
 
   this.setVisible = function(x,y, bool){
+    if (x+30*y >0 && x+30*y < 900)
     this.plane.children[x+30*y].visible = bool;
   }
+
+  this.setPlaneVisible = function(a, bool){
+    this.plane.children[a[0]+30*a[1]].visible = !bool;
+  }
+
+  this.setVisibleFromName = function(m){
+    var visible = m.getVisibleSquares('challenger');
+    console.log(visible);
+    for (square in visible){
+      this.setPlaneVisible(JSON.parse(square), visible[square]);
+    }
+  }
+
 
 }

@@ -23,7 +23,16 @@ Template.contextMenu.events({
     'click .actionButton' : function(evt) {
         var action = evt.target.id;
         if (action == 'moveShip'){
+
+            console.log(canvas.getShip(Session.get('selectedShip').id).position);
+
             canvas.moveShip(Session.get('selectedShip'));
+            var m = (gameCollection.find().fetch()[0]).map;
+            m.__proto__ = new Map();
+
+            console.log(canvas.getShip(Session.get('selectedShip').id).position);
+
+            canvas.setVisibleFromName(m);
         }
 
         else if (action =='turnShipRight'){

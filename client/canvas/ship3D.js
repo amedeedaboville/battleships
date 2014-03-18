@@ -1,11 +1,19 @@
 Ship3D = function Ship3D(){
 	this.ship = new THREE.Object3D();
 	this.vector = new THREE.Vector3();
+	this.visibleBox = new THREE.Box2();
 
 	this.fromShip  = function(aShip){
+		
+		//set position
 		this.vector.setX(aShip.sternPosition[1]*25 -25*14-12.5);
 		this.vector.setZ(aShip.sternPosition[0]*25 -25*14-12.5);
 		this.ship.position = this.vector;
+
+		//set visible box:
+		var vivi = 2;
+		this.visibleBox.set(new THREE.Vector2(aShip.sternPosition[1]-25*vivi,aShip.sternPosition[1]), 
+							new THREE.Vector2(aShip.sternPosition[1]+25*vivi,aShip.sternPosition[1]+25*aShip.shipLength));
 
 		//for the length of the ship, add 'cubes'
 		//keep in mind the orientation of the ship
@@ -40,5 +48,4 @@ Ship3D = function Ship3D(){
 
 		this.ship.name = aShip.id;
 	}
-
 }
