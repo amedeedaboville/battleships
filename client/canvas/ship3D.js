@@ -20,14 +20,14 @@ Ship3D = function Ship3D(){
         for (i=0;i<aShip.shipLength;i++){
 	        	var aCube;
 				if(aShip.id.indexOf('base') != -1){
-			        aCube = new Brush(i*aShip.orientation[0],i*aShip.orientation[1], 15, 25,25);
+			        aCube = new Cube(i*aShip.orientation[0],i*aShip.orientation[1], 15, 25,25);
 			        if (aShip.owner == 'challenger')
 				        aCube.changeColor(0x280000); 
 				    else
 				        aCube.changeColor(0x00008B); 
 			    }
 			    else{
-			        aCube = new Brush(i*aShip.orientation[0],i*aShip.orientation[1]);
+			        aCube = new Cube(i*aShip.orientation[0],i*aShip.orientation[1]);
 			        //color the front bow of the ship
 			        if(aShip.owner == 'opponent'){
 			        	if (i == aShip.shipLength-1){
@@ -43,7 +43,7 @@ Ship3D = function Ship3D(){
 				    	}
 					}
 				 }
-		        this.ship.add(aCube.brush);
+		        this.ship.add(aCube.cube);
 		}
 
 		this.ship.name = aShip.id;
