@@ -1,6 +1,13 @@
-<template name="grid">
-{{#constant}}
+<!-- <template name="grid">
 <div id="myChart">
 </div>
-{{/constant}}
+</template>
+ -->
+<template name="grid">
+  {{#each rows}}
+    {{#each this}}
+    <div class="square {{this.css}}" {{this.attributes}} {{this.visibility}}>
+    </div>
+    {{/each}}
+  {{/each}}
 </template>

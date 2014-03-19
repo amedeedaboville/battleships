@@ -1,6 +1,6 @@
 Template.grid.helpers({
     rows: function () {
-        var game = gameCollection.find().fetch()[0];
+        var game = Session.get('inGame');
         if (game != undefined) {
             console.log('game exits, pulling grid');
             game.map.__proto__ = new Map(); //get instance methods back
@@ -19,53 +19,57 @@ Template.grid.helpers({
 canvas = undefined;
 
 Template.grid.created = function(){
-
-        var controlsLoaded = function(){
-            //canvas.controls = new THREE.OrbitControls(canvas.camera, canvas.renderer.domElement);
-        }
-        var waterLoaded = function(){
-            canvas = new Canvas();
-            var m = Session.get('inGame').map;
-            m.__proto__ = new Map();
-            canvas.drawCanvas(m);
-            canvas.loadWater();
-            canvas.water.render();
-            mainLoop();
-        }
-
-    Meteor.Loader.loadJs('OrbitControls.js', controlsLoaded);
-    Meteor.Loader.loadJs('water-material.js', waterLoaded);
 }
 
 Template.grid.rendered = function(){
-    // if (currentGame != undefined)
-    // {
-    //     var m = currentGame.map;
-    //     m.__proto__ = new Map();
-    //     var visibleSquares;
-
-    //     if (Meteor.userId() == currentGame.challenger){
-    //         visibleSquares = m.getVisibleSquares('challenger');
+    //     var controlsLoaded = function(){
+    //         //canvas.controls = new THREE.OrbitControls(canvas.camera, canvas.renderer.domElement);
+    //     }
+    //     var waterLoaded = function(){
+    //         console.log('and again!');
+    //         canvas = new Canvas();
+    //         var m = Session.get('inGame').map;
+    //         m.__proto__ = new Map();
+    //         canvas.drawCanvas(m);
+    //         canvas.loadWater();
+    //         canvas.water.render();
+    //         mainLoop();
     //     }
 
-    //     if (Meteor.userId() == currentGame.opponent){
-    //         visibleSquares = m.getVisibleSquares('opponent');
-    //     }
+    // Meteor.Loader.loadJs('OrbitControls.js', controlsLoaded);
+    // Meteor.Loader.loadJs('water-material.js', waterLoaded);
 
-    //     keys = Object.keys(visibleSquares);
-    //     for (var i=0; i < keys.length; i++){
-    //         keyvar = JSON.parse(keys[i]);
-    //         var squareVisible = m.grid.squares[keyvar[0]][keyvar[1]];
-    //         squareVisible = new Square();
-    //         squareVisible.visibility = "id=visible";
-    //     }
-    // }
+        var currentGame = Session.get('inGame');
+    if (currentGame != undefined)
+    {
+        var m = currentGame.map;
+        m.__proto__ = new Map();
+        var visibleSquares;
+
+        if (Meteor.userId() == currentGame.challenger){
+            visibleSquares = m.getVisibleSquares('challenger');
+        }
+
+        if (Meteor.userId() == currentGame.opponent){
+            visibleSquares = m.getVisibleSquares('opponent');
+        }
+
+        keys = Object.keys(visibleSquares);
+        for (var i=0; i < keys.length; i++){
+            keyvar = JSON.parse(keys[i]);
+            var squareVisible = m.grid.squares[keyvar[0]][keyvar[1]];
+            squareVisible = new Square();
+            squareVisible.visibility = "id=visible";
+        }
+    }
 }
 
 Template.grid.events({
     'click .square' : function(evt) {
         var action = Session.get('selectedAction');
-        var currentGame = gameCollection.find().fetch()[0];
+        var currentGame = Session.get('inGame');
+        console.log(action);
+
         if(action != undefined && action !== "") {
             var position = JSON.parse($(evt.target).attr('position'))
     console.log("completing action " + action + " with position " + position);
@@ -74,7 +78,7 @@ Template.grid.events({
         Session.set('selectedAction', "");
     },
 'click .square.ship.challenger' : function (evt) {
-    var currentGame = gameCollection.find().fetch()[0];
+    var currentGame = Session.get('inGame');
     if (currentGame.challenger == Meteor.userId()){
         //get shipName from this square and find the ship
         var ship = currentGame.map.shipDictionary[this.shipName];
@@ -88,7 +92,7 @@ Template.grid.events({
 },
 
     'click .square.ship.opponent' : function (evt) {
-        var currentGame = gameCollection.find().fetch()[0];
+        var currentGame = Session.get('inGame');
         if (currentGame.opponent == Meteor.userId()){
             var ship = currentGame.map.shipDictionary[this.shipName];
             Session.set('selectedShip', ship)
@@ -171,9 +175,6 @@ Template.grid.events({
         var delta = evt.wheelDeltaY/6;
         var origin = {x: 0, y: 0, z: 0}
         var distance = canvas.camera.position.distanceTo(origin)
-        console.log(tooFar && delta > 0);
-        console.log(tooFar);
-        console.log(delta);
         var tooFar = distance  > canvas.FURTHEST
         var tooClose = distance < canvas.CLOSEST
         if (delta > 0 && tooFar) return

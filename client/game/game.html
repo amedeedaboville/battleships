@@ -1,14 +1,28 @@
-<template name="game">
+<!-- <template name="game">
 {{> grid}}
 <div id="contextMenu">
 {{> contextMenu}}
+</div>
+</template>
+ --><template name="game">
+<div id="gameui" class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 right-buffer">
+        {{>contextMenu}}
+    </div>
+    <div class="col-md-7 well">
+        {{> grid}}
+    </div>
+    <div class="col-md-2">
+        {{>opponentMenu}}
+    </div>
+  </div>
 </div>
 </template>
 
 
 <template name="contextMenu">
 {{#with selectedShip}}
-{{#if selectableShip}}
     <div class="column-md-2">
         <div class="row">
             <h3>
@@ -40,7 +54,6 @@
         </div>
 
     </div>
-{{/if}}
 {{/with}}
 </template>
 
