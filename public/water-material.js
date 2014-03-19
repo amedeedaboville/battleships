@@ -379,6 +379,7 @@ THREE.PerspectiveCamera.prototype.clone = function () {
 	camera.aspect = this.aspect;
 	camera.near = this.near;
 	camera.far = this.far;
+	camera.updateProjectionMatrix();
 
 	return camera;
 };

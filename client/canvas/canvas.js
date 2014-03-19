@@ -7,14 +7,16 @@ Canvas = function(){
   this.projector, this.plane, this.scene;
   this.mouse2D, this.mouse3D, this.raycaster, this.objectHovered;
   this.isMouseDown = false;
-  this.onMouseDownPosition = new THREE.Vector2(), this.onMouseDownPhi = 135 , this.onMouseDownTheta = 0;
-  this.radius = 1500, this.theta = 0, this.phi = 35;
-  this.cameraTarget = new THREE.Vector3( 0, 20, 0 );
+  this.onMouseDownPosition = new THREE.Vector2(), this.onMouseDownPhi = 0 , this.onMouseDownTheta = 0;
+  this.radius = 2500, this.theta = 0, this.phi = 0;
+  this.cameraTarget = new THREE.Vector3( 0, 0, 0 );
   this.ships = new THREE.Object3D();
   this.shipDictionary;
   this.corals = new THREE.Object3D(); 
   this.water ;
+  this.directionalLight;
   this.controls;
+
 
   this.coralArray;
   this.VisibilityBoxes = []; 
@@ -31,13 +33,10 @@ Canvas = function(){
     console.log('drawing canvas');
     this.shipDictionary = aMap.shipDictionary;
     this.coralArray = aMap.grid.coralSpots;
+    this.camera = new THREE.PerspectiveCamera(55.0, this.RENDER_WIDTH / this.RENDER_HEIGHT, 0.5, 3000000);
+    this.camera.position.set(1000, 500, -1500);
 
-    this.camera = new THREE.PerspectiveCamera( 22, this.RENDER_WIDTH / this.RENDER_HEIGHT, 1, 27000 )
-    this.camera.position.x = this.radius * Math.sin( this.theta * Math.PI / 360 ) * Math.cos( this.phi * Math.PI / 360 )
-    this.camera.position.y = this.radius * Math.sin( this.phi * Math.PI / 360 )
-    this.camera.position.z =this.radius * Math.cos( this.theta * Math.PI / 360 ) * Math.cos( this.phi * Math.PI / 360 )
-
-    this.scene = new THREE.Scene()
+    this.scene = new THREE.Scene();
 
     // Grid
     var squares = 25;
@@ -94,11 +93,9 @@ Canvas = function(){
     this.loadSkyBox();
 
 
-
-    this.renderer = new THREE.WebGLRenderer();//$('#myChart')[0]);
-    this.renderer.setSize( this.RENDER_WIDTH-40, this.RENDER_HEIGHT-180-5)
-
-    $('#myChart').append(this.renderer.domElement)
+    var someCanvas = document.getElementById('myCanvas');
+    this.renderer = new THREE.WebGLRenderer({ canvas: someCanvas});
+    this.renderer.setSize( this.RENDER_WIDTH-40, this.RENDER_HEIGHT-180-5);
     this.render();
 }
 
@@ -130,7 +127,7 @@ Canvas = function(){
     var tooClose = distance < CLOSEST
     if (delta > 0 && tooFar) return
     if (delta < 0 && tooClose) return
-   this.radius = distance // for mouse drag calculations to be correct
+   //this.radius = distance // for mouse drag calculations to be correct
     this.camera.translateZ( delta)
     this.render()
 
@@ -198,20 +195,6 @@ Canvas = function(){
     if ( intersect ) {
 
       this.objectHovered = intersect;
-
-      // if (this.objectHovered != undefined)
-      // {
-      //   if (Session.get('selectedShip')){
-      //    var orientation = Session.get('selectedShip').orientation; 
-      //     if (this.objectHovered.name == Session.get('selectedShip').id){
-      //       this.directionVector.setX(orientation[1]);;
-      //       this.directionVector.setZ(orientation[0]);
-      //      this.objectHovered.translateOnAxis(this.directionVector,10);
-      //     }
-      //   }
-
-      // }
-
       this.objectHovered.traverse( function (node){
       if (node.material){
           node.material.opacity = 0.5; 
@@ -253,7 +236,6 @@ Canvas = function(){
 
   this.setVisibleFromName = function(m){
     var visible = m.getVisibleSquares('challenger');
-    console.log(visible);
     for (square in visible){
       this.setPlaneVisible(JSON.parse(square), visible[square]);
     }
@@ -284,7 +266,7 @@ Canvas = function(){
     });
 
     var aSkybox = new THREE.Mesh(
-      new THREE.CubeGeometry(5050, 5050, 5050),
+      new THREE.CubeGeometry(1000000, 1000000, 1000000),
       aSkyBoxMaterial
     );
     aSkybox.name = 'skybox';
@@ -294,10 +276,10 @@ Canvas = function(){
 
   this.loadWater = function(){
     //Add light
-    var directionalLight = new THREE.DirectionalLight(0xffff55, 1);
-    directionalLight.position.set(-600, 300, 600); 
-    directionalLight.name = 'light'
-    this.scene.add(directionalLight);
+    this.directionalLight = new THREE.DirectionalLight(0xffff55, 1);
+    this.directionalLight.position.set(-600, 300, 600); 
+    this.directionalLight.name = 'light';
+    this.scene.add(this.directionalLight);
 
     // Load textures    
     var waterNormals = new THREE.ImageUtils.loadTexture('waternormals.jpg');
@@ -309,7 +291,7 @@ Canvas = function(){
       textureHeight: 256,
       waterNormals: waterNormals,
       alpha:  1.0,
-      sunDirection: directionalLight.position.normalize(),
+      sunDirection: this.directionalLight.position.normalize(),
       sunColor: 0xffffff,
       waterColor: 0x001e0f,
       betaVersion: 0
@@ -317,7 +299,7 @@ Canvas = function(){
     //this.water.position.y +=5;
 
     var aMeshMirror = new THREE.Mesh(
-      new THREE.CubeGeometry(5050, 5050, 25, 1, 1), 
+      new THREE.PlaneGeometry(1000000, 1000000, 100, 100), 
       this.water.material
     );
     aMeshMirror.add(this.water);
@@ -379,6 +361,7 @@ Canvas = function(){
 
   this.displayThing = function() {
     //this.water.render();
+    //this.renderer.render(this.scene, this.camera);
     this.render();
   }
 

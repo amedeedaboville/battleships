@@ -391,6 +391,10 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 	}
 
+	function someEvent(){
+		console.log('some event can be fired!')
+	}
+
 	this.domElement.addEventListener( 'contextmenu', function ( event ) { event.preventDefault(); }, false );
 	this.domElement.addEventListener( 'mousedown', onMouseDown, false );
 	this.domElement.addEventListener( 'mousewheel', onMouseWheel, false );

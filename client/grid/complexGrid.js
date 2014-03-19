@@ -1,23 +1,29 @@
 canvas = undefined;
-
-Template.complexGrid.created = function(){
-    console.log('created complexGrid')
-        var waterLoaded = function(){
-            console.log(canvas);
-            canvas = new Canvas();
-            var m = Session.get('inGame').map;
-            m.__proto__ = new Map();
-            canvas.drawCanvas(m);
-            //canvas.loadWater();
-            //canvas.water.render();
-            //mainLoop();
-        }
-
-    Meteor.Loader.loadJs('water-material.js', waterLoaded);
-}
+onlyFirstTime = true;
 
 Template.complexGrid.rendered = function(){
-    console.log('rendered complexGrid');
+    var m = Session.get('inGame').map;
+    m.__proto__ = new Map();
+    if (onlyFirstTime){
+        canvas = new Canvas();
+        canvas.drawCanvas(m);
+        console.log (this._firstTime);
+        this._firstTime = false;
+        onlyFirstTime = false; 
+    }
+
+    else{
+        console.log (this._firstTime);
+        canvas.drawCanvas(m);
+        canvas.loadWater();
+        mainLoop();
+    }
+
+    Meteor.Loader.loadJs('water-material.js', 
+        function(){
+            canvas.loadWater();
+            mainLoop()
+        });
 }
 
 Template.complexGrid.events({
@@ -65,12 +71,14 @@ Template.complexGrid.events({
       canvas.theta = - ( ( event.clientX - canvas.onMouseDownPosition.x ) * 0.5 ) + canvas.onMouseDownTheta
       canvas.phi = ( ( event.clientY - canvas.onMouseDownPosition.y ) * 0.5 ) + canvas.onMouseDownPhi
 
-      canvas.phi = Math.min( 135, Math.max( 20, canvas.phi ) )
+      // if (canvas.phi < 20 || canvas.phi > 135)
+      //   console.log("'bad' angle");
+      // canvas.phi = Math.min( 135, Math.max( 20, canvas.phi ) )
 
-      canvas.camera.position.x =canvas.radius * Math.sin( canvas.theta * Math.PI / 360 ) * Math.cos( canvas.phi * Math.PI / 360 )
-      canvas.camera.position.y =canvas.radius * Math.sin( canvas.phi * Math.PI / 360 )
-      canvas.camera.position.z =canvas.radius * Math.cos( canvas.theta * Math.PI / 360 ) * Math.cos( canvas.phi * Math.PI / 360 )
-      canvas.camera.updateMatrix();
+      // canvas.camera.position.x = canvas.radius * Math.sin( canvas.theta * Math.PI / 360 ) * Math.cos( canvas.phi * Math.PI / 360 )
+      // canvas.camera.position.y = canvas.radius * Math.sin( canvas.phi * Math.PI / 360 )
+      // canvas.camera.position.z = canvas.radius * Math.cos( canvas.theta * Math.PI / 360 ) * Math.cos( canvas.phi * Math.PI / 360 )
+      // canvas.camera.updateMatrix();
 
     }
 
@@ -78,9 +86,9 @@ Template.complexGrid.events({
     canvas.mouse2D.y = - ( event.clientY / canvas.RENDER_HEIGHT ) * 2 + 1;
     canvas.mouse2D.z = 0.5;
 
-    canvas.raycaster = canvas.projector.pickingRay( canvas.mouse2D.clone(), canvas.camera )
-    canvas.interact()
-    canvas.render()
+    canvas.raycaster = canvas.projector.pickingRay( canvas.mouse2D.clone(), canvas.camera );
+    canvas.interact();
+    canvas.render();
     },
 
     'mousewheel canvas' : function (evt){
@@ -93,7 +101,7 @@ Template.complexGrid.events({
         if (delta < 0 && tooClose) return
         canvas.radius = distance // for mouse drag calculations to be correct
         canvas.camera.translateZ( delta)
-        canvas.render()
+       canvas.render()
 
     }
 })
