@@ -1,5 +1,4 @@
 Deps.autorun(function() {
-    Meteor.subscribe('invites', Meteor.userId());
     inviteCollection.find({opponent : Meteor.userId()}).observeChanges({ //Hotfix for only showing when you're challenged to
         added: function(id, fields) {
             user = Meteor.users.findOne(fields.challenger)
@@ -11,8 +10,7 @@ Deps.autorun(function() {
                 });
                 $('#cancelInviteButton').click(function(){
                     notification.close();
-                    //remove everything from inviteCollection
-                    Meteor.call("removeAllInvites", Meteor.userId(), Meteor.userId())
+                    Meteor.call("removeAllInvites")
                 });
             }
         }
@@ -20,29 +18,24 @@ Deps.autorun(function() {
 
     inviteCollection.find({$or: [{opponent : Meteor.userId()}, {challenger: Meteor.userId()} ]}).observeChanges({
         changed: function(id, fields) {
-            console.log('invitation changed!');
-
             if (fields.gameID != 0 && fields.gameID != undefined) {
 
-                //remove everything from inviteCollection
-                Meteor.call("removeAllInvites", Meteor.userId(), Meteor.userId())
+                Meteor.call("removeAllInvites")
                 $('#mapModal').modal();
             }
         }
     });
 
-        gameCollection.find().observeChanges({
-            changed: function(id, fields) {
-                console.log('game changed!');
-                if(fields.mapAccepted) {
-                    Session.set('inGame', true);
-                    $('#mapModal').modal('hide');
-                }
-            },
-            removed: function(id, collection){
-                    Session.set('inGame', false);
-                    $('#mapModal').modal('hide');
-            }
-        });
+    gameCollection.find().observe({
+        changed: function(newDocument, oldDocument) {
+            newDocument.__proto__ = new Game();
+            Session.set('inGame', newDocument);
+            $('#mapModal').modal('hide');
+        },
+        removed: function(oldDocument){
+            Session.set('inGame', undefined);
+            $('#mapModal').modal('hide');
+        }
+    });
 
 });

@@ -2,7 +2,7 @@ Canvas = function(){
 
   this.container;
   this.camera;
-  this.renderer;
+  this.renderer; 
   this.pointerDetectRay;
   this.projector, this.plane, this.scene;
   this.mouse2D, this.mouse3D, this.raycaster, this.objectHovered;
@@ -12,7 +12,7 @@ Canvas = function(){
   this.cameraTarget = new THREE.Vector3( 0, 20, 0 );
   this.ships = new THREE.Object3D();
   this.shipDictionary;
-  this.corals = new THREE.Object3D();
+  this.corals = new THREE.Object3D(); 
   this.water ;
   this.controls;
 
@@ -24,13 +24,13 @@ Canvas = function(){
   this.CLOSEST = 500;
   this.RENDER_HEIGHT = window.innerHeight; 
   this.RENDER_WIDTH = window.innerWidth;
-  this.directionVector = new THREE.Vector3();
+  this.directionVector = new THREE.Vector3(); 
 
 //  drawCanvas();
-  this.drawCanvas = function(shipDictionary, coralArray) {
+  this.drawCanvas = function(aMap) {
     console.log('drawing canvas');
-    this.shipDictionary = shipDictionary;
-    this.coralArray = coralArray;
+    this.shipDictionary = aMap.shipDictionary;
+    this.coralArray = aMap.grid.coralSpots;
 
     this.camera = new THREE.PerspectiveCamera( 22, this.RENDER_WIDTH / this.RENDER_HEIGHT, 1, 27000 )
     this.camera.position.x = this.radius * Math.sin( this.theta * Math.PI / 360 ) * Math.cos( this.phi * Math.PI / 360 )
@@ -70,29 +70,28 @@ Canvas = function(){
     for (i=0;i<30;i++){
       for (j=0;j<30;j++){
         var somePlane = aPlane.clone();
-        somePlane.position.x += i*25
-        somePlane.position.z += j*25
-        this.plane.add(somePlane);
+        somePlane.position.x += i*25;
+        somePlane.position.z += j*25;
+        this.plane.add(somePlane); 
       }
     }
     this.plane.name = 'plane';
     //this.scene.add(this.plane);
 
     this.raycaster = new THREE.Raycaster(); 
-    this.raycaster.ray.direction.set( 0,0,0);
+    this.raycaster.ray.direction.set( 0,0,0); 
     this.projector = new THREE.Projector();
     this.mouse2D = new THREE.Vector3( 0, 0, 0 );
 
     //addCorals
-    this.addCorals(coralArray);
+    this.addCorals(this.coralArray);
 
     //addShips
-    this.addShips(shipDictionary);
+    this.addShips(this.shipDictionary);
 
-    var m = (gameCollection.find().fetch()[0]).map;
-    m.__proto__ = new Map();
-    this.setVisibleFromName(m);
+    this.setVisibleFromName(aMap);
 
+    this.loadSkyBox();
 
 
 
@@ -326,7 +325,6 @@ Canvas = function(){
     aMeshMirror.name = 'mirror';
 
     this.scene.add(aMeshMirror);
-    this.loadSkyBox();
   }
 
 

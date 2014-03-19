@@ -1,20 +1,34 @@
   Meteor.startup(function() {
 
     return Meteor.methods({
+        removeAllInvites: function() {
+            return inviteCollection.remove({$or: [{opponent :this.userId}, {challenger: this.userId} ]});
 
-        removeAllInvites: function(aOpponent, aChallanger) {
-            console.log(aOpponent);
-            console.log(this.userId);
-
-        return inviteCollection.remove({$or: [{opponent :aOpponent}, {challenger: aChallanger} ]});
-
-    },
+        },
 
         removeAllGames: function(){
-            return gameCollection.remove({});
-        }
+            return gameCollection.remove({$or: [{opponent :this.userId}, {challenger: this.userId} ]});
+        },
 
-});
+        setAllGamesAsInactive: function(){
+            return gameCollection.update({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]},
+                {$set: {active: false}});
+        },
+
+        mapAccepted: function(){
+            return gameCollection.update({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]},
+                {$set: {mapAccepted: true}});
+        },
+        
+        askForNewMap: function() {
+            game.map = new Map();
+            game.mapsLeft--;
+            gameCollection.update({id: game.id}, {$set: {map: new Map()}}, {$inc: {mapsLeft: -1}});
+        },
+        removeActive: function(){
+            return gameCollection.remove({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]});
+        }
+    });
 
 });
 
@@ -34,20 +48,9 @@
     return eventName == 'chat';
 });
 
-  /**inviteStream: controls the flow between clients for the invitation process**/
-
-//only targeted clients can listen to the invitation response
-inviteStream.permissions.read(function(eventName) {
-    return eventName == this.userId;
-});
-
-//any client can send an event
-inviteStream.permissions.write(function(eventName) {
-    return true;
-});
-
+//return latest game
 Meteor.publish('games', function(id) {
-    return gameCollection.find({$or: [{opponent : id}, {challenger: id} ]});
+    return gameCollection.find({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]});
 });
 
 Meteor.publish('invites', function(id) {
@@ -77,7 +80,6 @@ gameCollection.allow({
     update: function(userId, doc, fieldNames, modifier) {
         if(fieldNames[0] == 'mapAccepted'){
             console.log("Accepting update to document ");
-            console.log(doc);
             return true;
         }
         else {
@@ -86,19 +88,12 @@ gameCollection.allow({
         }
     },
     remove: function(userId, doc) {
+        console.log(doc);
         if (userId == doc.opponent || userId == doc.challenger){
             return true;
         }
         else{
             return false;
         }
-    }
-});
-
-Meteor.methods({
-    askForNewMap: function() {
-        game.map = new Map();
-        game.mapsLeft--;
-        gameCollection.update({id: game.id}, {$set: {map: new Map()}}, {$inc: {mapsLeft: -1}});
     }
 });

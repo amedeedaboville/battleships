@@ -5,60 +5,58 @@
   <link href="css/style.css" rel="stylesheet">
   <link href="css/notify.css" rel="stylesheet">
   <link href="css/grid.css" rel="stylesheet">
-      <script id="vs" type="x-shader/x-vertex">
+  <script id="vs" type="x-shader/x-vertex">
+    varying vec2 vUv;
+    void main() {
+      vUv = uv;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+    }
+  </script>
 
-      varying vec2 vUv;
+  <script id="fs" type="x-shader/x-fragment">
 
-      void main() {
+    uniform sampler2D map;
+    uniform vec3 fogColor;
+    uniform float fogNear;
+    uniform float fogFar;
+    varying vec2 vUv;
+    void main() {
 
-        vUv = uv;
-        gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+      float depth = gl_FragCoord.z / gl_FragCoord.w;
+      float fogFactor = smoothstep( fogNear, fogFar, depth );
 
-      }
+      gl_FragColor = texture2D( map, vUv );
+      gl_FragColor.w *= pow( gl_FragCoord.z, 20.0 );
+      gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );
+    }
 
-    </script>
-
-    <script id="fs" type="x-shader/x-fragment">
-
-      uniform sampler2D map;
-
-      uniform vec3 fogColor;
-      uniform float fogNear;
-      uniform float fogFar;
-
-      varying vec2 vUv;
-
-      void main() {
-
-        float depth = gl_FragCoord.z / gl_FragCoord.w;
-        float fogFactor = smoothstep( fogNear, fogFar, depth );
-
-        gl_FragColor = texture2D( map, vUv );
-        gl_FragColor.w *= pow( gl_FragCoord.z, 20.0 );
-        gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );
-
-      }
-
-    </script>
+  </script>
 </head>
 
 <body>
+    {{> battleships}}
+</body>
+
+<template name="battleships">
     {{#if currentUser}}
       {{#if isInGame}}
         {{> header}}
         {{> game}}
       {{else}}
+        {{setGameInactive}}
         {{> header}}
         {{> lobby}}
-    {{/if}}
-    
+      {{/if}}
+
     {{else}} 
+      {{setGameInactive}}
       {{> loginPage}}
     {{/if}}
-</body>
+</template>
 
 <template name="messages">
-{{#each messages}}
-<strong>{{name}}:</strong> {{message}}<br>
-{{/each}}
+  {{#each messages}}
+    <strong>{{name}}:</strong> {{message}}<br>
+  {{/each}}
 </template>
+

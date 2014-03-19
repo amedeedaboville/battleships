@@ -1,19 +1,13 @@
-Deps.autorun(function (){
-    Meteor.subscribe('games', Meteor.userId());
-});
-
 Template.contextMenu.helpers({
     currentTurn: function() {
         return Session.get('currentTurn');
     },
 
     selectedShip: function(){
-        if (Session.get('selectedShip'))
-            return Session.get('selectedShip');
+        return Session.get('selectedShip');
     },
     selectableShip: function(){
-        var currentGame = gameCollection.find().fetch()[0];
-        var player = (Meteor.userId == currentGame.opponent)? 'opponent': 'challenger'; 
+        var player = (Meteor.userId == Session.get('inGame').opponent)? 'opponent': 'challenger'; 
         return (Session.get('selectedShip').owner == player);
 
     }

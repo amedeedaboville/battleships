@@ -10,7 +10,7 @@ Template.grid.helpers({
             }
             else {
                 console.log(game.map.getGrid('opponent'));
-                return game.map.getGrid('opponent');
+                return game.map.getGrid('opponent'); 
             }
         }
     }
@@ -21,29 +21,23 @@ canvas = undefined;
 Template.grid.created = function(){
 
         var controlsLoaded = function(){
-            canvas.controls = new THREE.OrbitControls(canvas.camera, canvas.renderer.domElement);
+            //canvas.controls = new THREE.OrbitControls(canvas.camera, canvas.renderer.domElement);
         }
         var waterLoaded = function(){
+            canvas = new Canvas();
+            var m = Session.get('inGame').map;
+            m.__proto__ = new Map();
+            canvas.drawCanvas(m);
             canvas.loadWater();
             canvas.water.render();
             mainLoop();
-
         }
 
     Meteor.Loader.loadJs('OrbitControls.js', controlsLoaded);
     Meteor.Loader.loadJs('water-material.js', waterLoaded);
-    console.log('loaded?');
 }
 
 Template.grid.rendered = function(){
-    canvas = new Canvas();
-    var currentGame = gameCollection.find().fetch()[0];
-    if (currentGame == undefined){
-        console.log('... *sighs');
-    }
-    else{
-        canvas.drawCanvas(currentGame.map.shipDictionary, currentGame.map.grid.coralSpots);
-    }
     // if (currentGame != undefined)
     // {
     //     var m = currentGame.map;
