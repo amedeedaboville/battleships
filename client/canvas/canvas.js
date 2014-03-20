@@ -92,10 +92,13 @@ Canvas = function(){
 
     this.loadSkyBox();
 
+    // myChart = document.getElementById('myCanvas');
 
-    var someCanvas = document.getElementById('myCanvas');
-    this.renderer = new THREE.WebGLRenderer({ canvas: someCanvas});
-    this.renderer.setSize( this.RENDER_WIDTH-40, this.RENDER_HEIGHT-180-5);
+    this.renderer = new THREE.WebGLRenderer();//$('#myChart')[0]);
+    this.renderer.setSize( this.RENDER_WIDTH-40, this.RENDER_HEIGHT-180-5)
+
+    $('#myChart').append(this.renderer.domElement)
+    this.renderer.domElement.id = 'myCanvas';
     this.render();
 }
 
