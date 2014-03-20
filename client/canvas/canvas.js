@@ -302,7 +302,7 @@ Canvas = function(){
     //this.water.position.y +=5;
 
     var aMeshMirror = new THREE.Mesh(
-      new THREE.PlaneGeometry(1000000, 1000000, 100, 100), 
+      new THREE.CubeGeometry(1000000, 1000000, 25, 100, 100), 
       this.water.material
     );
     aMeshMirror.add(this.water);
