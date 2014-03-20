@@ -15,6 +15,7 @@ Template.complexGrid.rendered = function(){
     else{
         console.log (this._firstTime);
         canvas.drawCanvas(m);
+        canvas.controls = new THREE.OrbitControls(canvas.camera);
         canvas.loadWater();
         mainLoop();
     }
@@ -53,6 +54,14 @@ Template.complexGrid.events({
     },
 
     'mousewheel canvas' : function (evt){
+        var delta = evt.wheelDeltaY/6;
+        var origin = {x: 0, y: 0, z: 0}
+        var distance = canvas.camera.position.distanceTo(origin)
+        var tooFar = distance  > canvas.FURTHEST
+        var tooClose = distance < canvas.CLOSEST
+        console.log(delta);
+        if (delta < 0 && tooFar) return
+        if (delta > 0 && tooClose) return
         canvas.controls.onMouseWheel(evt);
         canvas.controls.update();
     }
