@@ -92,13 +92,10 @@ Canvas = function(){
 
     this.loadSkyBox();
 
-    // myChart = document.getElementById('myCanvas');
+    myChart = document.getElementById('myCanvas');
 
-    this.renderer = new THREE.WebGLRenderer();//$('#myChart')[0]);
+    this.renderer = new THREE.WebGLRenderer({canvas: myChart});//$('#myChart')[0]);
     this.renderer.setSize( this.RENDER_WIDTH-40, this.RENDER_HEIGHT-180-5)
-
-    $('#myChart').append(this.renderer.domElement)
-    this.renderer.domElement.id = 'myCanvas';
     this.render();
 }
 
@@ -280,7 +277,7 @@ Canvas = function(){
   this.loadWater = function(){
     //Add light
     this.directionalLight = new THREE.DirectionalLight(0xffff55, 1);
-    this.directionalLight.position.set(-600, 300, 600); 
+    this.directionalLight.position.set(-1200, 600, 1800); 
     this.directionalLight.name = 'light';
     this.scene.add(this.directionalLight);
 
@@ -363,13 +360,13 @@ Canvas = function(){
   }
 
   this.displayThing = function() {
-    //this.water.render();
-    //this.renderer.render(this.scene, this.camera);
-    this.render();
+    this.water.render();
+    this.renderer.render(this.scene, this.camera);
   }
 
   this.updateThing = function() {
     this.water.material.uniforms.time.value += 1.0 / 60.0;
+    this.controls.update();
     this.displayThing();
   }
 
