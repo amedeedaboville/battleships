@@ -8,8 +8,8 @@ Template.game.helpers({
     },
 
     selectableShip: function(){
-        var player = (Meteor.userId == Session.get('inGame').opponent)? 'opponent': 'challenger'; 
-        return (Session.get('selectedShip').owner == player);
+        var player = (Meteor.userId() == Session.get('inGame').opponent)? 'opponent': 'challenger'; 
+        return true;//(Session.get('selectedShip').owner == player);
     }
 });
 
@@ -31,14 +31,14 @@ Template.contextMenu.events({
 
         if (action == 'moveShip'){
 
-            canvas.moveShip(Session.get('selectedShip'));
+            canvas.moveShip(Session.get('selectedShip'), 1, new THREE.Vector3(1,0,0));
             var m = Session.get('inGame').map;
             m.__proto__ = new Map();
             canvas.setVisibleFromName(m);
         }
 
         else if (action =='turnShipRight'){
-            canvas.rotateShip(Session.get('selectedShip'), new THREE.Vector3(0,1,0), 1.5* Math.PI);
+            canvas.rotateShip(Session.get('selectedShip'), new THREE.Vector3(0,1,0), -0.5* Math.PI);
         }
 
         else if (action =='turnShipLeft'){ 
