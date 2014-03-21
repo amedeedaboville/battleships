@@ -31,7 +31,7 @@ Template.contextMenu.events({
 
         if (action == 'moveShip'){
 
-            canvas.moveShip(Session.get('selectedShip'), 1, new THREE.Vector3(1,0,0));
+            canvas.moveShip(Session.get('selectedShip'), 2, new THREE.Vector3(1,0,0));
             var m = Session.get('inGame').map;
             m.__proto__ = new Map();
             canvas.setVisibleFromName(m);
