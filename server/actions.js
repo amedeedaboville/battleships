@@ -3,7 +3,6 @@ var turnShip = function(gameID, ship, direction) {
         var game = gameCollection.findOne({_id:gameID});
         var map = game.map;
         map.__proto__ = new Map();
-        map.grid.__proto__ = new Grid();
         if(game) {
             map.turnShip(ship, direction);
             console.log("done with map operation")
@@ -21,7 +20,6 @@ Meteor.methods({
         var game = gameCollection.findOne({_id:gameID});
         var map = game.map;
         map.__proto__ = new Map();
-        map.grid.__proto__ = new Grid();
         if(game) {
             map.moveShip(ship, position);
 
@@ -45,8 +43,7 @@ Meteor.methods({
         console.log("Got request in game" +gameID+" to shoot "+targetPosition+" a cannon")
             var game = gameCollection.findOne({_id:gameID});
             var map = game.map;
-                            map.__proto__ = new Map();
-            map.grid.__proto__ = new Grid();
+            map.__proto__ = new Map();
             if (game){
                 map.fireCannon(ship, targetPosition);
 
