@@ -28,7 +28,7 @@ Template.contextMenu.helpers({
 Template.contextMenu.events({
     'click .actionButton' : function(evt) {
         var action = evt.target.id;
-
+if(Session.get('complexGame')) {
         if (action == 'moveShip'){
 
             canvas.moveShip(Session.get('selectedShip'));
@@ -44,6 +44,7 @@ Template.contextMenu.events({
         else if (action =='turnShipLeft'){ 
             canvas.rotateShip(Session.get('selectedShip'), new THREE.Vector3(0,1,0), 0.5* Math.PI);
         }
+}
 
         console.log('selected action:');
         console.log(action);
