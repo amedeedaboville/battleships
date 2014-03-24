@@ -25,9 +25,22 @@
             game.mapsLeft--;
             gameCollection.update({id: game.id}, {$set: {map: new Map()}}, {$inc: {mapsLeft: -1}});
         },
+        
         removeActive: function(){
             return gameCollection.remove({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]});
+        },
+
+        changeTurn: function(){
+            return gameCollection.update({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]},
+                {$inc: {turn: 1}}); 
+        },
+        getTurn: function(){
+            var game = gameCollection.findOne({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]});
+            console.log(game);
+            console.log(game.turn);
+            return game.turn;
         }
+
     });
 
 });
@@ -76,6 +89,13 @@ inviteCollection.find({}).observe({
     }
 });
 
+gameCollection.find({}).observeChanges({
+    changed: function(id, fields) {
+        //if fields contains turn, notify the players.
+        console.log(fields);
+    }
+});
+
 gameCollection.allow({
     update: function(userId, doc, fieldNames, modifier) {
         if(fieldNames[0] == 'mapAccepted'){
@@ -97,3 +117,8 @@ gameCollection.allow({
         }
     }
 });
+
+sendGameMessage = function(message) {
+    gameMessageStream.emit('message', message);
+    console.log('message emitted on server');
+}

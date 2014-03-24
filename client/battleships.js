@@ -11,4 +11,8 @@ Template.battleships.helpers({
 Deps.autorun(function (){
     gameHandler = Meteor.subscribe('games', Meteor.userId());
     inviteHandler = Meteor.subscribe('invites', Meteor.userId());
+
+    gameMessageStream.on('message', function(message){
+    	$.UIkit.notify(message, {status: 'info'});
+    })
 });

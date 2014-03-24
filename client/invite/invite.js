@@ -38,4 +38,12 @@ Deps.autorun(function() {
         }
     });
 
+    gameCollection.find().observeChanges({
+    changed: function(id, fields) {
+        console.log('game CHanged turn (supposedly)');
+        console.log(fields);
+    }
+});
+
+
 });

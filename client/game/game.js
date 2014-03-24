@@ -4,7 +4,9 @@ Template.game.helpers({
     },
 
     selectedShip: function(){
-        return Session.get('selectedShip');
+        //opponent: pairs, challenger: impairs
+        var turn = (Meteor.userId() == Session.get('inGame').opponent)? 0 : 1;
+        return Session.get('selectedShip') && Meteor.call('getTurn') %2 == turn;
     },
 
     selectableShip: function(){
@@ -16,10 +18,17 @@ Template.game.helpers({
 
 Template.contextMenu.helpers({
     currentTurn: function() {
-        return Session.get('currentTurn');
+        var turn = (Meteor.userId() == Session.get('inGame').opponent)? 0 : 1;
+        var gameTurn = Session.get('inGame').turn;
+        console.log(gameTurn%2 == turn);
+        return (gameTurn %2 == turn);
     },
 
     selectedShip: function(){
+        //opponent: pairs, challenger: impairs
+        var turn = (Meteor.userId() == Session.get('inGame').opponent)? 0 : 1;
+        var gameTurn = Session.get('inGame').turn;
+        console.log(gameTurn%2 == turn);
         return Session.get('selectedShip');
     }
 
