@@ -24,7 +24,7 @@ Ship3D = function Ship3D(){
 			        if (aShip.owner == 'challenger')
 				        aCube.changeColor(0x280000); 
 				    else
-				        aCube.changeColor(0x00008B); 
+				        aCube.changeColor(0x00008B);
 			    }
 			    else{
 			        aCube = new Cube(i*aShip.orientation[0],i*aShip.orientation[1]);
@@ -43,6 +43,7 @@ Ship3D = function Ship3D(){
 				    	}
 					}
 				 }
+				 //aCube.name = aShip.id;
 		        this.ship.add(aCube.cube);
 		}
 

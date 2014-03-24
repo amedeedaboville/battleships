@@ -6,6 +6,8 @@ Canvas = function(){
   this.pointerDetectRay;
   this.projector, this.plane, this.scene;
   this.mouse2D, this.mouse3D, this.raycaster, this.objectHovered;
+  this.collisionRaycaster = new THREE.Raycaster();
+
   this.isMouseDown = false;
   this.onMouseDownPosition = new THREE.Vector2(), this.onMouseDownPhi = 0 , this.onMouseDownTheta = 0;
   this.radius = 2500, this.theta = 0, this.phi = 0;
@@ -29,14 +31,14 @@ Canvas = function(){
   this.directionVector = new THREE.Vector3(); 
 
 //  drawCanvas();
-  this.drawCanvas = function(aMap) {
-    console.log('drawing canvas');
-    this.shipDictionary = aMap.shipDictionary;
-    this.coralArray = aMap.grid.coralSpots;
-    this.camera = new THREE.PerspectiveCamera(55.0, this.RENDER_WIDTH / this.RENDER_HEIGHT, 0.5, 3000000);
-    this.camera.position.set(1000, 500, -1500);
+this.drawCanvas = function(aMap) {
+  console.log('drawing canvas');
+  this.shipDictionary = aMap.shipDictionary;
+  this.coralArray = aMap.grid.coralSpots;
+  this.camera = new THREE.PerspectiveCamera(55.0, this.RENDER_WIDTH / this.RENDER_HEIGHT, 0.5, 3000000);
+  this.camera.position.set(1000, 500, -1500);
 
-    this.scene = new THREE.Scene();
+  this.scene = new THREE.Scene();
 
     // Grid
     var squares = 25;
@@ -46,8 +48,8 @@ Canvas = function(){
     var material = new THREE.LineBasicMaterial( { color: 0x191970, linewidth: 2 } );
     line.material = material;//.color.setHex(0x191970);
 //    line.type = THREE.LinePieces;
-    line.name = 'grid';
-    this.scene.add(line);
+line.name = 'grid';
+this.scene.add(line);
 
 //0x4169E1
     // Plane
@@ -89,136 +91,179 @@ Canvas = function(){
     this.addShips(this.shipDictionary);
 
     this.setVisibleFromName(aMap);
-
+    var axisHelper = new THREE.AxisHelper( 355 );
+    axisHelper.position.y +=50;
+    this.scene.add( axisHelper );
     this.loadSkyBox();
 
+    myChart = document.getElementById('myCanvas');
 
-    var someCanvas = document.getElementById('myCanvas');
-    this.renderer = new THREE.WebGLRenderer({ canvas: someCanvas});
-    this.renderer.setSize( this.RENDER_WIDTH-40, this.RENDER_HEIGHT-180-5);
-    this.render();
+    this.renderer = new THREE.WebGLRenderer({canvas: myChart});//$('#myChart')[0]);
+this.renderer.setSize( this.RENDER_WIDTH-40, this.RENDER_HEIGHT-180-5)
+this.render();
 }
 
-  this.addShips = function(shipDictionary){
-    for (ship in shipDictionary){
-      var s = new Ship3D();
-      s.fromShip(shipDictionary[ship]);
-      s.ship.shipInfo = shipDictionary[ship];
-      this.ships.add(s.ship);
-    }
-    this.ships.name = 'ships';
-    this.scene.add(this.ships);
+this.addShips = function(shipDictionary){
+  for (ship in shipDictionary){
+    var s = new Ship3D();
+    s.fromShip(shipDictionary[ship]);
+    s.ship.shipInfo = shipDictionary[ship];
+    this.ships.add(s.ship);
+  }
+  this.ships.name = 'ships';
+  this.scene.add(this.ships);
+}
+
+this.addCorals = function(coralArray){
+  for (var i=0; i < coralArray.length;i++){
+    var c = new coral3D(coralArray[i][1],coralArray[i][0] )
+    this.corals.add(c.coral);
+  }
+  this.corals.name = 'corals';
+  this.scene.add(this.corals);
+
+}
+
+this.render = function() {
+  this.camera.lookAt( this.cameraTarget );
+  this.raycaster = this.projector.pickingRay( this.mouse2D.clone(), this.camera )
+  this.renderer.render( this.scene, this.camera );
+}
+
+this.findParentShip = function(element){
+  if(element == undefined){
+    return undefined;
   }
 
-  this.addCorals = function(coralArray){
-    for (var i=0; i < coralArray.length;i++){
-      var c = new coral3D(coralArray[i][1],coralArray[i][0] )
-      this.corals.add(c.coral);
+  var parent = element.object;
+  while(parent != undefined)
+  {
+    if (parent.name.length != 0){
+      return parent;
     }
-    this.corals.name = 'corals';
-    this.scene.add(this.corals);
+    parent = parent.parent;
 
   }
+  return undefined;
+}
 
-  this.zoom = function(delta) {
-    var origin = {x: 0, y: 0, z: 0}
-    var distance = this.camera.position.distanceTo(origin)
-    var tooFar = distance  > FURTHEST
-    var tooClose = distance < CLOSEST
-    if (delta > 0 && tooFar) return
-    if (delta < 0 && tooClose) return
-   //this.radius = distance // for mouse drag calculations to be correct
-    this.camera.translateZ( delta)
-    this.render()
+this.translateShip = function(name,x,z){
+  if(x)
+    this.getShip(name).translateX(x);
+  if(z)
+    this.getShip(name).translateZ(z);
+  this.render();
+}
 
-  }
-  this.render = function() {
-        this.camera.lookAt( this.cameraTarget );
-        this.raycaster = this.projector.pickingRay( this.mouse2D.clone(), this.camera )
-        this.renderer.render( this.scene, this.camera );
-    }
-
-  this.findParentShip = function(element){
-    if(element == undefined){
-      return undefined;
-    }
-
-    var parent = element.object;
-    while(parent != undefined)
-    {
-        if (parent.name.length != 0){
-          return parent;
-        }
-          parent = parent.parent;
-
-    }
-      return undefined;
-  }
-
-  this.translateShip = function(name,x,z){
-    if(x)
-      this.getShip(name).translateX(x);
-    if(z)
-      this.getShip(name).translateZ(z);
-    this.render();
-  }
-
-  this.getShip = function(shipName){
+this.getShip = function(shipName){
     return this.ships.getObjectByName(shipName);//this.ships;
   }
 
-  this.getIntersecting = function() {
+  this.getIntersectingObjects = function(objects) {
    // this.raycaster = this.projector.pickingRay( this.mouse2D.clone(), this.camera )
-    var intersections = this.raycaster.intersectObjects( this.ships.children, true )
-    if (intersections.length > 0) {
+   var intersections = this.raycaster.intersectObjects( objects, true )
+   if (intersections.length > 0) {
       var intersect = this.findParentShip(intersections[1]);//only 1 ship ever intersects
       return intersect
     }
   }
-  
+
+  this.getCollidingObjects = function(object, objectsToCheck, rayDirection, distance) {
+   // this.raycaster = this.projector.pickingRay( this.mouse2D.clone(), this.camera )
+   this.collisionRaycaster.set(object.position, rayDirection);
+   var intersections = this.collisionRaycaster.intersectObjects( objectsToCheck, true )
+
+   if (intersections.length > 0){
+      //object collides and the distance to it is higher than our move. move full distance
+      if (distance <= intersections[0].distance + 12.5) {
+        console.log('distance smaller than nearest object')
+        return distance;
+      }
+      //object collides and the distance to it is bigger than our move. move as much as possible
+      else{
+        console.log('distance greater than nearest object. MAKING POSSIBLE MOVE')
+        return intersections[0].distance +12.5;
+      }
+    }
+    //no objects collide. Free to move full distance
+    else{
+      console.log('no obstacles found');
+      return distance;
+    }
+  }
+
   this.interact = function() {
     if (typeof this.raycaster === 'undefined') return
 
-    if ( this.objectHovered ) {
-      this.objectHovered.traverse( function (node){
-        if (node.material){
-          node.material.opacity = 1;
-          node.material.transparent = true;
+      if ( this.objectHovered ) {
+        this.objectHovered.traverse( function (node){
+          if (node.material){
+            node.material.opacity = 1;
+            node.material.transparent = true;
+          }
+        })
+
+        this.objectHovered = null;
+      }
+
+      var intersect = this.getIntersectingObjects(this.ships.children);
+
+      if ( intersect ) {
+
+        this.objectHovered = intersect;
+        this.objectHovered.traverse( function (node){
+          if (node.material){
+            node.material.opacity = 0.5; 
+            node.material.transparent = true;
+          }
+        })
+      }
+    }
+
+    this.moveShip = function(aShip, distance, direction) {
+      if (typeof this.raycaster === 'undefined') return
+      this.directionVector = new THREE.Vector3(aShip.orientation[1],0,-aShip.orientation[0]);
+      var ourShip = this.getShip(aShip.id); 
+
+      var otherObjects = new THREE.Object3D();
+      this.ships.traverse(function (node) {
+        if (node.shipInfo){
+          if (node.shipInfo.owner != aShip.owner){
+            otherObjects.add(node.clone());
+          }
         }
       })
 
-      this.objectHovered = null;
-    }
+      otherObjects.add(this.corals.clone());
 
-    var intersect = this.getIntersecting()
+      var collided = this.getCollidingObjects(ourShip, otherObjects.children, this.directionVector, aShip.shipLength*25+25*distance); 
 
-    if ( intersect ) {
+      //var collided = distance*25; 
+      ourShip.translateOnAxis(direction, collided - aShip.shipLength*25);
 
-      this.objectHovered = intersect;
-      this.objectHovered.traverse( function (node){
-      if (node.material){
-          node.material.opacity = 0.5; 
-          node.material.transparent = true;
-        }
-      })
-    }
-  }
+}
 
-  this.moveShip = function(aShip) {
-    if (typeof this.raycaster === 'undefined') return
-      var orientation = aShip.orientation;
-      this.directionVector.setX(orientation[1]); 
-      this.directionVector.setZ(orientation[0]);
-      this.getShip(aShip.id).translateOnAxis(this.directionVector,25);
-  }
+this.rotateShip= function(aShip, axis, radians) {
+  rotObjectMatrix = new THREE.Matrix4();
+  rotObjectMatrix.makeRotationAxis(axis.normalize(), radians);
+  var aShip3D = this.getShip(aShip.id);
+  console.log(aShip3D);
 
-  this.rotateShip= function(aShip, axis, radians) {
-    rotObjectMatrix = new THREE.Matrix4();
-    rotObjectMatrix.makeRotationAxis(axis.normalize(), radians);
-    var aShip3D = this.getShip(aShip.id);
-    console.log(aShip3D);
-    aShip3D.matrix.multiply(rotObjectMatrix);
-    aShip3D.rotation.setEulerFromRotationMatrix(aShip3D.matrix);
+  aShip3D.matrix.multiply(rotObjectMatrix);
+  aShip3D.rotation.setEulerFromRotationMatrix(aShip3D.matrix);
+
+    // //set the orientation in aShip too!
+
+    //hack to get
+    var x = aShip.orientation[1]*Math.cos(radians) - aShip.orientation[0]*Math.sin(radians);
+    var y = aShip.orientation[1]*Math.sin(radians) + aShip.orientation[0]*Math.cos(radians);
+    console.log(x + 'and' + y);
+    aShip.orientation[1] = Math.round(x);
+    aShip.orientation[0] = Math.round(y);
+    console.log(aShip.orientation);
+    aShip3D.shipInfo = aShip;
+    Session.set('selectedShip', aShip);
+
   }
 
   this.setShipVisible = function(object, bool){
@@ -227,7 +272,7 @@ Canvas = function(){
 
   this.setVisible = function(x,y, bool){
     if (x+30*y >0 && x+30*y < 900)
-    this.plane.children[x+30*y].visible = bool;
+      this.plane.children[x+30*y].visible = bool;
   }
 
   this.setPlaneVisible = function(a, bool){
@@ -243,41 +288,41 @@ Canvas = function(){
 
 
 //EXTERNAL CODE!!!!
-  this.loadSkyBox = function() {
-    var aCubeMap = THREE.ImageUtils.loadTextureCube([
-      'img/px.jpg',
-      'img/nx.jpg',
-      'img/py.jpg',
-      'img/ny.jpg',
-      'img/pz.jpg',
-      'img/nz.jpg'
+this.loadSkyBox = function() {
+  var aCubeMap = THREE.ImageUtils.loadTextureCube([
+    'img/px.jpg',
+    'img/nx.jpg',
+    'img/py.jpg',
+    'img/ny.jpg',
+    'img/pz.jpg',
+    'img/nz.jpg'
     ]);
-    aCubeMap.format = THREE.RGBFormat;
+  aCubeMap.format = THREE.RGBFormat;
 
-    var aShader = THREE.ShaderLib['cube'];
-    aShader.uniforms['tCube'].value = aCubeMap;
+  var aShader = THREE.ShaderLib['cube'];
+  aShader.uniforms['tCube'].value = aCubeMap;
 
-    var aSkyBoxMaterial = new THREE.ShaderMaterial({
-      fragmentShader: aShader.fragmentShader,
-      vertexShader: aShader.vertexShader,
-      uniforms: aShader.uniforms,
-      depthWrite: false,
-      side: THREE.BackSide
-    });
+  var aSkyBoxMaterial = new THREE.ShaderMaterial({
+    fragmentShader: aShader.fragmentShader,
+    vertexShader: aShader.vertexShader,
+    uniforms: aShader.uniforms,
+    depthWrite: false,
+    side: THREE.BackSide
+  });
 
-    var aSkybox = new THREE.Mesh(
-      new THREE.CubeGeometry(1000000, 1000000, 1000000),
-      aSkyBoxMaterial
+  var aSkybox = new THREE.Mesh(
+    new THREE.CubeGeometry(1000000, 1000000, 1000000),
+    aSkyBoxMaterial
     );
-    aSkybox.name = 'skybox';
+  aSkybox.name = 'skybox';
 
-    this.scene.add(aSkybox);
-  }
+  this.scene.add(aSkybox);
+}
 
-  this.loadWater = function(){
+this.loadWater = function(){
     //Add light
     this.directionalLight = new THREE.DirectionalLight(0xffff55, 1);
-    this.directionalLight.position.set(-600, 300, 600); 
+    this.directionalLight.position.set(-1200, 600, 1800); 
     this.directionalLight.name = 'light';
     this.scene.add(this.directionalLight);
 
@@ -299,9 +344,9 @@ Canvas = function(){
     //this.water.position.y +=5;
 
     var aMeshMirror = new THREE.Mesh(
-      new THREE.PlaneGeometry(1000000, 1000000, 100, 100), 
+      new THREE.CubeGeometry(1000000, 1000000, 25, 100, 100), 
       this.water.material
-    );
+      );
     aMeshMirror.add(this.water);
     aMeshMirror.rotation.x = - Math.PI * 0.5;
     aMeshMirror.name = 'mirror';
@@ -342,32 +387,32 @@ Canvas = function(){
     // var min = 25*14-12.5-725;  
     for (var j=0; j< 1500; j++){
 //      for ( var i = 0; i < 9; i++ ) {
-          plane.position.x = Math.random() * 1000 - 500;
-          plane.position.y = Math.random() * 1000 - 500;
-          plane.position.z = j;
-          plane.rotation.z = Math.random() * Math.PI;
-          plane.scale.x = plane.scale.y = Math.random() * Math.random() * 10 + 0.5;
-        THREE.GeometryUtils.merge( geometry, plane );
+  plane.position.x = Math.random() * 1000 - 500;
+  plane.position.y = Math.random() * 1000 - 500;
+  plane.position.z = j;
+  plane.rotation.z = Math.random() * Math.PI;
+  plane.scale.x = plane.scale.y = Math.random() * Math.random() * 10 + 0.5;
+  THREE.GeometryUtils.merge( geometry, plane );
  //     }
-    }
+}
 
-    var mesh = new THREE.Mesh( geometry, material );
-    this.scene.add( mesh );
+var mesh = new THREE.Mesh( geometry, material );
+this.scene.add( mesh );
 
-    mesh = new THREE.Mesh( geometry, material );
-    mesh.position.z = - 8000;
-    this.scene.add( mesh );
-  }
+mesh = new THREE.Mesh( geometry, material );
+mesh.position.z = - 8000;
+this.scene.add( mesh );
+}
 
-  this.displayThing = function() {
-    //this.water.render();
-    //this.renderer.render(this.scene, this.camera);
-    this.render();
-  }
+this.displayThing = function() {
+  this.water.render();
+  this.renderer.render(this.scene, this.camera);
+}
 
-  this.updateThing = function() {
-    this.water.material.uniforms.time.value += 1.0 / 60.0;
-    this.displayThing();
-  }
+this.updateThing = function() {
+  this.water.material.uniforms.time.value += 1.0 / 60.0;
+  this.controls.update();
+  this.displayThing();
+}
 
 }
