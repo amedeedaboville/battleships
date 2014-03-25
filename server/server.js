@@ -117,8 +117,3 @@ gameCollection.allow({
         }
     }
 });
-
-sendGameMessage = function(message) {
-    gameMessageStream.emit('message', message);
-    console.log('message emitted on server');
-}
