@@ -21,26 +21,25 @@ var turnShipRight = function(map, ship) {
 Meteor.methods({
     completeTurn: function(action, ship, position){
         //get current Game
-        var game = gameCollection.findOne({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]}); //({_id:gameID});
-        var map = game.map;
+        var game = gameCollection.findOne({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]}); //Get the player's active game
+        var map = mapCollection.findOne({_id: game.mapID});
         map.__proto__ = new Map();
-        map.grid.__proto__ = new Grid();
+
         eval(action)(map, ship, position)
         
-        //update the game
-        game.map.shipDictionary[ship.id] = ship;
+        //update the collections
+        map.shipDictionary[ship.id] = ship;
+        mapCollection.update({_id:game.mapID}, map);
         gameCollection.update({_id:game._id}, game);
 
         //changeTurn
-        gameCollection.update({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]},
-                            {$inc: {turn: 1}}); 
+        gameCollection.update({_id: game._id}, {$inc: {turn: 1}}); 
     },
     fireCannon: function(gameID, ship, targetPosition){
         console.log("Got request in game" +gameID+" to shoot "+targetPosition+" a cannon")
             var game = gameCollection.findOne({_id:gameID});
-            var map = game.map;
-                            map.__proto__ = new Map();
-            map.grid.__proto__ = new Grid();
+            var map = mapCollection.findOne({_id: game.mapID});
+            map.__proto__ = new Map();
             if (game){
                 map.fireCannon(ship, targetPosition);
 
