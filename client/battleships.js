@@ -13,6 +13,8 @@ Deps.autorun(function (){
     inviteHandler = Meteor.subscribe('invites', Meteor.userId());
 
     gameMessageStream.on('message', function(message){
+        console.log('emit message');
+        console.log(message);
     	$.UIkit.notify(message, {status: 'info'});
     })
 });

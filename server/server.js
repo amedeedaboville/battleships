@@ -61,6 +61,14 @@
     return eventName == 'chat';
 });
 
+  gameMessageStream.permissions.read(function(message) {
+    return gameCollection.findOne({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]});
+});
+
+  gameMessageStream.permissions.write(function(message) {
+    return gameCollection.findOne({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]});
+});
+
 //return latest game
 Meteor.publish('games', function(id) {
     return gameCollection.find({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]});

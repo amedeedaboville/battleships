@@ -1,3 +1,8 @@
+var sendGameMessage = function(message) {
+    gameMessageStream.emit('message', message);
+    console.log('message emitted on server');
+}
+
 var turnShip = function(map, ship, direction) {
     console.log("Got request to turn " + ship.id + " in direction " + direction);
     map.turnShip(ship, direction);
@@ -31,7 +36,8 @@ Meteor.methods({
         map.shipDictionary[ship.id] = ship;
         mapCollection.update({_id:game.mapID}, map);
         gameCollection.update({_id:game._id}, game);
-
+        sendGameMessage(action);
+        
         //changeTurn
         gameCollection.update({_id: game._id}, {$inc: {turn: 1}}); 
     },
