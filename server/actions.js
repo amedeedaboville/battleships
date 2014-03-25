@@ -22,13 +22,12 @@ Meteor.methods({
     completeTurn: function(action, ship, position){
         //get current Game
         var game = gameCollection.findOne({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]}); //({_id:gameID});
-        var map = game.map;
+        var map = mapCollection.findOne({_id:game.mapID});
         map.__proto__ = new Map();
-        map.grid.__proto__ = new Grid();
         eval(action)(map, ship, position)
         
         //update the game
-        game.map.shipDictionary[ship.id] = ship;
+        map.shipDictionary[ship.id] = ship;
         gameCollection.update({_id:game._id}, game);
 
         //changeTurn
@@ -38,14 +37,13 @@ Meteor.methods({
     fireCannon: function(gameID, ship, targetPosition){
         console.log("Got request in game" +gameID+" to shoot "+targetPosition+" a cannon")
             var game = gameCollection.findOne({_id:gameID});
-            var map = game.map;
-                            map.__proto__ = new Map();
-            map.grid.__proto__ = new Grid();
+            var map = mapCollection.findOne({_id:game.mapID});
+            map.__proto__ = new Map();
             if (game){
                 map.fireCannon(ship, targetPosition);
 
                 console.log("done with the map operation.");
-                game.map.shipDictionary[ship.id] = ship;
+                map.shipDictionary[ship.id] = ship;
 
                 gameCollection.update({_id:gameID}, game);
                 console.log("done updating game, square should be shot")
