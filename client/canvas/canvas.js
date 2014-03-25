@@ -34,7 +34,7 @@ Canvas = function(){
 this.drawCanvas = function(aMap) {
   console.log('drawing canvas');
   this.shipDictionary = aMap.shipDictionary;
-  this.coralArray = aMap.grid.coralSpots;
+  this.coralArray = aMap.coralSpots;
   this.camera = new THREE.PerspectiveCamera(55.0, this.RENDER_WIDTH / this.RENDER_HEIGHT, 0.5, 3000000);
   this.camera.position.set(1000, 500, -1500);
 

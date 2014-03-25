@@ -27,6 +27,7 @@
 
 
 <template name="contextMenu">
+{{#if currentTurn}}
 {{#with selectedShip}}
     <div class="column-md-2">
         <div class="row">
@@ -60,6 +61,7 @@
 
     </div>
 {{/with}}
+{{/if}}
 </template>
 
 <template name="opponentMenu">
