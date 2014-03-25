@@ -51,5 +51,4 @@ Deps.autorun(function() {
             $('#mapModal').modal('hide');
         }
     });
-
 });
