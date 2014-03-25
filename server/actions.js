@@ -1,3 +1,8 @@
+var sendGameMessage = function(message) {
+    gameMessageStream.emit('message', message);
+    console.log('message emitted on server');
+}
+
 var turnShip = function(map, ship, direction) {
     console.log("Got request to turn " + ship.id + " in direction " + direction);
     map.turnShip(ship, direction);
@@ -30,7 +35,8 @@ Meteor.methods({
         //update the game
         game.map.shipDictionary[ship.id] = ship;
         gameCollection.update({_id:game._id}, game);
-
+        sendGameMessage(action);
+        
         //changeTurn
         gameCollection.update({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]},
                             {$inc: {turn: 1}}); 
