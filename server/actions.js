@@ -41,6 +41,7 @@ Meteor.methods({
         //changeTurn
         gameCollection.update({_id: game._id}, {$inc: {turn: 1}}); 
     },
+
     //This method is used to cause damage to other ships -- represents the firing of a cannon, a torpedo, or a mine explosion
     useWeapon: function(gameID, ship, weaponType, targetPosition){
         var targetSquare = map.getObjectAtPosition(targetPosition);
@@ -49,7 +50,7 @@ Meteor.methods({
         var map = mapCollection.findOne({_id:game.mapID});
 
         //Represents the area of effect as produced by a weapon being used
-        var AoE = [];
+        var dangerZone = [];
             map.__proto__ = new Map();
 
         if (game){
@@ -60,7 +61,7 @@ Meteor.methods({
                 case "cannon":
                     console.log("Preparing to fire cannon at position " +targetSquare.coordinateString()+" ("+ship.shipName+")");
                     map.fireCannon(ship, targetSquare);
-                    map.applyDamage(AoE);
+                    map.applyDamage(dangerZone);
                     //Simply apply damage to the shipSquare
                     //Generate a notification
                     break;
@@ -70,8 +71,8 @@ Meteor.methods({
                     break;
                 case "torpedo":
                     console.log("Preparing to fire torpedo at position " +targetSquare.coordinateString()+" ("+ship.shipName+")");
-                    AoE = map.fireTorpedo(ship, targetSquare);
-                    map.applyDamage(AoE);
+                    dangerZone = map.fireTorpedo(ship, targetSquare);
+                    map.applyDamage(dangerZone);
                     break;
             }
 //TODO: Move all below this somewhere better
