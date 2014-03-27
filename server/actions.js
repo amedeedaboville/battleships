@@ -54,7 +54,7 @@ Meteor.methods({
 
         if (game){
             //Determine which map method to invoke
-            map.fireCannon(ship, targetPosition);
+            map.fireCannon(ship, targetSquare);
             map.shipDictionary[ship.id] = ship;
             switch (weaponType){
                 case "cannon":
