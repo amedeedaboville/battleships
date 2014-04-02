@@ -43,7 +43,7 @@ Template.grid.events({
         var currentGame = getCurrentGame();
         console.log(action);
 
-        if(action != undefined && action !== "") {
+        if(action != undefined && action != "" && action != "turnShipLeft" && action != "turnShipRight") {
             var position = JSON.parse($(evt.target).attr('position'));
             console.log("completing action " + action + " with position " + position);
             Meteor.call('completeTurn', action, Session.get('selectedShip'), position);

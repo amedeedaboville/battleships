@@ -52,5 +52,10 @@ Template.contextMenu.events({
         console.log('selected action:');
         console.log(action);
         Session.set('selectedAction', action);
+    },
+    'click #turnShipLeft' : function(evt) {
+        console.log('turning ship counterclockwise');
+        Meteor.call('completeTurn', 'turnShipLeft', Session.get('selectedShip'));
     }
+
 });

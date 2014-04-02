@@ -5,7 +5,8 @@ var sendGameMessage = function(message) {
 
 var turnShip = function(map, ship, direction) {
     console.log("Got request to turn " + ship.id + " in direction " + direction);
-    map.turnShip(ship, direction);
+    console.log("This is ship rotation " + ship.orientation + ",and stern: " + ship.sternPosition + ",and bow: " +ship.bowPosition);
+    map.turnShip(ship, direction); 
     console.log("done with map operation")
 };
 
@@ -16,10 +17,10 @@ var moveShip = function(map, ship, position) {
 };
 
 var turnShipLeft = function(map, ship) {
-    turnShip(map, ship, "counterclockwise");
+    turnShip(map, ship, Math.PI*0.5);
 };
 var turnShipRight = function(map, ship) {
-    turnShip(map, ship, "clockwise");
+    turnShip(map, ship, Math.PI*1.5);
 };
 
 
