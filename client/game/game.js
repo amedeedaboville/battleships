@@ -55,6 +55,8 @@ Template.contextMenu.events({
     },
     'click #turnShipLeft' : function(evt) {
         console.log('turning ship counterclockwise');
+        //map.turnShip(ship, Math.PI*0.5); 
+
         Meteor.call('completeTurn', 'turnShipLeft', Session.get('selectedShip'));
     }
 
