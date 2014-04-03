@@ -1,16 +1,16 @@
 <template name="complexGrid">
-    {{#constant}}
+    <!-- {{#constant}} -->
 		<div id="myChart">
     <canvas id="myCanvas">
     </canvas>
 		</div>
-    {{/constant}}
+    <!-- {{/constant}} -->
 </template>
 
 <template name="grid">
   {{#each rows}}
     {{#each this}}
-    <div class="square {{this.css}}" {{this.attributes}} {{this.visibility}}>
+    <div class="square {{this.css}}" shipId={{this.shipId}} id='[{{this.position}}]'>
     </div>
     {{/each}}
   {{/each}}

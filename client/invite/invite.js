@@ -39,10 +39,9 @@ Deps.autorun(function() {
 
     gameCollection.find().observe({
         changed: function(newDocument, oldDocument) {
-            Session.set('inGame', newDocument);
             Meteor.subscribe('maps', newDocument.mapID);
             Session.set('currentMap', mapCollection.findOne({_id: newDocument.mapID}));
-            console.log("Now in a game, with map id " + newDocument.mapID)
+            Session.set('inGame', newDocument);
             $('#mapModal').modal('hide');
         },
         removed: function(oldDocument){

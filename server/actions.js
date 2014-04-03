@@ -1,19 +1,19 @@
 var sendGameMessage = function(message) {
     gameMessageStream.emit('message', message);
-    console.log('message emitted on server');
+    //console.log('message emitted on server');
 }
 
 var turnShip = function(map, ship, direction) {
-    console.log("Got request to turn " + ship.id + " in direction " + direction);
-    console.log("This is ship rotation " + ship.orientation + ",and stern: " + ship.sternPosition + ",and bow: " +ship.bowPosition);
+    //console.log("Got request to turn " + ship.id + " in direction " + direction);
+    //console.log("This is ship rotation " + ship.orientation + ",and stern: " + ship.sternPosition + ",and bow: " +ship.bowPosition);
     map.turnShip(ship, direction); 
-    console.log("done with map operation")
+    //console.log("done with map operation")
 };
 
 var moveShip = function(map, ship, position) {
-    console.log("Got request to move " + ship.id + " to position " + position);
+    //console.log("Got request to move " + ship.id + " to position " + position);
     map.moveShip(ship, position);
-    console.log("done with map operation")
+    //console.log("done with map operation")
 };
 
 var turnShipLeft = function(map, ship) {

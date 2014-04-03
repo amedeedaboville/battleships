@@ -20,7 +20,6 @@ Template.contextMenu.helpers({
     currentTurn: function() {
         var turn = (Meteor.userId() == Session.get('inGame').opponent)? 0 : 1;
         var gameTurn = Session.get('inGame').turn;
-        console.log(gameTurn%2 == turn);
         return (gameTurn %2 == turn);
     },
 
@@ -28,7 +27,6 @@ Template.contextMenu.helpers({
         //opponent: pairs, challenger: impairs
         var turn = (Meteor.userId() == Session.get('inGame').opponent)? 0 : 1;
         var gameTurn = Session.get('inGame').turn;
-        console.log(gameTurn%2 == turn);
         return Session.get('selectedShip');
     }
 

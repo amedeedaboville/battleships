@@ -1,7 +1,7 @@
 <template name="loginPage">
 <div id=loginForms>
   {{#if newPassword}}
-    {{> new-password}}
+    {{> newPasswordTemplate}}
   {{else}}
     <div class="row">
       <div class="col-lg-1">
@@ -41,13 +41,13 @@
 <form class="register-form" role="form" >
   <h2 class="register-form-heading">Register</h2>
   <input type="text" class="form-control" id="register-name" placeholder="Full Name" required autofocus>
-  <input type="text" class="form-control" id="register-email"placeholder="Email address" required autofocus>
+  <input type="text" class="form-control" id="register-email" placeholder="Email address" required autofocus>
   <input type="password" class="form-control" id="register-password" placeholder="Password" required>
   <button class="btn btn-lg btn-primary btn-block" type="submit" id="register-button">Register</button>
 </form>
 </template>
 
-<template name="new-password">
+<template name="newPasswordTemplate">
 <h2>Enter your new password</h2>
 <form id="new-password" action="action">
   <input type="text" class="form-control" id="new-password" placeholder="New Password" required/>
