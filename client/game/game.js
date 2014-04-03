@@ -2,17 +2,6 @@ Template.game.helpers({
     complexGame: function(){
         return Session.get('complexGame');
     },
-
-    selectedShip: function(){
-        //opponent: pairs, challenger: impairs
-        var turn = (Meteor.userId() == Session.get('inGame').opponent)? 0 : 1;
-        return Session.get('selectedShip') && Meteor.call('getTurn') %2 == turn;
-    },
-
-    selectableShip: function(){
-        var player = (Meteor.userId() == Session.get('inGame').opponent)? 'opponent': 'challenger'; 
-        return true;//(Session.get('selectedShip').owner == player);
-    }
 });
 
 
