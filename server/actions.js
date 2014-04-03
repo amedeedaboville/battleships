@@ -17,10 +17,10 @@ var moveShip = function(map, ship, position) {
 };
 
 var turnShipLeft = function(map, ship) {
-    turnShip(map, ship, Math.PI*0.5);
+    turnShip(map, ship, Math.PI*1.5);
 };
 var turnShipRight = function(map, ship) {
-    turnShip(map, ship, Math.PI*1.5);
+    turnShip(map, ship, Math.PI*0.5);
 };
 
 
