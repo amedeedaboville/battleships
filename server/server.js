@@ -101,6 +101,7 @@ inviteCollection.find().observe({
             var aGame = new Game(oldDocument.challenger, oldDocument.opponent);
 
             //create a new Map
+            console.log('creating a new Map');
             aGame.mapID = mapCollection.insert(new Map());
             // mapID = mapCollection.insert(new Map());
             inviteCollection.update({_id: oldDocument._id}, {$set: {mapID: aGame.mapID, accepted: undefined}});

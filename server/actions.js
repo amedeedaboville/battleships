@@ -31,11 +31,20 @@ Meteor.methods({
         var map = mapCollection.findOne({_id: game.mapID});
         map.__proto__ = new Map();
 
-        eval(action)(map, ship, position)
+        console.log(map.shipDictionary[ship.id].sternPosition);
+        eval(action)(map, ship, position);
+        console.log(map.shipDictionary[ship.id].sternPosition);
         
         //update the collections
         map.shipDictionary[ship.id] = ship;
-        mapCollection.update({_id:game.mapID}, map);
+
+        console.log(game.mapID);
+        map.drawGrid();
+        console.log(mapCollection.findOne({_id: game.mapID}).squares[10][23]);
+        mapCollection.update({_id:game.mapID}, map, function(error, success){console.log(error); console.log(success);});
+        console.log(mapCollection.findOne({_id: game.mapID}).squares[10][23]);
+
+
         gameCollection.update({_id:game._id}, game);
         sendGameMessage(action);
         

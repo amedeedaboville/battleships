@@ -5,17 +5,25 @@ Template.battleships.helpers({
 
     hasCurrentMap: function(){
         if (Session.get('currentMap')){
-            Meteor.subscribe('maps', Session.get('currentMap'), function(){
-                console.log('subscribing again');
-                console.log(mapCollection.findOne());
+            if(!Session.get('currentMap').squares){
+                Meteor.subscribe('maps', Session.get('currentMap'), function(){
+                    console.log('subscribing again');
+                    console.log(mapCollection.findOne());
+                    if (mapCollection.findOne()){
+                        Session.set('currentMap', mapCollection.findOne());
+                        $('#mapModal').modal();
+                    }
+                });
+            }
+            else {
+                console.log('updating our session variable...')
                 if (mapCollection.findOne()){
                     Session.set('currentMap', mapCollection.findOne());
-                    $('#mapModal').modal();
                 }
-            });
+            }
         }
         else{
-            $('#mapModal').modal('hide');
+            //$('#mapModal').modal('hide');
         };
 
         //as soon as
