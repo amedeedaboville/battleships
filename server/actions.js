@@ -23,6 +23,14 @@ var turnShipRight = function(map, ship) {
     turnShip(map, ship, Math.PI*0.5);
 };
 
+var layMine = function(map, ship, position) {
+    map.layMine(ship, position);
+};
+
+var pickupMine = function(map, ship, position) {
+    map.pickupMine(ship, position);
+};
+
 
 Meteor.methods({
     completeTurn: function(action, ship, position){
