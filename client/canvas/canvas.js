@@ -276,7 +276,8 @@ this.rotateShip= function(aShip, axis, radians) {
   }
 
   this.setPlaneVisible = function(a, bool){
-    this.plane.children[a[0]+30*a[1]].visible = !bool;
+      console.log(a);
+    // this.plane.children[a[0]+30*a[1]].visible = !bool;
   }
 
   this.setVisibleFromName = function(m){

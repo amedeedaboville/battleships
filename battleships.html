@@ -52,6 +52,7 @@
       {{setGameInactive}}
       {{> loginPage}}
     {{/if}}
+    {{>modal}}
 </template>
 
 <template name="messages">
@@ -60,3 +61,24 @@
   {{/each}}
 </template>
 
+
+<template name="modal">
+<!-- Modal -->
+<div class="modal fade" id="mapModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" id="closeMapButton" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">Map Setup</h4>
+            </div>
+            <div class="modal-body">
+                <!-- {{>grid}} -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" id="acceptMapButton">Accept</button>
+                <button type="button" class="btn btn-primary" id="newMapButton">New Map</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal --> 
+</template>

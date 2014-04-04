@@ -2,11 +2,7 @@
     {{#if complexGame}}
         {{> complexGrid}}
         <div id="contextMenu">
-        {{#if selectedShip}}
-            {{#if selectableShip}}
-                {{> contextMenu}}
-            {{/if}}
-        {{/if}}
+            {{> contextMenu}}
         </div>
     {{else}}
         <div id="gameui" class="container-fluid">

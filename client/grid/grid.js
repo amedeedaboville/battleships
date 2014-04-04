@@ -32,7 +32,7 @@ Template.grid.rendered = function(){
             keyvar = JSON.parse(keys[i]);
             var squareVisible = map.squares[keyvar[0]][keyvar[1]];
             squareVisible = new Square();
-            squareVisible.visibility = "id=visible";
+            //squareVisible.visibility = "id=visible";
         }
     }
 }
@@ -43,8 +43,8 @@ Template.grid.events({
         var currentGame = getCurrentGame();
         console.log(action);
 
-        if(action != undefined && action !== "") {
-            var position = JSON.parse($(evt.target).attr('position'));
+        if(action != undefined && action != "" && action != "turnShipLeft" && action != "turnShipRight") {
+            var position = JSON.parse(evt.target.id);
             console.log("completing action " + action + " with position " + position);
             Meteor.call('completeTurn', action, Session.get('selectedShip'), position);
             // Meteor.call(action, currentGame._id, Session.get('selectedShip'), position, function(error,result){if(result)$.UIkit.notify('Cruiser fired a cannonShot at position (' + position[0] + "," + position[1]+')')});

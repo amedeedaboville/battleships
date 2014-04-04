@@ -11,8 +11,7 @@ Template.complexGrid.created = function(){
 
 Template.complexGrid.rendered = function(){
     console.log('grid rendered');
-    var m = Session.get('inGame').map;
-    m.__proto__ = new Map();
+    var m = getCurrentMap();
 
     if (complexGridState == 'C'){
         console.log('firstTime');
@@ -46,9 +45,15 @@ Template.complexGrid.rendered = function(){
 Template.complexGrid.events({
     'click canvas' : function (evt){
         evt.preventDefault();
-        console.log('lol');
         if (canvas.objectHovered){
-          Session.set('selectedShip', canvas.objectHovered.shipInfo);
+
+            //find out if you are the opponent
+            var owner = Meteor.userId() == Session.get('inGame').opponent? 'opponent': 'challenger';
+            console.log(owner);
+            console.log(canvas.objectHovered.shipInfo.owner);
+            if (canvas.objectHovered.shipInfo.owner == owner){
+                Session.set('selectedShip', canvas.objectHovered.shipInfo);
+            }
         }
         return false;
     },
@@ -85,15 +90,14 @@ Template.complexGrid.events({
     },
 
     'mousewheel canvas' : function (evt){
-        var delta = evt.wheelDeltaY/6;
+        var delta = evt.originalEvent.wheelDeltaY/6;
         var origin = {x: 0, y: 0, z: 0}
         var distance = canvas.camera.position.distanceTo(origin)
         var tooFar = distance  > canvas.FURTHEST
         var tooClose = distance < canvas.CLOSEST
-        console.log(delta);
         if (delta < 0 && tooFar) return
         if (delta > 0 && tooClose) return
-        canvas.controls.onMouseWheel(evt);
+        canvas.controls.onMouseWheel(evt.originalEvent);
         canvas.controls.update();
     }
 })
