@@ -1,3 +1,4 @@
+Deps.autorun(function (){
     inviteCollection.find({opponent : Meteor.userId()}).observeChanges({
         added: function(id, fields) {
             user = Meteor.users.findOne(fields.challenger)
@@ -40,6 +41,7 @@
         //a game was inserted. 
         added: function(newDocument, oldDocument){
             console.log('a Game has been inserted');
+//            Session.set('inGame', )
             console.log(newDocument);
 
         },
@@ -72,4 +74,4 @@
             // $('#mapModal').modal('hide');
         }
     });
-
+});
