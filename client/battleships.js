@@ -6,6 +6,8 @@ Template.battleships.helpers({
     hasCurrentMap: function(){
         if (Session.get('currentMap')){
             Meteor.subscribe('maps', Session.get('currentMap'), function(){
+                console.log('subscribing again');
+                console.log(mapCollection.findOne());
                 if (mapCollection.findOne()){
                     Session.set('currentMap', mapCollection.findOne());
                     $('#mapModal').modal();
