@@ -85,20 +85,12 @@ Meteor.publish('invites', function(id) {
     return inviteCollection.find({$or: [{opponent : id}, {challenger: id} ]});
 });
 
-Meteor.publish('maps', function(id) {
-    return inviteCollection.find({_id: id});
-});
-
 inviteCollection.find().observe({
     changed: function(oldDocument) {
         if (oldDocument.accepted){
             //create a new Game
             //console.log('a game was accepted');
-            var aMap = new Map();
-            var aMapId = mapCollection.insert(aMap);
-
             var aGame = new Game(oldDocument.challenger, oldDocument.opponent);
-            aGame.mapID = aMapId;
             var gameID = gameCollection.insert(aGame);
         }
     }

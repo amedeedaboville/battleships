@@ -21,7 +21,6 @@ Deps.autorun(function() {
     gameCollection.find().observe({
         added: function(newDocument, oldDocument){
             Session.set('currentMap', newDocument.map);
-            Session.set('mapId',newDocument.mapID);
             Session.set('showModal', true);
         },
         changed: function(newDocument, oldDocument) {
@@ -39,7 +38,6 @@ Deps.autorun(function() {
                  }
                  else if (newDocument.mapsLeft < oldDocument.mapsLeft){
                      console.log('ZOMG! we need a new map!');
-//                     Session.set('currentMap', newDocument.mapID)
                      $('#acceptMapButton').prop('disabled', false);
                  }
                  else{

@@ -20,7 +20,6 @@ Template.battleships.helpers({
 Deps.autorun(function (){
     gameHandler = Meteor.subscribe('games', Meteor.userId());
     inviteHandler = Meteor.subscribe('invites', Meteor.userId());
-    mapHandler = Meteor.subscribe('maps', Session.get('mapId'));
 
     gameMessageStream.on('message', function(message){
         console.log('emit message');
