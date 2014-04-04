@@ -4,7 +4,34 @@ Template.battleships.helpers({
     },
 
     hasCurrentMap: function(){
-        return Session.get('currentMap');
+        if (Session.get('currentMap')){
+            if (!Session.get('currentMap').squares){
+                console.log('here mapitito');
+
+                Meteor.subscribe('maps', Session.get('currentMap'), function(){
+                    if (mapCollection.findOne()){
+                        console.log('displaying modal');
+                        $('#mapModal').modal();
+                        Session.set('currentMap', mapCollection.findOne());
+                    }
+                });
+            }
+            else{
+            console.log('here mapita');
+            //$('#mapModal').modal();
+//                Session.set('currentMap', mapCollection.findOne());
+            };
+        }
+        else{
+            console.log('here map')
+            //$('#mapModal').modal('hide');
+        };
+
+        //as soon as
+        if (gameCollection.findOne() == undefined){
+            console.log('here mapx2')
+            //$('#mapModal').modal('hide');
+        };
     },
 
     setGameInactive: function(){

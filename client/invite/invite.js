@@ -20,9 +20,9 @@ Deps.autorun(function() {
 
     inviteCollection.find({$or: [{opponent : Meteor.userId()}, {challenger: Meteor.userId()} ]}).observeChanges({
         changed: function(id, fields) {
-            if (fields.gameID != 0 && fields.gameID != undefined) {
+            if (fields.mapID) {
                 Meteor.call("removeAllInvites")
-                $('#mapModal').modal();
+                Session.set('currentMap', fields.mapID);
             }
         }
     });
@@ -33,21 +33,38 @@ Deps.autorun(function() {
             Session.set('currentMap', newDocument);
         },
         removed: function(old) {
-            Session.set('currentMap', undefined);
+            //Session.set('currentMap', undefined);
         }
     });
 
     gameCollection.find().observe({
         changed: function(newDocument, oldDocument) {
-            Meteor.subscribe('maps', newDocument.mapID);
-            Session.set('currentMap', mapCollection.findOne({_id: newDocument.mapID}));
-            Session.set('inGame', newDocument);
-            $('#mapModal').modal('hide');
+            if (newDocument.mapsLeft > 0){
+                 if (newDocument.mapAccepted == 13){
+                     $('#mapModal').modal('hide');
+                     Meteor.subscribe('maps', newDocument.mapID);
+                     Session.set('inGame', newDocument);
+                 }
+                 else if (newDocument.mapsLeft < oldDocument.mapsLeft){
+                     console.log('ZOMG! we need a new map!');
+                     Session.set('currentMap', newDocument.mapID)
+                     $('#acceptMapButton').prop('disabled', false);
+                 }
+                 else{
+                     console.log('map received?');
+                 }
+            }
+                 else{
+                     console.log('we will close this cuz you guys don\'t wanna play =(')
+                    $('#newMapButton').prop('disabled', true);
+            }
         },
         removed: function(oldDocument){
-            Session.set('inGame', undefined);
-            Session.set('currentMap', undefined);
+            $('#acceptMapButton').prop('disabled', false);
+            $('#newMapButton').prop('disabled', false);
             $('#mapModal').modal('hide');
+            Session.set('inGame', undefined);
+            //Session.set('currentMap', undefined);
         }
     });
 });
