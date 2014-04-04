@@ -5,20 +5,32 @@ Template.battleships.helpers({
 
     hasCurrentMap: function(){
         if (Session.get('currentMap')){
-            Meteor.subscribe('maps', Session.get('currentMap'), function(){
-                if (mapCollection.findOne()){
-                    Session.set('currentMap', mapCollection.findOne());
-                    $('#mapModal').modal();
-                }
-            });
+            if (!Session.get('currentMap').squares){
+                console.log('here mapitito');
+
+                Meteor.subscribe('maps', Session.get('currentMap'), function(){
+                    if (mapCollection.findOne()){
+                        console.log('displaying modal');
+                        $('#mapModal').modal();
+                        Session.set('currentMap', mapCollection.findOne());
+                    }
+                });
+            }
+            else{
+            console.log('here mapita');
+            //$('#mapModal').modal();
+//                Session.set('currentMap', mapCollection.findOne());
+            };
         }
         else{
-            $('#mapModal').modal('hide');
+            console.log('here map')
+            //$('#mapModal').modal('hide');
         };
 
         //as soon as
         if (gameCollection.findOne() == undefined){
-            $('#mapModal').modal('hide');
+            console.log('here mapx2')
+            //$('#mapModal').modal('hide');
         };
     },
 
