@@ -86,28 +86,29 @@ Meteor.methods({
         }
                   },
 
-                      //This method is used to cause damage to other ships -- represents the firing of a cannon, a torpedo, or a mine explosion
-useWeapon: function(gameID, ship, weaponType, targetPosition){
+/**
+* NAME: useWeapon (GameID gameID, Ship ship, String weaponType, Position targetPosition)
+* PURPOSE: This method is used to cause damage to other ships -- represents the firing of a cannon, a torpedo, or a mine explosion
+*/
+useWeapon: function(gameID, ship, weaponType, targetPosition) {
                var targetSquare = map.getObjectAtPosition(targetPosition);
                //Get game info
                var game = gameCollection.findOne({_id:gameID});
+
+        if (game){ //Check to make sure the game is legal
+               //get map data
                var map = mapCollection.findOne({_id:game.mapID});
+               map.__proto__ = new Map();
 
-        //Represents the area of effect as produced by a weapon being used
-        var dangerZone = [];
-            map.__proto__ = new Map();
+               
+               var dangerZone = []; //represents the area of effect as produced by a weapon being used
+               map.shipDictionary[ship.id] = ship;
 
-        if (game){
-            //Determine which map method to invoke
-            map.fireCannon(ship, targetSquare);
-            map.shipDictionary[ship.id] = ship;
-            switch (weaponType){
+               /* Determine what kind of damage function in the map to invoke */
+               switch (weaponType){
                 case "cannon":
                     console.log("Preparing to fire cannon at target position " +targetSquare.coordinateString()+" ("+ship.shipName+")");
-                    map.fireCannon(ship, targetSquare);
-                    map.applyDamage(dangerZone);
-                    //Simply apply damage to the shipSquare
-                    //Generate a notification
+                    dangerZone = map.fireCannon(ship, targetSquare);
                     break;
                 case "mineExplosion":
                     console.log("Preparing to explode mine at position " +targetSquare.coordinateString());
@@ -115,23 +116,32 @@ useWeapon: function(gameID, ship, weaponType, targetPosition){
                     break;
                 case "torpedo":
                     console.log("Preparing to fire torpedo at target position " +targetSquare.coordinateString()+" ("+ship.shipName+")");
-                    dangerZone = map.fireTorpedo(ship, targetSquare);
-                    map.applyDamage(dangerZone);
+                    dangerZone = map.fireTorpedo(ship, targetSquare);//fire torpedo returns an area to damage
                     break;
             }
 
-//TODO: Move all below this somewhere better
-            console.log("done with the map operation.");
-            game.map.shipDictionary[ship.id] = ship;
+            /* Send notifications */
+            for (square in dangerZone) {
+                if (square.name == "ship")
+                    sendGameMessage("Ship hit at position: " +square.coordinateString());
+            }
+
+            /* Update affected ships */
+            // Note: applyDamage returns a dictionary of the ships that were damaged
+            var shipsToUpdateDict = map.applyDamage(dangerZone);
+            for (key in shipToUpdateDict) {
+                var ship = shipToUpdateDict[key];
+                ship.calculateAttributes();
+            }
 
             gameCollection.update({_id:gameID}, game);
-            console.log("done updating game, square should be shot")
-                return true;
+            console.log("Damage was successful!");
+            return true;
         } else {
             console.log("Error game does not exist");
             console.log(game);
             return false;
         }
-               }
+           }
 });
 
