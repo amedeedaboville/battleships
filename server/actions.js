@@ -44,20 +44,23 @@ Meteor.methods({
         var map = mapCollection.findOne({_id: game.mapID});
         map.__proto__ = new Map();
 
+        //What does this do?
         eval(action)(map, ship, position)
 
-        //update the collections
-        map.shipDictionary[ship.id] = ship;
+        /* Update the collections */
         mapCollection.update({_id:game.mapID}, map);
         gameCollection.update({_id:game._id}, game);
         sendGameMessage(action);
 
+        /* Heal ships if they end a turn on a base -- starting from bow and working backward
+        note: the bow is the LAST element in the ship.shipSquares array*/
+
+        /* GAME OVER CONDITION: Check to see if the players still have at least one ship */
         var cHasShips = false;
         var oHasShips = false;
         var allShips = map.getShips();
         var winner = "nobody";
 
-        /* GAME OVER CONDITION: Check to see if the players still have at least one ship */
         for (shipKey in allShips) {
             var ship = allShips[shipKey];
             switch (ship.owner) {
@@ -99,7 +102,6 @@ useWeapon: function(gameID, ship, weaponType, targetPosition) {
                //get map data
                var map = mapCollection.findOne({_id:game.mapID});
                map.__proto__ = new Map();
-
                
                var dangerZone = []; //represents the area of effect as produced by a weapon being used
                map.shipDictionary[ship.id] = ship;
@@ -112,7 +114,7 @@ useWeapon: function(gameID, ship, weaponType, targetPosition) {
                     break;
                 case "mineExplosion":
                     console.log("Preparing to explode mine at position " +targetSquare.coordinateString());
-                    map.explode(targetSquare);
+                    map.explodeMine(targetPosition);
                     break;
                 case "torpedo":
                     console.log("Preparing to fire torpedo at target position " +targetSquare.coordinateString()+" ("+ship.shipName+")");
@@ -132,6 +134,9 @@ useWeapon: function(gameID, ship, weaponType, targetPosition) {
             for (key in shipToUpdateDict) {
                 var ship = shipToUpdateDict[key];
                 ship.calculateAttributes();
+                
+                if (!ship.isAlive)
+                    map.killShip(ship.name);
             }
 
             gameCollection.update({_id:gameID}, game);
