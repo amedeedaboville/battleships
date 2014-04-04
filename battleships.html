@@ -39,7 +39,7 @@
 
 <template name="battleships">
     {{#if currentUser}}
-      {{hasCurrentMap}}
+      {{showModal}}
       {{#if isInGame}}
         {{> header}}
         {{> game}}

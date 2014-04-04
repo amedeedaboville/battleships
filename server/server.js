@@ -28,13 +28,8 @@
         
         askForNewMap: function() {
             var game = gameCollection.findOne({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]});
-            mapCollection.remove({_id: game.mapID});
-            console.log(game);
-            var map = new Map();
-            game.mapID = mapCollection.insert(map);
-            console.log('here');
-//            return gameCollection.update({_id: game._id}, {$set: {mapID: game.mapID}}, {$set: {mapAccepted: 0}}, {$inc: {mapsLeft: -1}});
-            return gameCollection.update({_id: game._id}, {$set: {mapAccepted: 0}, $inc : {mapsLeft: -1}, $set: {mapID: game.mapID}});
+            var newMap = new Map();
+            return gameCollection.update({_id: game._id}, {$set: {mapAccepted: 0}, $inc : {mapsLeft: -1}, $set: {map: newMap}});
 
         },
         
@@ -48,7 +43,7 @@
         },
         getTurn: function(){
             var game = gameCollection.findOne({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]});
-            console.log(game);
+            //console.log(game);
             console.log(game.turn);
             return game.turn;
         }
@@ -86,24 +81,24 @@ Meteor.publish('games', function(id) {
     return gameCollection.find({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]});
 });
 
-Meteor.publish('maps', function(mapID) {
-    return mapCollection.find({_id: mapID});
-});
-
 Meteor.publish('invites', function(id) {
     return inviteCollection.find({$or: [{opponent : id}, {challenger: id} ]});
+});
+
+Meteor.publish('maps', function(id) {
+    return inviteCollection.find({_id: id});
 });
 
 inviteCollection.find().observe({
     changed: function(oldDocument) {
         if (oldDocument.accepted){
             //create a new Game
-            var aGame = new Game(oldDocument.challenger, oldDocument.opponent);
+            //console.log('a game was accepted');
+            var aMap = new Map();
+            var aMapId = mapCollection.insert(aMap);
 
-            //create a new Map
-            aGame.mapID = mapCollection.insert(new Map());
-            // mapID = mapCollection.insert(new Map());
-            inviteCollection.update({_id: oldDocument._id}, {$set: {mapID: aGame.mapID, accepted: undefined}});
+            var aGame = new Game(oldDocument.challenger, oldDocument.opponent);
+            aGame.mapID = aMapId;
             var gameID = gameCollection.insert(aGame);
         }
     }
@@ -112,11 +107,14 @@ inviteCollection.find().observe({
 gameCollection.find().observeChanges({
     changed: function(id, fields) {
         //if fields contains turn, notify the players.
-        console.log(fields);
+        //console.log(fields);
     }
 });
 
 gameCollection.allow({
+    insert: function(userId, doc, fieldNames, modifier) {
+        return (userId == doc.opponent || userId == doc.challenger);
+    },
     update: function(userId, doc, fieldNames, modifier) {
         return (userId == doc.opponent || userId == doc.challenger);
     },

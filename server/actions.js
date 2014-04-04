@@ -7,6 +7,7 @@ var turnShip = function(map, ship, direction) {
     //console.log("Got request to turn " + ship.id + " in direction " + direction);
     //console.log("This is ship rotation " + ship.orientation + ",and stern: " + ship.sternPosition + ",and bow: " +ship.bowPosition);
     map.turnShip(ship, direction); 
+    return map;
     //console.log("done with map operation")
 };
 
@@ -14,21 +15,26 @@ var moveShip = function(map, ship, position) {
     //console.log("Got request to move " + ship.id + " to position " + position);
     map.moveShip(ship, position);
     //console.log("done with map operation")
+    return map;
 };
 
 var turnShipLeft = function(map, ship) {
     turnShip(map, ship, Math.PI*1.5);
+    return map;
 };
 var turnShipRight = function(map, ship) {
     turnShip(map, ship, Math.PI*0.5);
+    return map;
 };
 
 var layMine = function(map, ship, position) {
     map.layMine(ship, position);
+    return map;
 };
 
 var pickupMine = function(map, ship, position) {
     map.pickupMine(ship, position);
+    return map;
 };
 
 
@@ -36,19 +42,19 @@ Meteor.methods({
     completeTurn: function(action, ship, position){
         //get current Game
         var game = gameCollection.findOne({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]}); //Get the player's active game
-        var map = mapCollection.findOne({_id: game.mapID});
+        var map = game.map;
         map.__proto__ = new Map();
 
-        eval(action)(map, ship, position)
+        var newMap = eval(action)(map, ship, position);
         
-        //update the collections
-        map.shipDictionary[ship.id] = ship;
-        mapCollection.update({_id:game.mapID}, map);
+        game.map = newMap;
+        // //changeTurn
+        game.turn += 1;
+
         gameCollection.update({_id:game._id}, game);
         sendGameMessage(action);
         
-        //changeTurn
-        gameCollection.update({_id: game._id}, {$inc: {turn: 1}}); 
+        // gameCollection.update({_id: game._id}, {$inc: {turn: 1}}); 
     },
 
     //This method is used to cause damage to other ships -- represents the firing of a cannon, a torpedo, or a mine explosion
@@ -56,7 +62,7 @@ Meteor.methods({
         var targetSquare = map.getObjectAtPosition(targetPosition);
         //Get game info
         var game = gameCollection.findOne({_id:gameID});
-        var map = mapCollection.findOne({_id:game.mapID});
+        var map = game.map;
 
         //Represents the area of effect as produced by a weapon being used
         var dangerZone = [];

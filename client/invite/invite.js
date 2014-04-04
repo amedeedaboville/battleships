@@ -18,36 +18,28 @@ Deps.autorun(function() {
         }
     });
 
-    inviteCollection.find({$or: [{opponent : Meteor.userId()}, {challenger: Meteor.userId()} ]}).observeChanges({
-        changed: function(id, fields) {
-            if (fields.mapID) {
-                Meteor.call("removeAllInvites")
-                Session.set('currentMap', fields.mapID);
-            }
-        }
-    });
-
-    mapCollection.find().observe({
-        changed: function(newDocument, old) {
-            console.log('current map has changed');
-            Session.set('currentMap', newDocument);
-        },
-        removed: function(old) {
-            //Session.set('currentMap', undefined);
-        }
-    });
-
     gameCollection.find().observe({
+        added: function(newDocument, oldDocument){
+            Session.set('currentMap', newDocument.map);
+            Session.set('mapId',newDocument.mapID);
+            Session.set('showModal', true);
+        },
         changed: function(newDocument, oldDocument) {
             if (newDocument.mapsLeft > 0){
                  if (newDocument.mapAccepted == 13){
-                     $('#mapModal').modal('hide');
-                     Meteor.subscribe('maps', newDocument.mapID);
-                     Session.set('inGame', newDocument);
+                    if (newDocument.mapAccepted != oldDocument.mapAccepted){
+                         Session.set('showModal', false);
+                         Session.set('inGame', newDocument);
+                    }
+                    else{
+//                        console.log(newDocument.map.shipDictionary);
+                         Session.set('inGame', newDocument);
+                         Session.set('currentMap', newDocument.map);
+                     }
                  }
                  else if (newDocument.mapsLeft < oldDocument.mapsLeft){
                      console.log('ZOMG! we need a new map!');
-                     Session.set('currentMap', newDocument.mapID)
+//                     Session.set('currentMap', newDocument.mapID)
                      $('#acceptMapButton').prop('disabled', false);
                  }
                  else{

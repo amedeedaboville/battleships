@@ -42,7 +42,7 @@ Template.grid.events({
     'click .square' : function(evt) {
         var action = Session.get('selectedAction');
         var currentGame = getCurrentGame();
-        console.log(action);
+        // console.log(action);
 
         if(action != undefined && action != "" && action != "turnShipLeft" && action != "turnShipRight") {
             var position = JSON.parse(evt.target.id);

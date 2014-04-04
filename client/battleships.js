@@ -3,35 +3,13 @@ Template.battleships.helpers({
         return Session.get('inGame');
     },
 
-    hasCurrentMap: function(){
-        if (Session.get('currentMap')){
-            if (!Session.get('currentMap').squares){
-                console.log('here mapitito');
-
-                Meteor.subscribe('maps', Session.get('currentMap'), function(){
-                    if (mapCollection.findOne()){
-                        console.log('displaying modal');
-                        $('#mapModal').modal();
-                        Session.set('currentMap', mapCollection.findOne());
-                    }
-                });
-            }
-            else{
-            console.log('here mapita');
-            //$('#mapModal').modal();
-//                Session.set('currentMap', mapCollection.findOne());
-            };
+    showModal: function(){
+        if (Session.get('showModal') && getCurrentMap()){
+            $('#mapModal').modal();
         }
         else{
-            console.log('here map')
-            //$('#mapModal').modal('hide');
-        };
-
-        //as soon as
-        if (gameCollection.findOne() == undefined){
-            console.log('here mapx2')
-            //$('#mapModal').modal('hide');
-        };
+            $('#mapModal').modal('hide');
+        }
     },
 
     setGameInactive: function(){
@@ -42,10 +20,7 @@ Template.battleships.helpers({
 Deps.autorun(function (){
     gameHandler = Meteor.subscribe('games', Meteor.userId());
     inviteHandler = Meteor.subscribe('invites', Meteor.userId());
-    // if (Session.get('inGame')){
-    //     mapHandler = Meteor.subscribe('maps', Session.get('inGame').mapID);
-    // }
-
+    mapHandler = Meteor.subscribe('maps', Session.get('mapId'));
 
     gameMessageStream.on('message', function(message){
         console.log('emit message');
