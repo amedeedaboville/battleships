@@ -10,7 +10,7 @@
 <template name="grid">
   {{#each rows}}
     {{#each this}}
-    <div class="square {{this.css}}" shipId={{this.shipId}} id='[{{this.position}}]' style="transform:rotate({{this.degrees}}deg)">
+    <div class="square {{this.css}}" shipId={{this.shipId}} id='[{{this.position}}]' style="transform:rotate({{this.degrees}}deg);-webkit-transform:rotate({{this.degrees}}deg)">
     </div>
     {{/each}}
   {{/each}}
