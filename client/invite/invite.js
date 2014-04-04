@@ -62,9 +62,9 @@ Deps.autorun(function() {
         removed: function(oldDocument){
             $('#acceptMapButton').prop('disabled', false);
             $('#newMapButton').prop('disabled', false);
+            $('#mapModal').modal('hide');
             Session.set('inGame', undefined);
             //Session.set('currentMap', undefined);
-            //$('#mapModal').modal('hide');
         }
     });
 });
