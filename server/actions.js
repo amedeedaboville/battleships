@@ -76,6 +76,7 @@ Meteor.methods({
                     map.applyDamage(dangerZone);
                     break;
             }
+
 //TODO: Move all below this somewhere better
             console.log("done with the map operation.");
             game.map.shipDictionary[ship.id] = ship;
