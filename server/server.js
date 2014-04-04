@@ -16,14 +16,26 @@
         },
 
         mapAccepted: function(){
-            return gameCollection.update({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]},
-                {$set: {mapAccepted: true}});
+            if (gameCollection.findOne({$and: [{opponent :this.userId}, {active : true} ]})){
+                return gameCollection.update({$and: [{opponent :this.userId}, {active : true} ]},
+                    {$inc: {mapAccepted: 2}});
+            }
+            else if (gameCollection.findOne({$and: [{challenger: this.userId}, {active : true} ]})){
+                return gameCollection.update({$and: [{challenger: this.userId}, {active : true} ]},
+                    {$inc: {mapAccepted: 11}});
+            }
         },
         
         askForNewMap: function() {
-            game.map = new Map();
-            game.mapsLeft--;
-            gameCollection.update({id: game.id}, {$set: {map: new Map()}}, {$inc: {mapsLeft: -1}});
+            var game = gameCollection.findOne({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]});
+            mapCollection.remove({_id: game.mapID});
+            console.log(game);
+            var map = new Map();
+            game.mapID = mapCollection.insert(map);
+            console.log('here');
+//            return gameCollection.update({_id: game._id}, {$set: {mapID: game.mapID}}, {$set: {mapAccepted: 0}}, {$inc: {mapsLeft: -1}});
+            return gameCollection.update({_id: game._id}, {$set: {mapAccepted: 0}, $inc : {mapsLeft: -1}, $set: {mapID: game.mapID}});
+
         },
         
         removeActive: function(){
@@ -82,22 +94,22 @@ Meteor.publish('invites', function(id) {
     return inviteCollection.find({$or: [{opponent : id}, {challenger: id} ]});
 });
 
-inviteCollection.find({}).observe({
+inviteCollection.find().observe({
     changed: function(oldDocument) {
-        if (oldDocument.accepted && oldDocument.gameID == 0) {
+        if (oldDocument.accepted){
+            //create a new Game
             var aGame = new Game(oldDocument.challenger, oldDocument.opponent);
 
+            //create a new Map
             aGame.mapID = mapCollection.insert(new Map());
+            // mapID = mapCollection.insert(new Map());
+            inviteCollection.update({_id: oldDocument._id}, {$set: {mapID: aGame.mapID, accepted: undefined}});
             var gameID = gameCollection.insert(aGame);
-            console.log("done creating game with ID " + gameID);
-            console.log("done inserting map with ID " + aGame.mapID);
-            inviteCollection.update({_id: oldDocument._id}, {$set: {gameID: gameID}});
-           console.log("updated invitation with id " + oldDocument._id);
         }
     }
 });
 
-gameCollection.find({}).observeChanges({
+gameCollection.find().observeChanges({
     changed: function(id, fields) {
         //if fields contains turn, notify the players.
         console.log(fields);
@@ -106,14 +118,7 @@ gameCollection.find({}).observeChanges({
 
 gameCollection.allow({
     update: function(userId, doc, fieldNames, modifier) {
-        if(fieldNames[0] == 'mapAccepted'){
-            console.log("Accepting update to document ");
-            return true;
-        }
-        else {
-            console.log("Denying update to document ");
-            return false;
-        }
+        return (userId == doc.opponent || userId == doc.challenger);
     },
     remove: function(userId, doc) {
         console.log(doc);
@@ -123,5 +128,14 @@ gameCollection.allow({
         else{
             return false;
         }
+    }
+});
+
+inviteCollection.allow({
+    'insert': function (userId,doc) {
+        return userId == doc.challenger; 
+    },
+    'update': function (userId,doc) {
+        return (userId == doc.opponent); 
     }
 });

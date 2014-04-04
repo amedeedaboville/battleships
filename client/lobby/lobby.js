@@ -11,18 +11,19 @@ Template.lobby.events({
         Session.set("currentProfile", Meteor.users.findOne({_id: this._id}));
     },
     'click .inviteButton' : function (evt) {
-        inviteCollection.insert({challenger: Meteor.userId(), opponent: evt.target.id, gameID: 0});
+        inviteCollection.insert({challenger: Meteor.userId(), opponent: evt.target.id});
     }
 });
 
 Template.modal.events({
     'click #newMapButton' : function (evt) {
-        //serverStream.emit('newMap', Session.get("enemy"), Meteor.userId());
-        askForNewMap(currentGame);
+        Meteor.call('askForNewMap');
+
     },
 
     'click #acceptMapButton' : function (evt) {
-        Meteor.call('mapAccepted');
+        var accepted = Meteor.call('mapAccepted');
+        $('#acceptMapButton').prop('disabled', true);
     },
 
     'click #closeMapButton' : function () {

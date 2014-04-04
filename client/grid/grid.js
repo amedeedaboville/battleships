@@ -2,12 +2,13 @@ Template.grid.helpers({
     rows: function () {
         var game = getCurrentGame();
         var map  = getCurrentMap();
-        if (game != undefined && map != undefined) {
-            if (Meteor.userId() == game.challenger) {
-                return map.getGrid('challenger');
+        if (map instanceof Map) {
+            if (game){
+                var player = game.challenger == Meteor.userId()? 'challenger': 'opponent'; 
+                return map.getGrid(player); 
             }
-            else {
-                return map.getGrid('opponent'); 
+            else{
+                return map.getGrid('opponent');
             }
         }
     }

@@ -39,6 +39,7 @@
 
 <template name="battleships">
     {{#if currentUser}}
+      {{hasCurrentMap}}
       {{#if isInGame}}
         {{> header}}
         {{> game}}
@@ -72,7 +73,7 @@
                 <h4 class="modal-title" id="myModalLabel">Map Setup</h4>
             </div>
             <div class="modal-body">
-                <!-- {{>grid}} -->
+                {{>grid}}
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" id="acceptMapButton">Accept</button>
