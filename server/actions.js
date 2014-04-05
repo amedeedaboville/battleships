@@ -49,13 +49,11 @@ Meteor.methods({
         var game = gameCollection.findOne({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]}); //Get the player's active game
         var map = game.map;
         map.__proto__ = new Map();
-
-<<<<<<< HEAD
         var newMap = eval(action)(map, ship, position);
         
         game.map = newMap;
         // //changeTurn
-        game.turn += 1;
+        game.turn += 1; 
 
         gameCollection.update({_id:game._id}, game);
         sendGameMessage(action);
@@ -91,7 +89,7 @@ Meteor.methods({
             winner = "challenger";
 
         if (winner == "nobody") { //Continue incrementing turns if the game is not over
-            gameCollection.update({_id: game._id}, {$inc: {turn: 1}}); 
+            //gameCollection.update({_id: game._id}, {$inc: {turn: 1}}); 
         } else { //the game is over
             sendGameMessage("Game over! Winner: " +winner);
         }
