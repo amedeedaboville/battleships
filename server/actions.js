@@ -120,6 +120,10 @@ useWeapon: function(gameID, ship, weaponType, targetPosition) {
                     console.log("Preparing to fire torpedo at target position " +targetSquare.coordinateString()+" ("+ship.shipName+")");
                     dangerZone = map.fireTorpedo(ship, targetSquare);//fire torpedo returns an area to damage
                     break;
+                case "selfdestruct":
+                    dangerZone = map.kSuicide(targetSquare); //target square should be the boat's square
+                    map.killShip(ship); //kamikazes destruct themselves
+                    break;
             }
 
             /* Send notifications */
@@ -132,11 +136,14 @@ useWeapon: function(gameID, ship, weaponType, targetPosition) {
             // Note: applyDamage returns a dictionary of the ships that were damaged
             var shipsToUpdateDict = map.applyDamage(dangerZone);
             for (key in shipToUpdateDict) {
-                var ship = shipToUpdateDict[key];
-                ship.calculateAttributes();
+                var shipToUpdate = shipToUpdateDict[key];
+                shipToUpdate.calculateAttributes();
                 
-                if (!ship.isAlive)
-                    map.killShip(ship.name);
+                if (!shipToUpdate.isAlive) {
+                    bowSquare = shipToUpdate.shipSquares[shipToUpdate.shipSquares.length -1];//the bow is the last square
+                    sendGameMessage("Ship sunk! " + bowSquare.coordinateString());
+                    map.killShip(shipToUpdate.name);
+                }
             }
 
             gameCollection.update({_id:gameID}, game);
