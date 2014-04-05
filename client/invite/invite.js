@@ -38,6 +38,8 @@ Deps.autorun(function() {
                  }
                  else if (newDocument.mapsLeft < oldDocument.mapsLeft){
                      console.log('ZOMG! we need a new map!');
+                     Session.set('inGame', newDocument);
+                     Session.set('currentMap', newDocument.map);
                      $('#acceptMapButton').prop('disabled', false);
                  }
                  else{
