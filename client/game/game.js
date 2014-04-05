@@ -36,8 +36,20 @@ Template.contextMenu.events({
                 canvas.rotateShip(Session.get('selectedShip'), new THREE.Vector3(0,1,0), 0.5* Math.PI);
             }
         }
-        console.log('selected action:');
-        console.log(action);
+
+        if (action == 'moveShip') {
+           
+            var all = document.getElementsByClassName('bow');
+            for (var i = 0; i < all.length; i++) {
+                all[i].style.border = 'thick solid #000000';
+            }
+
+        }
+        //if the selected action is move ship, show the ship movement space. If it is a fire cannon, show the fire 
+        //document.getElementById("myDiv").style.border="thick solid #0000FF";
+
+        //what needs to be done: identify cannonsquares and movementsquares in the html, ship's id
+
         Session.set('selectedAction', action);
     },
     'click #turnShipLeft' : function(evt) {
