@@ -65,13 +65,13 @@
 
 
 <template name="savedGames">
-<ul class="list-group">
+<div class="list-group">
     {{#each savedGames}}
-    <li class="list-group-item">
-        {{this._id}}
-    </li>
+    <a href="#" class="list-group-item previousGameElement" id="{{this._id}}">
+        {{this.name}}
+    </a>
     {{/each}}
-</ul>
+</div>
 </template>
 
 <template name="loadModal">

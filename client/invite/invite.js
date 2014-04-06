@@ -1,7 +1,12 @@
 Deps.autorun(function() {
-    inviteCollection.find({opponent : Meteor.userId()}).observeChanges({ //Hotfix for only showing when you're challenged to
+    inviteCollection.find({$or: [{opponent: Meteor.userId()}, {$and: [{challenger: Meteor.userId()}, {gameId: undefined}]}]}).observeChanges({
         added: function(id, fields) {
-            user = Meteor.users.findOne(fields.challenger)
+            if(fields.challenger == Meteor.userId()) { //If you were the challenger in a game we are loading
+                var user = Meteor.users.findOne(fields.opponent)
+            }
+            else {
+                var user = Meteor.users.findOne(fields.challenger)
+            }
             if (user != undefined) {
                 var challengeString = "";
                 if (fields.gameID) {
