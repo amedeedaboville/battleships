@@ -78,7 +78,8 @@
 
 //return latest game
 Meteor.publish('games', function(id) {
-    return gameCollection.find({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]});
+    //return gameCollection.find({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]});
+    return gameCollection.find({$or: [{opponent :this.userId}, {challenger: this.userId}]});
 });
 
 Meteor.publish('invites', function(id) {
@@ -107,7 +108,7 @@ gameCollection.find().observeChanges({
 
 gameCollection.allow({
     insert: function(userId, doc, fieldNames, modifier) {
-        return userId == doc.opponent || userId == doc.challenger);
+        return (userId == doc.opponent || userId == doc.challenger);
     },
     update: function(userId, doc, fieldNames, modifier) {
         return (userId == doc.opponent || userId == doc.challenger);

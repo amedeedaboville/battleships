@@ -28,13 +28,22 @@ Deps.autorun(function() {
     inviteCollection.find({$or: [{opponent :Meteor.userId()}, {challenger: Meteor.userId()} ]}).observeChanges({
         changed: function(id, newInvite) {
             var invite = inviteCollection.findOne({_id: id});
-            if(invite.accepted == true && invite.gameID){
-                console.log(invite);
-                var game = gameCollection.findOne({_id: invite.gameID});
-                console.log("game is");
-                console.log(game);
-                Session.set('currentMap', game.map);
-                Session.set('showModal', true);
+            if(invite.accepted) {
+                if(invite.gameID) {
+                    var game = gameCollection.findOne({_id: invite.gameID});
+                    Session.set('currentMap', game.map);
+                    Session.set('showModal', true);
+                }
+                else {
+                    Session.set('showSavedGames', true);
+                    if(invite.opponent == Meteor.userId()) {
+                        Session.set('opponentID', invite.challenger);
+                    }
+                    else {
+                        Session.set('opponentID', invite.opponent);
+                    }
+                    Session.set('showModal', true);
+                }
             }
         }
     });
