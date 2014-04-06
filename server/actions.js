@@ -146,9 +146,8 @@ useWeapon: function(gameID, ship, weaponType, targetPosition) {
                 
                 if (!ship.isAlive){
                     map.killShip(ship.name);
-                    //JOHN-CHECK
-                    // bowSquare = shipToUpdate.shipSquares[shipToUpdate.shipSquares.length -1];//the bow is the last square
-                    // sendGameMessage("Ship sunk! " + bowSquare.coordinateString());
+                    bowSquare = shipToUpdate.shipSquares[shipToUpdate.shipSquares.length -1];// the bow is the last square
+                    sendGameMessage("Ship sunk! " + bowSquare.coordinateString()); // Alert both players that a ship sank at the bow position
                 }
             }
 
