@@ -17,13 +17,23 @@ Template.battleships.helpers({
     }
 });
 
-Deps.autorun(function (){
+Meteor.startup(function(){
     gameHandler = Meteor.subscribe('games', Meteor.userId());
     inviteHandler = Meteor.subscribe('invites', Meteor.userId());
+})
 
-    gameMessageStream.on('message', function(message){
-        console.log('emit message');
-        console.log(message);
-    	$.UIkit.notify(message, {status: 'info'});
-    })
+Deps.autorun(function (){
+    game = gameCollection.findOne();
+
+    //tear down and set up mapsubscription as game changes
+    if (!game) return;
+    mapHandler = Meteor.subscribe('maps', game.mapID);
+   // Session.set('currentMap', mapCollection.findOne());//TO-DO!
+
+
+    // gameMessageStream.on('message', function(message){
+    //     console.log('emit message');
+    //     console.log(message);
+    // 	$.UIkit.notify(message, {status: 'info'});
+    // })
 });

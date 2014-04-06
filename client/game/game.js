@@ -7,15 +7,15 @@ Template.game.helpers({
 
 Template.contextMenu.helpers({
     currentTurn: function() {
-        var turn = (Meteor.userId() == Session.get('inGame').opponent)? 0 : 1;
-        var gameTurn = Session.get('inGame').turn;
+        var turn = (Meteor.userId() ==getCurrentGame().opponent)? 0 : 1;
+        var gameTurn = getCurrentGame().turn;
         return (gameTurn %2 == turn);
     },
 
     selectedShip: function(){
         //opponent: pairs, challenger: impairs
-        var turn = (Meteor.userId() == Session.get('inGame').opponent)? 0 : 1;
-        var gameTurn = Session.get('inGame').turn;
+        var turn = (Meteor.userId() == getCurrentGame().opponent)? 0 : 1;
+        var gameTurn = getCurrentGame().turn;
         return Session.get('selectedShip');
     }
 

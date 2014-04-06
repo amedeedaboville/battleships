@@ -1,5 +1,5 @@
 var sendGameMessage = function(message) {
-    gameMessageStream.emit('message', message);
+    //gameMessageStream.emit('message', message);
     //console.log('message emitted on server');
 }
 
@@ -47,15 +47,18 @@ Meteor.methods({
     completeTurn: function(action, ship, position){
         //get current Game
         var game = gameCollection.findOne({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]}); //Get the player's active game
-        var map = game.map;
+        var map = mapCollection.findOne({_id: game.mapID});
         map.__proto__ = new Map();
-        var newMap = eval(action)(map, ship, position);
-        
-        game.map = newMap;
-        // //changeTurn
-        game.turn += 1; 
 
-        gameCollection.update({_id:game._id}, game);
+        console.log(new Date());
+        var newMap = eval(action)(map, ship, position);
+        console.log(new Date());
+
+        //update Map
+        mapCollection.update({_id: game.mapID}, newMap);
+
+        //update GameTurn
+        gameCollection.update({_id:game._id}, {$inc: {turn: 1}}); 
         sendGameMessage(action);
 
         /* Heal ships if they end a turn on a base -- starting from bow and working backward

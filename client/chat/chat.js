@@ -1,12 +1,12 @@
 chatCollection = new Meteor.Collection(null);
 getUsername = function(id) {
   Meteor.subscribe('user-info', id);
-  Deps.autorun(function() {
-    var user = Meteor.users.findOne(id);
-    if(user) {
-      Session.set('user-' + id, user.username);
-    }
-  });
+  // Deps.autorun(function() {
+  //   var user = Meteor.users.findOne(id);
+  //   if(user) {
+  //     Session.set('user-' + id, user.username);
+  //   }
+  // });
 };
 
 chatStream.on('chat', function(message) {

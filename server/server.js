@@ -68,13 +68,13 @@
     return eventName == 'chat';
 });
 
-  gameMessageStream.permissions.read(function(message) {
-    return gameCollection.findOne({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]});
-});
+//   gameMessageStream.permissions.read(function(message) {
+//     return gameCollection.findOne({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]});
+// });
 
-  gameMessageStream.permissions.write(function(message) {
-    return gameCollection.findOne({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]});
-});
+//   gameMessageStream.permissions.write(function(message) {
+//     return gameCollection.findOne({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]});
+// });
 
 //return latest game
 Meteor.publish('games', function(id) {
@@ -85,12 +85,21 @@ Meteor.publish('invites', function(id) {
     return inviteCollection.find({$or: [{opponent : id}, {challenger: id} ]});
 });
 
+Meteor.publish('maps', function(id) {
+    return mapCollection.find({_id: id});
+});
+
 inviteCollection.find().observe({
     changed: function(oldDocument) {
         if (oldDocument.accepted){
             //create a new Game
-            //console.log('a game was accepted');
             var aGame = new Game(oldDocument.challenger, oldDocument.opponent);
+
+            //create a new Map
+            var aMap = new Map();
+            var mapID = mapCollection.insert(aMap);
+            aGame.mapID = mapID;
+
             var gameID = gameCollection.insert(aGame);
         }
     }
@@ -127,5 +136,14 @@ inviteCollection.allow({
     },
     'update': function (userId,doc) {
         return (userId == doc.opponent); 
+    }
+});
+
+mapCollection.allow({
+    'insert': function (id) {
+        return true; 
+    },
+    'update': function (id) {
+        return true; 
     }
 });

@@ -1,4 +1,4 @@
-Deps.autorun(function() {
+// Deps.autorun(function() {
     inviteCollection.find({opponent : Meteor.userId()}).observeChanges({ //Hotfix for only showing when you're challenged to
         added: function(id, fields) {
             user = Meteor.users.findOne(fields.challenger)
@@ -18,40 +18,46 @@ Deps.autorun(function() {
         }
     });
 
-    gameCollection.find().observe({
-        added: function(newDocument, oldDocument){
-            Session.set('currentMap', newDocument.map);
+    mapCollection.find().observeChanges({
+        added: function(id, fields){
+           Session.set('currentMap', mapCollection.findOne());
+        },
+        changed: function(id, fields){
+            // console.log(fields);
+           // var map = Session.get('currentMap');
+           // map.squares = fields.squares;
+            //map.shipDictionary = fields.shipDictionary;
+            console.log(new Date());
+           Session.set('currentMap', mapCollection.findOne());//TO-DO!
+            console.log('done with map update');
+        }
+
+    });
+
+    gameCollection.find().observeChanges({
+        added: function(id, fields){
             Session.set('showModal', true);
         },
-        changed: function(newDocument, oldDocument) {
-            if (newDocument.mapsLeft > 0){
-                 if (newDocument.mapAccepted == 13){
-                    if (newDocument.mapAccepted != oldDocument.mapAccepted){
-                         Session.set('showModal', false);
-                         Session.set('inGame', newDocument);
-                    }
-                    else{
-//                        console.log(newDocument.map.shipDictionary);
-                         Session.set('inGame', newDocument);
-                         Session.set('currentMap', newDocument.map);
-                     }
-                 }
-                 else if (newDocument.mapsLeft < oldDocument.mapsLeft){
-                     console.log('ZOMG! we need a new map!');
-                     Session.set('inGame', newDocument);
-                     Session.set('currentMap', newDocument.map);
-                     $('#acceptMapButton').prop('disabled', false);
-                 }
-                 else{
-                     console.log('map received?');
-                 }
+        changed: function(id,fields) {
+            // console.log(fields);
+            if (fields.mapAccepted == 13){
+                 Session.set('showModal', false);
+                 Session.set('inGame', id);
             }
-                 else{
-                     console.log('we will close this cuz you guys don\'t wanna play =(')
-                    $('#newMapButton').prop('disabled', true);
+
+            else if (fields.mapsLeft){
+                 console.log('ZOMG! we need a new map!');
+                 //Session.set('inGame', newDocument);
+                 //Session.set('currentMap', fields.mapID);//TO-DO!
+                 $('#acceptMapButton').prop('disabled', false);
+            }
+
+            else if (!fields.mapAccepted){
+                 //Session.set('inGame', newDocument);
+                 //Session.set('currentMap', fields.mapID);//TO-DO!
             }
         },
-        removed: function(oldDocument){
+        removed: function(id){
             $('#acceptMapButton').prop('disabled', false);
             $('#newMapButton').prop('disabled', false);
             $('#mapModal').modal('hide');
@@ -59,4 +65,4 @@ Deps.autorun(function() {
             //Session.set('currentMap', undefined);
         }
     });
-});
+// });
