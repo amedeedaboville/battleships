@@ -85,13 +85,15 @@ Meteor.publish('invites', function(id) {
     return inviteCollection.find({$or: [{opponent : id}, {challenger: id} ]});
 });
 
-inviteCollection.find().observe({
-    changed: function(oldDocument) {
-        if (oldDocument.accepted){
-            //create a new Game
-            //console.log('a game was accepted');
-            var aGame = new Game(oldDocument.challenger, oldDocument.opponent);
+inviteCollection.find().observeChanges({
+    //When an invite is accepted, we create a game for it
+    changed: function(id, invite) {
+        fullInvite = inviteCollection.findOne({_id:id});
+        if (invite.accepted && (invite.gameID == undefined)){
+            var aGame = new Game(fullInvite.challenger, fullInvite.opponent);
             var gameID = gameCollection.insert(aGame);
+            inviteCollection.update({_id: id}, {$set: {gameID: gameID}});
+            console.log(gameCollection.findOne({_id:gameID}));
         }
     }
 });
@@ -105,7 +107,7 @@ gameCollection.find().observeChanges({
 
 gameCollection.allow({
     insert: function(userId, doc, fieldNames, modifier) {
-        return (userId == doc.opponent || userId == doc.challenger);
+        return userId == doc.opponent || userId == doc.challenger);
     },
     update: function(userId, doc, fieldNames, modifier) {
         return (userId == doc.opponent || userId == doc.challenger);
