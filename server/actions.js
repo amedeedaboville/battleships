@@ -126,7 +126,10 @@ useWeapon: function(gameID, ship, weaponType, targetPosition) {
                     console.log("Preparing to fire torpedo at target position " +targetSquare.coordinateString()+" ("+ship.shipName+")");
                     dangerZone = map.fireTorpedo(ship, targetSquare);//fire torpedo returns an area to damage
                     break;
-            }
+                case "selfdestruct":
+                     dangerZone = map.kSuicide(targetSquare); //target square should be the boat's square
+                     map.killShip(ship); //kamikazes destruct themselves
+                     break;            }
 
             /* Send notifications */
             for (square in dangerZone) {
@@ -141,8 +144,12 @@ useWeapon: function(gameID, ship, weaponType, targetPosition) {
                 var ship = shipToUpdateDict[key];
                 ship.calculateAttributes();
                 
-                if (!ship.isAlive)
+                if (!ship.isAlive){
                     map.killShip(ship.name);
+                    //JOHN-CHECK
+                    // bowSquare = shipToUpdate.shipSquares[shipToUpdate.shipSquares.length -1];//the bow is the last square
+                    // sendGameMessage("Ship sunk! " + bowSquare.coordinateString());
+                }
             }
 
             gameCollection.update({_id:gameID}, game);
