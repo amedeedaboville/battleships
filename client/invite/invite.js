@@ -55,38 +55,29 @@ Deps.autorun(function() {
 //            Session.set('showModal', true);
 //        },
         changed: function(newDocument, oldDocument) {
-            if (newDocument.mapsLeft > 0){
-                 if (newDocument.mapAccepted == 13){
-                    if (newDocument.mapAccepted != oldDocument.mapAccepted){
-                         Session.set('showModal', false);
-                         Session.set('inGame', newDocument);
-                    }
-                    else{
-                         Session.set('currentMap', newDocument.map);
-                         Session.set('inGame', newDocument);
-                     }
-                 }
-                 else if (newDocument.mapsLeft < oldDocument.mapsLeft){
-                     console.log('ZOMG! we need a new map!');
-                     Session.set('inGame', newDocument);
-                     Session.set('currentMap', newDocument.map);
-                     $('#acceptMapButton').prop('disabled', false);
-                 }
-                 else{
-                     console.log('map received?');
-                 }
+            Session.set('inGame', newDocument);
+            Session.set('currentMap', newDocument.map);
+
+            if (oldDocument.mapAccepted == 13) {
+                //Session.set('inGame', newDocument);
             }
-                 else{
-                     console.log('we will close this cuz you guys don\'t wanna play =(')
-                    $('#newMapButton').prop('disabled', true);
+            else if (newDocument.mapAccepted == 13) {
+                Session.set('showModal', false);
+                //Session.set('inGame', newDocument);
+            }
+            else if (newDocument.mapsLeft < oldDocument.mapsLeft) { //got a new map, does the user want to accept?
+                $('#acceptMapButton').prop('disabled', false);
+            }
+            else if(newDocument.mapsLeft == 0) { //out of maps
+                $('#newMapButton').prop('disabled', true);
             }
         },
-        removed: function(oldDocument){
-            $('#acceptMapButton').prop('disabled', false);
-            $('#newMapButton').prop('disabled', false);
-            $('#mapModal').modal('hide');
-            Session.set('inGame', undefined);
-            //Session.set('currentMap', undefined);
-        }
+            removed: function(oldDocument){
+                $('#acceptMapButton').prop('disabled', false);
+                $('#newMapButton').prop('disabled', false);
+                $('#mapModal').modal('hide');
+                Session.set('inGame', undefined);
+                //Session.set('currentMap', undefined);
+            }
     });
 });

@@ -20,10 +20,7 @@ Template.battleships.helpers({
         Meteor.call('setAllGamesAsInactive');
     }
 });
-function showSavedGames() {
 
-
-}
 Deps.autorun(function (){
     gameHandler = Meteor.subscribe('games', Meteor.userId());
     inviteHandler = Meteor.subscribe('invites', Meteor.userId());
