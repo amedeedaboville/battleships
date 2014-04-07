@@ -11,7 +11,7 @@ var turnShip = function(map, ship, direction) {
         console.log("Ship " +ship.name + "sucessfully turned.");
     } else { //Signal both players about the obstruction
         console.log("Ship " +ship.name + "failed to turn (obstruction).");
-        sendGameMessage("Collision at position: " + obstruction.coordinateString);
+        sendGameMessage("Collision at position: " + obstruction.coordinateString());
     }
     return map;
 };
@@ -44,7 +44,8 @@ var pickupMine = function(map, ship, position) {
 };
 
 var fireTorpedo = function(map, ship, position) {
-    map.fireTorpedo(ship, position);
+    useWeapon('','','','','');
+//    map.fireTorpedo(ship, position);
     return map;
 };
 
