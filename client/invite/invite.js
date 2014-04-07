@@ -1,16 +1,11 @@
 Deps.autorun(function() {
-    inviteCollection.find({$or: [{opponent: Meteor.userId()}, {$and: [{challenger: Meteor.userId()}, {gameId: undefined}]}]}).observeChanges({
+    inviteCollection.find({opponent: Meteor.userId()}).observeChanges({
         added: function(id, fields) {
-            if(fields.challenger == Meteor.userId()) { //If you were the challenger in a game we are loading
-                var user = Meteor.users.findOne(fields.opponent)
-            }
-            else {
-                var user = Meteor.users.findOne(fields.challenger)
-            }
+            var user = Meteor.users.findOne(fields.challenger)
             if (user != undefined) {
                 var challengeString = "";
                 if (fields.gameID) {
-                    challengeString = " challenged you continue the duel: " + gameCollection.findOne({_id: fields.gameID})._id; //TODO: give games names
+                    challengeString = " challenged you continue the duel: " + gameCollection.findOne({_id: fields.gameID}).name;
                 }
                 else {
                     challengeString = " challenged you to a battleship duel!";
@@ -37,7 +32,8 @@ Deps.autorun(function() {
                 if(invite.gameID) {
                     var game = gameCollection.findOne({_id: invite.gameID});
                     Session.set('currentMap', game.map);
-                    Session.set('showModal', true);
+                    Session.set('inGame', game);
+                    $('#loadModal').modal('hide');
                 }
                 else {
                     Session.set('showSavedGames', true);
