@@ -90,7 +90,7 @@ inviteCollection.find().observeChanges({
     //When an invite is accepted, we create a game for it
     changed: function(id, invite) {
         fullInvite = inviteCollection.findOne({_id:id});
-        if (invite.accepted && (invite.gameID == undefined)){
+        if (invite.accepted && (fullInvite.gameID == undefined)){
             var aGame = new Game(fullInvite.challenger, fullInvite.opponent);
             var gameID = gameCollection.insert(aGame);
             inviteCollection.update({_id: id}, {$set: {gameID: gameID}});
