@@ -64,6 +64,7 @@ Meteor.methods({
 
     completeTurn: function(action, ship, position){
         //get current Game
+        console.log("totally got here!?")
         var game = gameCollection.findOne({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]}); //Get the player's active game
         var map = game.map;
         map.__proto__ = new Map();
@@ -113,6 +114,22 @@ Meteor.methods({
         gameCollection.update({_id:game._id}, game);
     },
 
+
+        if (winner == "nobody") { //Continue incrementing turns if the game is not over
+            //gameCollection.update({_id: game._id}, {$inc: {turn: 1}}); 
+        } else { //the game is over
+            sendGameMessage("Game over! Winner: " +winner);
+        }
+},
+
+    rearrange: function(isOpponent) {
+        var game = gameCollection.findOne({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]}); //Get the player's active game
+        var map = game.map;
+        map.__proto__ = new Map();
+        map.makeShips(true, !isOpponent, isOpponent);
+        map.drawGrid();
+        gameCollection.update({_id:game._id}, game);
+    },
 
 
 /**
