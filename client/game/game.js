@@ -42,7 +42,8 @@ Template.contextMenu.events({
             }
         }
 
-        Session.set('selectedAction', action);
+        if (action != 'extendRadar')
+            Session.set('selectedAction', action);
         /*
 
         if (action == 'moveShip') {
@@ -75,9 +76,13 @@ Template.contextMenu.events({
     },
 
     'click #rearrange' : function(evt) {
-        var isOpponent = (Meteor.userId() == Session.get('inGame').opponent)
+        var isOpponent = (Meteor.userId() == Session.get('inGame').opponent);
         console.log('rearranging ships');
         Meteor.call('rearrange', isOpponent);
+    },
+
+    'click #extendRadar' : function(evt) {
+        Meteor.call('completeTurn', 'extendRadar', Session.get('selectedShip'));
     }
 
 });
