@@ -18,10 +18,8 @@ Template.header.events({
     'click #toggle3D' : function () {
         Session.set("complexGame", true);
     },
-    'keyup #gameName' : function (evt) {
-        console.log(evt.target);
-        console.log(evt.target.value);
-        gameCollection.update({_id: getCurrentGame()._id}, {$set: {name: evt.target.value}});
+    'click #changeName' : function (evt) {
+        gameCollection.update({_id: getCurrentGame()._id}, {$set: {name: $('#gameName').val()}});
     }
 
 });
