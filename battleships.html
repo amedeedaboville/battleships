@@ -54,6 +54,7 @@
       {{> loginPage}}
     {{/if}}
     {{>modal}}
+    {{>loadModal}}
 </template>
 
 <template name="messages">
@@ -62,6 +63,39 @@
   {{/each}}
 </template>
 
+
+<template name="savedGames">
+<div class="list-group">
+    {{#each savedGames}}
+    <a href="#" class="list-group-item previousGameElement" id="{{this._id}}">
+        {{this.name}}
+    </a>
+    {{/each}}
+</div>
+</template>
+
+<template name="loadModal">
+<div class="modal fade" id="loadModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" id="closeMapButton" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">Load a Game</h4>
+            </div>
+            <div class="modal-body">
+                {{>savedGames}}
+                <div class="smallgrid">
+                {{>grid}}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" id="acceptMapButton">Accept</button>
+                <button type="button" class="btn btn-primary" id="newMapButton">New Map</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal --> 
+</template>
 
 <template name="modal">
 <!-- Modal -->

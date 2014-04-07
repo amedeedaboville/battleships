@@ -10,8 +10,9 @@ var turnShip = function(map, ship, direction) {
     if (obstruction === undefined) {
         console.log("Ship " +ship.name + "sucessfully turned.");
     } else { //Signal both players about the obstruction
+        obstruction.__proto__ = new Square();
         console.log("Ship " +ship.name + "failed to turn (obstruction).");
-        sendGameMessage("Collision at position: " + obstruction.coordinateString);
+        sendGameMessage("Collision at position: " + obstruction.coordinateString());
     }
     return map;
 };
@@ -44,6 +45,7 @@ var explodeMine = function(targetSquare) {
 };
 
 var layMine = function(map, ship, position) {
+    console.log("Verifying mine drop action...");
     map.layMine(ship, position);
     return map;
 };
@@ -53,7 +55,13 @@ var pickupMine = function(map, ship, position) {
     return map;
 };
 
+var fireTorpedo = function(map, ship, position) {
+    map.fireTorpedo(ship, position);
+    return map;
+};
+
 Meteor.methods({
+
     completeTurn: function(action, ship, position){
         //get current Game
         var game = gameCollection.findOne({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]}); //Get the player's active game
@@ -62,48 +70,50 @@ Meteor.methods({
         var newMap = eval(action)(map, ship, position);
         
         game.map = newMap;
+        game.turn += 1;
         // //changeTurn
-        game.turn += 1; 
+  
 
         gameCollection.update({_id:game._id}, game);
         sendGameMessage(action);
 
-        /* Heal ships if they end a turn on a base -- starting from bow and working backward
-        note: the bow is the LAST element in the ship.shipSquares array*/
+        ///* Heal ships if they end a turn on a base -- starting from bow and working backward
+        //note: the bow is the LAST element in the ship.shipSquares array*/
 
-        /* GAME OVER CONDITION: Check to see if the players still have at least one ship */
-        var cHasShips = false;
-        var oHasShips = false;
-        var allShips = map.getShips();
-        var winner = "nobody";
+        ///* GAME OVER CONDITION: Check to see if the players still have at least one ship */
+        //var cHasShips = false;
+        //var oHasShips = false;
+        //var allShips = map.getShips();
+        //var winner = "nobody";
 
-        for (shipKey in allShips) {
-            var ship = allShips[shipKey];
-            switch (ship.owner) {
-                case "challenger": 
-                    cHasShips = true;
-                    break;
-                case "opponent": 
-                    oHasShips = true;
-                    break;
-            }
-            if (cHasShips == true && oHasShips == true) {
-                winner = "nobody";
-            }
-        }
+        //for (shipKey in allShips) {
+          //  var ship = allShips[shipKey];
+            //switch (ship.owner) {
+              //  case "challenger": 
+                //    cHasShips = true;
+                  //  break;
+                //case "opponent": 
+                  //  oHasShips = true;
+                    //break;
+            //}
+            //if (cHasShips == true && oHasShips == true) {
+              //  winner = "nobody";
+            //}
+        //}
 
-        //Hopefully these don't ever get set to true at the same time, or else challenger wins by default
-        if (cHasShips == false)
-            winner = "opponent";
-        if (oHasShips == false)
-            winner = "challenger";
+    //TODO: verifiy winner and notify
+},
 
-        if (winner == "nobody") { //Continue incrementing turns if the game is not over
-            //gameCollection.update({_id: game._id}, {$inc: {turn: 1}}); 
-        } else { //the game is over
-            sendGameMessage("Game over! Winner: " +winner);
-        }
-                  },
+    rearrange: function(isOpponent) {
+        var game = gameCollection.findOne({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]}); //Get the player's active game
+        var map = game.map;
+        map.__proto__ = new Map();
+        map.makeShips(true, !isOpponent, isOpponent);
+        map.drawGrid();
+        gameCollection.update({_id:game._id}, game);
+    },
+
+
 
 /**
 * NAME: useWeapon (GameID gameID, Ship ship, String weaponType, Position targetPosition)

@@ -12,6 +12,11 @@ Template.contextMenu.helpers({
         return (gameTurn %2 == turn);
     },
 
+    firstTurn: function() {
+        var gameTurn =  Session.get('inGame').turn;
+        return (gameTurn == 0 || gameTurn == 1);
+    },
+
     selectedShip: function(){
         //opponent: pairs, challenger: impairs
         var turn = (Meteor.userId() == Session.get('inGame').opponent)? 0 : 1;
@@ -37,20 +42,23 @@ Template.contextMenu.events({
             }
         }
 
+        Session.set('selectedAction', action);
+        /*
+
         if (action == 'moveShip') {
            
             var all = document.getElementsByClassName('bow');
             for (var i = 0; i < all.length; i++) {
                 all[i].style.border = 'thick solid #000000';
             }
-
-        }
+ 
+        } */
         //if the selected action is move ship, show the ship movement space. If it is a fire cannon, show the fire 
         //document.getElementById("myDiv").style.border="thick solid #0000FF";
 
         //what needs to be done: identify cannonsquares and movementsquares in the html, ship's id
-
-        Session.set('selectedAction', action);
+  
+     
     },
     'click #turnShipLeft' : function(evt) {
         console.log('turning ship counterclockwise');
@@ -64,6 +72,12 @@ Template.contextMenu.events({
         //map.turnShip(ship, Math.PI*0.5); 
 
         Meteor.call('completeTurn', 'turnShipRight', Session.get('selectedShip'));
+    },
+
+    'click #rearrange' : function(evt) {
+        var isOpponent = (Meteor.userId() == Session.get('inGame').opponent)
+        console.log('rearranging ships');
+        Meteor.call('rearrange', isOpponent);
     }
 
 });
