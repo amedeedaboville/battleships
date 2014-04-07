@@ -43,6 +43,11 @@ var pickupMine = function(map, ship, position) {
     return map;
 };
 
+var fireTorpedo = function(map, ship, position) {
+    map.fireTorpedo(ship, position);
+    return map;
+};
+
 Meteor.methods({
     completeTurn: function(action, ship, position){
         //get current Game
