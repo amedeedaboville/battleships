@@ -45,7 +45,6 @@ var explodeMine = function(targetSquare) {
 };
 
 var layMine = function(map, ship, position) {
-    console.log("Verifying mine drop action...");
     map.layMine(ship, position);
     return map;
 };
@@ -64,7 +63,6 @@ Meteor.methods({
 
     completeTurn: function(action, ship, position){
         //get current Game
-        console.log("totally got here!?")
         var game = gameCollection.findOne({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]}); //Get the player's active game
         var map = game.map;
         map.__proto__ = new Map();
@@ -115,12 +113,12 @@ Meteor.methods({
     },
 
 
-        if (winner == "nobody") { //Continue incrementing turns if the game is not over
-            //gameCollection.update({_id: game._id}, {$inc: {turn: 1}}); 
-        } else { //the game is over
-            sendGameMessage("Game over! Winner: " +winner);
-        }
-},
+//        if (winner == "nobody") { //Continue incrementing turns if the game is not over
+//            //gameCollection.update({_id: game._id}, {$inc: {turn: 1}}); 
+//        } else { //the game is over
+//            sendGameMessage("Game over! Winner: " +winner);
+//        }
+//},
 
     rearrange: function(isOpponent) {
         var game = gameCollection.findOne({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]}); //Get the player's active game
@@ -130,6 +128,7 @@ Meteor.methods({
         map.drawGrid();
         gameCollection.update({_id:game._id}, game);
     },
+
 
 
 /**
