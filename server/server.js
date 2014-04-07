@@ -91,9 +91,6 @@ inviteCollection.find().observeChanges({
     changed: function(id, invite) {
         fullInvite = inviteCollection.findOne({_id:id});
         if (invite.accepted && (invite.gameID == undefined)){
-            console.log("inserting new game for invite");
-            console.log(invite);
-
             var aGame = new Game(fullInvite.challenger, fullInvite.opponent);
             var gameID = gameCollection.insert(aGame);
             inviteCollection.update({_id: id}, {$set: {gameID: gameID}});
