@@ -11,7 +11,7 @@ var turnShip = function(map, ship, direction) {
         console.log("Ship " +ship.name + "sucessfully turned.");
     } else { //Signal both players about the obstruction
         console.log("Ship " +ship.name + "failed to turn (obstruction).");
-        sendGameMessage("Collision at position: " + obstruction.coordinateString());
+        sendGameMessage("Collision at position: " + obstruction.position);
     }
     return map;
 };
