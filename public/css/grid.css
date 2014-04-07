@@ -17,9 +17,6 @@
     height: 560px;
 }
 
-.damagedSquare {
-  background: orange;
-}
 
 .modalSquare {
   position: relative;
@@ -82,6 +79,14 @@
 
 .ship.opponent.base {
   background-color: darkblue;
+}
+
+.ship.challenger.damagedSquare, .ship.opponent.damagedSquare {
+  background-color: orange;
+}
+
+.ship.challenger.slightlyDamagedSquare, ship.opponent.slightlyDamagedSquare {
+  background-color: #FF9933;
 }
 
 .fog {

@@ -11,7 +11,7 @@ var turnShip = function(map, ship, direction) {
         console.log("Ship " +ship.name + "sucessfully turned.");
     } else { //Signal both players about the obstruction
         console.log("Ship " +ship.name + "failed to turn (obstruction).");
-        sendGameMessage("Collision at position: " + obstruction.coordinateString);
+        sendGameMessage("Collision at position: " + obstruction.position);
     }
     return map;
 };
@@ -43,12 +43,19 @@ var pickupMine = function(map, ship, position) {
     return map;
 };
 
+<<<<<<< HEAD
 var extendRadar = function(map, ship, position){
    console.log("its calling extend radar to map")
     map.extendRadar(ship);
     return map;
 }
 
+=======
+var fireTorpedo = function(map, ship, position) {
+    map.fireTorpedo(ship, position);
+    return map;
+};
+>>>>>>> origin/fixMapAndShip
 
 Meteor.methods({
 

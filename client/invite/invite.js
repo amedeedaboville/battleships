@@ -1,9 +1,16 @@
 Deps.autorun(function() {
-    inviteCollection.find({opponent : Meteor.userId()}).observeChanges({ //Hotfix for only showing when you're challenged to
+    inviteCollection.find({opponent: Meteor.userId()}).observeChanges({
         added: function(id, fields) {
-            user = Meteor.users.findOne(fields.challenger)
-            if (user != undefined){
-                var notification = $.UIkit.notify(user.username + " challenged you to a battleship duel!" + 
+            var user = Meteor.users.findOne(fields.challenger)
+            if (user != undefined) {
+                var challengeString = "";
+                if (fields.gameID) {
+                    challengeString = " challenged you continue the duel: " + gameCollection.findOne({_id: fields.gameID}).name;
+                }
+                else {
+                    challengeString = " challenged you to a battleship duel!";
+                }
+                var notification = $.UIkit.notify(user.username + challengeString + 
                     "<button id='acceptInviteButton' class='btn btn-default left-buffer right-buffer'>Ok</button>" + 
                     "<button id='cancelInviteButton' class='btn btn-default right-buffer'>cancel</button>",
                     {status: 'info'});
@@ -16,13 +23,37 @@ Deps.autorun(function() {
                 });
             }
         }
+        });
+
+    inviteCollection.find({$or: [{opponent :Meteor.userId()}, {challenger: Meteor.userId()} ]}).observeChanges({
+        changed: function(id, newInvite) {
+            var invite = inviteCollection.findOne({_id: id});
+            if(invite.accepted) {
+                if(invite.gameID) {
+                    var game = gameCollection.findOne({_id: invite.gameID});
+                    Session.set('currentMap', game.map);
+                    Session.set('inGame', game);
+                    $('#loadModal').modal('hide');
+                }
+                else {
+                    Session.set('showSavedGames', true);
+                    if(invite.opponent == Meteor.userId()) {
+                        Session.set('opponentID', invite.challenger);
+                    }
+                    else {
+                        Session.set('opponentID', invite.opponent);
+                    }
+                    Session.set('showModal', true);
+                }
+            }
+        }
     });
 
     gameCollection.find().observe({
-        added: function(newDocument, oldDocument){
-            Session.set('currentMap', newDocument.map);
-            Session.set('showModal', true);
-        },
+//        added: function(newDocument, oldDocument){
+//            Session.set('currentMap', newDocument.map);
+//            Session.set('showModal', true);
+//        },
         changed: function(newDocument, oldDocument) {
             if (newDocument.mapsLeft > 0){
                  if (newDocument.mapAccepted == 13){
@@ -31,9 +62,8 @@ Deps.autorun(function() {
                          Session.set('inGame', newDocument);
                     }
                     else{
-//                        console.log(newDocument.map.shipDictionary);
-                         Session.set('inGame', newDocument);
                          Session.set('currentMap', newDocument.map);
+                         Session.set('inGame', newDocument);
                      }
                  }
                  else if (newDocument.mapsLeft < oldDocument.mapsLeft){
