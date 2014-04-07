@@ -33,6 +33,16 @@ var turnShipRight = function(map, ship) {
     return map;
 };
 
+var fireCannon = function(map, ship, targetPosition) {
+    map.fireCannon(ship, targetPosition);
+    return map;
+};
+
+var explodeMine = function(targetSquare) {
+    map.explodeMine(targetSquare);
+    return map;
+};
+
 var layMine = function(map, ship, position) {
     map.layMine(ship, position);
     return map;
@@ -116,7 +126,8 @@ useWeapon: function(gameID, ship, weaponType, targetPosition) {
                switch (weaponType){
                 case "cannon":
                     console.log("Preparing to fire cannon at target position " +targetSquare.coordinateString()+" ("+ship.shipName+")");
-                    dangerZone = map.fireCannon(ship, targetSquare);
+                    dangerZone = map.fireCannon(ship, targetPosition);
+                    console.log("map fire cannon complete!");
                     break;
                 case "mineExplosion":
                     console.log("Preparing to explode mine at position " +targetSquare.coordinateString());
@@ -124,18 +135,15 @@ useWeapon: function(gameID, ship, weaponType, targetPosition) {
                     break;
                 case "torpedo":
                     console.log("Preparing to fire torpedo at target position " +targetSquare.coordinateString()+" ("+ship.shipName+")");
-                    dangerZone = map.fireTorpedo(ship, targetSquare);//fire torpedo returns an area to damage
+                    dangerZone = map.fireTorpedo(ship, targetPosition);//fire torpedo returns an area to damage
                     break;
                 case "selfdestruct":
-                     dangerZone = map.kSuicide(targetSquare); //target square should be the boat's square
-                     map.killShip(ship); //kamikazes destruct themselves
-                     break;            }
+                    dangerZone = map.kSuicide(targetSquare); //target square should be the boat's square
+                    map.killShip(ship); //kamikazes destruct themselves
+                    break;            
+               }
 
-            /* Send notifications */
-            for (square in dangerZone) {
-                if (square.name == "ship")
-                    sendGameMessage("Ship hit at position: " +square.coordinateString());
-            }
+                console.log("Returned a dangerzone! Now applying/updating...");
 
             /* Update affected ships */
             // Note: applyDamage returns a dictionary of the ships that were damaged
