@@ -78,9 +78,6 @@ Template.grid.events({
         console.log(evt);
         var currentGame = getCurrentGame();
         var currentMap  = getCurrentMap();
-        console.log(Meteor.userId());
-        console.log(currentGame);
-        console.log(currentMap);
         if (currentGame.opponent == Meteor.userId()){
             var ship = currentMap.shipDictionary[this.shipName];
             Session.set('selectedShip', ship)

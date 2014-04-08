@@ -104,7 +104,7 @@ inviteCollection.find().observe({
         }
         else{
             console.log('loading an existing game');
-            gameCollection.update({_id: newDocument.gameID}, {$set: {mapAccepted: -1}, $set: {active: true}});
+            gameCollection.update({_id: newDocument.gameID}, {$set: {active: true}});
 
             // gameCollection.update({_id: newDocument.gameID}, {active: true})
             // gameCollection.update(aGame);

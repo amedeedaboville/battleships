@@ -80,11 +80,20 @@ Deps.autorun(function() {
 
     gameCollection.find({active: true}).observeChanges({
         added: function(id, fields){
-            console.log(fields);
-            console.log('a game was inserted!');
-            Session.set('currentMap', fields.map);
-            Session.set('showModal', true);
-            Session.set('showLoadModal', false);
+            if (fields.mapAccepted == 13){
+                console.log('a game was loaded!');
+                Session.set('currentMap', fields.map);
+                Session.set('showModal', false);
+                Session.set('showLoadModal', false);
+                Session.set('inGame',id);
+                $('#acceptMapButton').prop('disabled', false);
+            }
+            else{
+                console.log('a game was inserted!');
+                Session.set('currentMap', fields.map);
+                Session.set('showModal', true);
+                Session.set('showLoadModal', false);
+            }
 
         },
         changed: function(id, fields) {
