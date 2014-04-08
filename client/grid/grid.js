@@ -41,14 +41,23 @@ Template.grid.rendered = function(){
 Template.grid.events({
     'click .square' : function(evt) {
         var action = Session.get('selectedAction');
-        var currentGame = getCurrentGame();
         console.log(action);
 
         if(action != undefined && action != "" && action != "turnShipLeft" && action != "turnShipRight") {
             var position = JSON.parse(evt.target.id);
             console.log("completing action " + action + " with position " + position);
             Meteor.call('completeTurn', action, Session.get('selectedShip'), position);
-            // Meteor.call(action, currentGame._id, Session.get('selectedShip'), position, function(error,result){if(result)$.UIkit.notify('Cruiser fired a cannonShot at position (' + position[0] + "," + position[1]+')')});
+
+            //Don't forget to update the ship session variable!
+
+            //delete it
+            //Session.set('selectedShip', undefined); 
+
+            //reset it
+            // var ship = getCurrentMap().shipDictionary[Session.get('selectedShip').shipName];
+            // Session.set('selectedShip', ship); 
+
+
         }
         Session.set('selectedAction', "");
     },

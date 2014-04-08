@@ -64,6 +64,7 @@ Deps.autorun(function() {
                     else{
                          Session.set('currentMap', newDocument.map);
                          Session.set('inGame', newDocument);
+                         Session.set('selectedShip', undefined);
                      }
                  }
                  else if (newDocument.mapsLeft < oldDocument.mapsLeft){
