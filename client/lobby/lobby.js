@@ -6,10 +6,8 @@ Template.lobby.helpers({
 });
 Template.savedGames.helpers({
     savedGames: function() {
-        var opp = Session.get('opponentID');
-    return gameCollection.find(
-            {$and: [{$or: [{challenger : opp}, {opponent  : opp}]} , 
-            {active:false}]}).fetch();
+    var opp = Session.get('opponentID');
+    return savedCollection.find( {$or: [{challenger : opp}, {opponent  : opp}]} ).fetch();
     //gameCollection.find(
     //        {$and: 
     //           [{$or: [{$and: [{opponent   : Meteor.userId()}, {challenger: opp}]} , 
@@ -68,7 +66,7 @@ Template.modal.events({
     },
 
     'click #closeMapButton' : function () {
-        Meteor.call('removeActive');
+        Meteor.call('removeGame', getCurrentGame()._id);
     },
 
 });
