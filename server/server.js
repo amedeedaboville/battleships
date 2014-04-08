@@ -97,10 +97,17 @@ Meteor.publish('invites', function(id) {
 inviteCollection.find().observe({
     //When an invite is accepted, we create a game for it
     changed: function(newDocument, oldDocument) {
-        if(newDocument.accepted){
+        if(newDocument.accepted && !newDocument.gameID){
             var aGame = new Game(newDocument.challenger, newDocument.opponent);
             var gameID = gameCollection.insert(aGame);
             // inviteCollection.update({_id: id}, {$set: {gameID: gameID}});
+        }
+        else{
+            console.log('loading an existing game');
+            gameCollection.update({_id: newDocument.gameID}, {$set: {mapAccepted: -1}, $set: {active: true}});
+
+            // gameCollection.update({_id: newDocument.gameID}, {active: true})
+            // gameCollection.update(aGame);
         }
     }
 });

@@ -68,7 +68,7 @@ Template.modal.events({
     },
 
     'click #closeMapButton' : function () {
-        Meteor.call('removeGame', getCurrentGame()._id);
+        Meteor.call('removeGame', getCurrentGame());
     },
 
 });

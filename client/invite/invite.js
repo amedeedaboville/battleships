@@ -4,18 +4,18 @@ Deps.autorun(function() {
             var user = Meteor.users.findOne(fields.challenger)
             if (user != undefined) {
                 var challengeString = "";
-                // if (fields.gameID) {
-                //     challengeString = " challenged you continue the duel: " + gameCollection.findOne({_id: fields.gameID}).name;
-                // }
-                // else {
+                if (fields.gameID) {
+                    challengeString = " challenged you continue the duel: " + gameCollection.findOne({_id: fields.gameID}).name;
+                }
+                else {
                     challengeString = " challenged you to a battleship duel!";
-                // }
+                }
                 var notification = $.UIkit.notify(user.username + challengeString + 
                     "<button id='acceptInviteButton' class='btn btn-default left-buffer right-buffer'>Ok</button>" + 
                     "<button id='cancelInviteButton' class='btn btn-default right-buffer'>cancel</button>",
                     {status: 'info'});
                 $('#acceptInviteButton').click(function(){
-                    inviteCollection.update({_id: id}, {$set: {accepted: true}});
+                    inviteCollection.update({_id: id}, {$set: {accepted: true, gameID: fields.gameID}});
                 });
                 $('#cancelInviteButton').click(function(){
                     notification.close();
@@ -80,19 +80,34 @@ Deps.autorun(function() {
 
     gameCollection.find({active: true}).observeChanges({
         added: function(id, fields){
+            console.log(fields);
             console.log('a game was inserted!');
             Session.set('currentMap', fields.map);
             Session.set('showModal', true);
+            Session.set('showLoadModal', false);
 
         },
         changed: function(id, fields) {
+            // handle map being reloaded...
             if (fields.mapAccepted == 13){
                 Session.set('showModal', false);
                 Session.set('inGame',id);
                 $('#acceptMapButton').prop('disabled', false);
             }
 
-            else{
+            else if(fields.mapsLeft){
+                if (fields.mapsLeft >0){
+                    console.log(fields);
+                    Session.set('currentMap', fields.map);
+                     $('#acceptMapButton').prop('disabled', false);
+                }
+                else{
+                     $('#newMapButton').prop('disabled', true);
+                    //close both windows
+                }
+            }
+
+            else if (fields.turn){
                 Session.set('currentMap', getCurrentGame().map);
             }
            //  if(fields.active === false) {
@@ -102,6 +117,14 @@ Deps.autorun(function() {
            //      $.UIkit.notify('The game has been become inactive.')
            // // clearSessionVars();
            //  }
+        },
+        removed: function(id, fields){
+//             $('#acceptMapButton').prop('disabled', false);
+//             $('#newMapButton').prop('disabled', false);
+//             Session.set('showModal', false);
+// //                 $('#mapModal').modal('hide');
+//             clearSessionVars();
+
         }
 
     });

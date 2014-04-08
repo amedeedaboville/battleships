@@ -6,9 +6,11 @@ Template.battleships.helpers({
     showModal: function(){
         if (Session.get('showLoadModal') && getOldGames()) {
             $('#loadModal').modal();
+            $('#mapModal').modal('hide');
         }
         else if (Session.get('showModal') && getCurrentMap()) {
             $('#mapModal').modal();
+            $('#loadModal').modal('hide');
         }
         else{
             $('#mapModal').modal('hide');
