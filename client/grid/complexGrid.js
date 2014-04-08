@@ -48,7 +48,7 @@ Template.complexGrid.events({
         if (canvas.objectHovered){
 
             //find out if you are the opponent
-            var owner = Meteor.userId() == Session.get('inGame').opponent? 'opponent': 'challenger';
+            var owner = Meteor.userId() == getCurrentGame().opponent? 'opponent': 'challenger';
             console.log(owner);
             console.log(canvas.objectHovered.shipInfo.owner);
             if (canvas.objectHovered.shipInfo.owner == owner){

@@ -15,7 +15,7 @@ Template.grid.helpers({
 });
 
 Template.grid.rendered = function(){
-    var currentGame = Session.get('inGame');
+    var currentGame = getCurrentGame();
     var map = getCurrentMap();
     if (currentGame != undefined && map != undefined) {
         var visibleSquares;
@@ -62,6 +62,7 @@ Template.grid.events({
         Session.set('selectedAction', "");
     },
     'click .square.ship.challenger' : function (evt) {
+        console.log(evt);
         var currentGame = getCurrentGame();
         var currentMap  = getCurrentMap();
         if (currentGame.challenger == Meteor.userId()) { //get shipName from this square and find the ship
@@ -74,8 +75,12 @@ Template.grid.events({
     },
 
     'click .square.ship.opponent' : function (evt) {
+        console.log(evt);
         var currentGame = getCurrentGame();
         var currentMap  = getCurrentMap();
+        console.log(Meteor.userId());
+        console.log(currentGame);
+        console.log(currentMap);
         if (currentGame.opponent == Meteor.userId()){
             var ship = currentMap.shipDictionary[this.shipName];
             Session.set('selectedShip', ship)
@@ -84,6 +89,7 @@ Template.grid.events({
     },
 
     'click .square.sea' : function (evt) {
+        console.log(evt);
         Session.set('selectedShip', undefined); 
     },
 

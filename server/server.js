@@ -81,7 +81,7 @@
 
 //return latest game
 Meteor.publish('games', function(id) {
-    return gameCollection.find({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]});
+    return gameCollection.find({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}]});
     //return gameCollection.find({$or: [{opponent :this.userId}, {challenger: this.userId}]});
 });
 

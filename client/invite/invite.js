@@ -78,7 +78,7 @@ Deps.autorun(function() {
     //     }
     // });
 
-    gameCollection.find().observeChanges({
+    gameCollection.find({active: true}).observeChanges({
         added: function(id, fields){
             console.log('a game was inserted!');
             Session.set('currentMap', fields.map);
@@ -89,6 +89,11 @@ Deps.autorun(function() {
             if (fields.mapAccepted == 13){
                 Session.set('showModal', false);
                 Session.set('inGame',id);
+                $('#acceptMapButton').prop('disabled', false);
+            }
+
+            else{
+                Session.set('currentMap', getCurrentGame().map);
             }
            //  if(fields.active === false) {
            //      console.log('game changed, not active');

@@ -4,10 +4,10 @@ Template.battleships.helpers({
     },
 
     showModal: function(){
-        if (Session.get('showModal') && Session.get('showSavedGames')) {
-            //$('#loadModal').modal();
+        if (Session.get('showLoadModal') && getOldGames()) {
+            $('#loadModal').modal();
         }
-        if (Session.get('showModal') && getCurrentMap()) {
+        else if (Session.get('showModal') && getCurrentMap()) {
             $('#mapModal').modal();
         }
         else{
@@ -17,13 +17,13 @@ Template.battleships.helpers({
     },
 
     setGameInactive: function(){
-       // Meteor.call('setAllGamesAsInactive');
+       Meteor.call('setAllGamesAsInactive');
     }
 });
 
 Deps.autorun(function (){
     gameHandler = Meteor.subscribe('games', Meteor.userId());
-     Meteor.subscribe('savedgames', Meteor.userId());
+    gameHandler = Meteor.subscribe('savedGames', Meteor.userId());
     inviteHandler = Meteor.subscribe('invites', Meteor.userId());
 
     gameMessageStream.on('message', function(message){
