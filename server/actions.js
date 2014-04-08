@@ -43,19 +43,22 @@ var pickupMine = function(map, ship, position) {
     return map;
 };
 
-<<<<<<< HEAD
+
 var extendRadar = function(map, ship, position){
    console.log("its calling extend radar to map")
     map.extendRadar(ship);
     return map;
 }
 
-=======
 var fireTorpedo = function(map, ship, position) {
     map.fireTorpedo(ship, position);
     return map;
 };
->>>>>>> origin/fixMapAndShip
+
+var healShip = function(map, ship, position) {
+    map.healShip(ship);
+    return map;
+}
 
 Meteor.methods({
 

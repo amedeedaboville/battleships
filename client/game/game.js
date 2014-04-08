@@ -42,7 +42,7 @@ Template.contextMenu.events({
             }
         }
 
-        if (action != 'extendRadar')
+        if (action != 'extendRadar' && action !='healShip')
             Session.set('selectedAction', action);
         /*
 
@@ -83,6 +83,10 @@ Template.contextMenu.events({
 
     'click #extendRadar' : function(evt) {
         Meteor.call('completeTurn', 'extendRadar', Session.get('selectedShip'));
+    },
+    'click #healShip' : function(evt) {
+        Meteor.call('completeTurn', 'healShip', Session.get('selectedShip'));
     }
+
 
 });
