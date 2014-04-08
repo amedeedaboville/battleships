@@ -12,7 +12,7 @@ var turnShip = function(map, ship, direction) {
     } else { //Signal both players about the obstruction
         obstruction.__proto__ = new Square();
         console.log("Ship " +ship.name + "failed to turn (obstruction).");
-        sendGameMessage("Collision at position: " + obstruction.coordinateString());
+        sendGameMessage("Collision at position: " + obstruction.position);
     }
     return map;
 };
@@ -54,19 +54,34 @@ var pickupMine = function(map, ship, position) {
     return map;
 };
 
+
+var extendRadar = function(map, ship, position){
+   console.log("its calling extend radar to map")
+    map.extendRadar(ship);
+    return map;
+}
+
 var fireTorpedo = function(map, ship, position) {
     map.fireTorpedo(ship, position);
     return map;
 };
 
+var healShip = function(map, ship, position) {
+    map.healShip(ship);
+    return map;
+}
+
 Meteor.methods({
 
     completeTurn: function(action, ship, position){
-        //get current Game
+       //get current Game
         var game = gameCollection.findOne({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]}); //Get the player's active game
         var map = game.map;
         map.__proto__ = new Map();
+        ship.__proto__ = new Ship();
+       
         var newMap = eval(action)(map, ship, position);
+        newMap.shipDictionary[ship.id] = ship;
         
         game.map = newMap;
         game.turn += 1;
