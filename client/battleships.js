@@ -17,12 +17,13 @@ Template.battleships.helpers({
     },
 
     setGameInactive: function(){
-        Meteor.call('setAllGamesAsInactive');
+       // Meteor.call('setAllGamesAsInactive');
     }
 });
 
 Deps.autorun(function (){
     gameHandler = Meteor.subscribe('games', Meteor.userId());
+     Meteor.subscribe('savedgames', Meteor.userId());
     inviteHandler = Meteor.subscribe('invites', Meteor.userId());
 
     gameMessageStream.on('message', function(message){

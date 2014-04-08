@@ -7,10 +7,12 @@
         },
 
         removeAllGames: function(){
+            console.log('removing all games');
             return gameCollection.remove({$or: [{opponent :this.userId}, {challenger: this.userId} ]});
         },
 
         setAllGamesAsInactive: function(){
+            console.log('getting CALL TO SET GAMES INACTIVE');
             return gameCollection.update({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]},
                 {$set: {active: false}});
         },
@@ -33,8 +35,9 @@
 
         },
         
-        removeActive: function(){
-            return gameCollection.remove({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]});
+        removeGame: function(id){
+            gameCollection.remove({_id: id});
+            //return gameCollection.remove({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]});
         },
 
         changeTurn: function(){
@@ -78,8 +81,13 @@
 
 //return latest game
 Meteor.publish('games', function(id) {
-    //return gameCollection.find({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]});
-    return gameCollection.find({$or: [{opponent :this.userId}, {challenger: this.userId}]});
+    return gameCollection.find({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]});
+    //return gameCollection.find({$or: [{opponent :this.userId}, {challenger: this.userId}]});
+});
+
+Meteor.publish('savedgames', function(id) {
+    //return gameCollection.find({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : false} ]});
+   return gameCollection.find({active : false});
 });
 
 Meteor.publish('invites', function(id) {
@@ -91,6 +99,7 @@ inviteCollection.find().observeChanges({
     changed: function(id, invite) {
         fullInvite = inviteCollection.findOne({_id:id});
         if (invite.accepted && (fullInvite.gameID == undefined)){
+            console.log('creating game for invite id ' + id);
             var aGame = new Game(fullInvite.challenger, fullInvite.opponent);
             var gameID = gameCollection.insert(aGame);
             inviteCollection.update({_id: id}, {$set: {gameID: gameID}});
@@ -105,11 +114,35 @@ gameCollection.find().observeChanges({
     }
 });
 
+savedCollection.allow({
+    insert: function(userId, doc, fieldNames, modifier) {
+        return (userId == doc.opponent || userId == doc.challenger);
+    },
+    update: function(userId, doc, fieldNames, modifier) {
+            console.log("updating saved game" + doc);
+            return true;
+        //return (userId == doc.opponent || userId == doc.challenger);
+    },
+    remove: function(userId, doc) {
+        if (userId == doc.opponent || userId == doc.challenger){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+});
 gameCollection.allow({
     insert: function(userId, doc, fieldNames, modifier) {
         return (userId == doc.opponent || userId == doc.challenger);
     },
     update: function(userId, doc, fieldNames, modifier) {
+        if(fieldNames.active != undefined) {
+            console.log("updating active field");
+            console.log(fieldNames);
+            console.log(modifier);
+        }
+
         return (userId == doc.opponent || userId == doc.challenger);
     },
     remove: function(userId, doc) {

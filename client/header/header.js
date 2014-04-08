@@ -19,7 +19,8 @@ Template.header.events({
         Session.set("complexGame", true);
     },
     'click #changeName' : function (evt) {
-        gameCollection.update({_id: getCurrentGame()._id}, {$set: {name: $('#gameName').val()}});
+        gameCollection.update({_id: getCurrentGame()._id}, {$set: {name: $('#gameName').val(), active: false}});
+        clearSessionVars();
     }
 
 });
