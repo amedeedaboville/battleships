@@ -8,19 +8,9 @@ Template.savedGames.helpers({
     savedGames: function() {
     var opp = Session.get('opponentID');
     return gameCollection.find( {$or: [{challenger : opp}, {opponent  : opp}]} ).fetch();
-    //gameCollection.find(
-    //        {$and: 
-    //           [{$or: [{$and: [{opponent   : Meteor.userId()}, {challenger: opp}]} , 
-    //                   {$and: [{challenger : Meteor.userId()}, {opponent  : opp}]}
-    //           ]}, 
-    //       {active:false}]}
-    //               ).fetch();
-    //    return gameCollection.find({$or: [{$and: [{opponent   : Meteor.userId()}, {challenger: opp}]} ,
-    //                               {$and: [{challenger : Meteor.userId()}, {opponent  : opp}]}
-    //                                              ]}
-    //                                                                 ).fetch();
     }
 });
+
 Template.savedGames.events({
     'mouseover .previousGameElement' : function(evt) {
         Session.set('currentMap', gameCollection.findOne({_id: evt.target.id}).map);
@@ -68,7 +58,7 @@ Template.modal.events({
     },
 
     'click #closeMapButton' : function () {
-        Meteor.call('removeGame', getCurrentGame());
+        Meteor.call('removeGame');
     },
 
 });
