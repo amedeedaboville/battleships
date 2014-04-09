@@ -117,7 +117,9 @@ Deps.autorun(function() {
             }
 
             else{
-                Session.set('currentMap', getCurrentGame().map);
+                if (getCurrentGame()){
+                    Session.set('currentMap', getCurrentGame().map);
+                }
             }
            //  if(fields.active === false) {
            //      console.log('game changed, not active');
