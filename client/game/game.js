@@ -97,18 +97,19 @@ Template.contextMenu.events({
         for(var i = 0; i < movementSquares.length; i++){
             var x = movementSquares[i][0];
             var y = movementSquares[i][1];
-            $( "#"+"\\[" + x + "\\," + y+ "\\]" ).css( "background", "green" )
+            $("#"+"\\[" + x + "\\," + y+ "\\]").effect("highlight", {}, 2500)
+
         //I want to highlight a bunch of squares with each position from the ship's movement zone
         }
     },
      'click #fireCannon' : function(evt) {
         evt.preventDefault();        
         var m = getCurrentMap();
-        var movementSquares = Session.get('selectedShip').movementSquares;
+        var movementSquares = Session.get('selectedShip').cannonPositions;
         for(var i = 0; i < movementSquares.length; i++){
             var x = movementSquares[i][0];
             var y = movementSquares[i][1];
-            $( "#"+"\\[" + x + "\\," + y+ "\\]" ).css( "background", "green" )
+            $("#"+"\\[" + x + "\\," + y+ "\\]").effect("highlight", {}, 2500)
         //I want to highlight a bunch of squares with each position from the ship's movement zone
         }
     },

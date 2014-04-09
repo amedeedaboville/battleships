@@ -43,7 +43,11 @@
   border: 1px solid #ddd;
   border-radius: 3px;
   background-color: #00ff00;
-  
+
+}
+
+.highlight {
+  background-color: green;
 }
 
 .sea {
