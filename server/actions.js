@@ -165,13 +165,14 @@ useWeapon: function(gameID, ship, weaponType, targetPosition) {
                
                var impactPosition; //represents the area of effect as produced by a weapon being used
                map.shipDictionary[ship.id] = ship;
+                var impactPosition;
 
                /* Determine what kind of damage function in the map to invoke */
                switch (weaponType){
                 case "cannon":
                     console.log("Preparing to fire cannon at target position " +targetSquare.coordinateString()+" ("+ship.shipName+")");
-                    impactPosition = map.fireCannon(ship, targetPosition);
-                    console.log("map fire cannon complete!");
+                    map.fireCannon(ship, targetPosition);
+                    impactPosition = targetPosition;
                     break;
                 case "mineExplosion":
                     console.log("Preparing to explode mine at position " +targetSquare.coordinateString());
@@ -182,13 +183,15 @@ useWeapon: function(gameID, ship, weaponType, targetPosition) {
                     impactPosition = map.fireTorpedo(ship, targetPosition);//fire torpedo returns an area to damage
                     break;
                 case "selfdestruct":
-                    impactPosition = map.kSuicide(targetPosition); //target square should be the boat's square
-                    map.killShip(ship); //kamikazes destruct themselves
+                    map.kSuicide(targetPosition); //target square should be the boat's square
+                    impactPosition = targetPosition;
+                    map.killShip(ship); // kamikazes destruct themselves
                     break;            
                }
 
                // send message about the impact
-               sendGameMessage("Ship hit! " + impactPosition.coordinateString()); // Alert both players that a ship sank at the bow position
+               if (impactPosition != undefined) 
+                   sendGameMessage("Ship hit! " + "(" + impactPosition[0] + ", " + impactPostion[1] +")"); // Alert both players that a ship sank at the bow position
         } else {
             console.log("Error game does not exist");
             console.log(game);
