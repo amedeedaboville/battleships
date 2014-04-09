@@ -35,9 +35,9 @@
 
         },
         
-        removeGame: function(id){
-            gameCollection.remove({_id: id});
-            //return gameCollection.remove({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]});
+        removeGame: function(){
+            // return gameCollection.remove({_id: id});
+            return gameCollection.remove({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]});
         },
 
         changeTurn: function(){
