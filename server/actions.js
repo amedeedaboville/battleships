@@ -91,9 +91,10 @@ Meteor.methods({
         ship.__proto__ = new Ship();
        
         var newMap = eval(action)(map, ship, position);
-        newMap.shipDictionary[ship.id] = ship;
+        //game.map = newMap;
+   //     newMap.shipDictionary[ship.id] = ship;
         
-        game.map = newMap;
+    //    game.map = newMap;
         
         //instead of sending out notifications all the time, we should simply get each thing to send out a specific notification
         //sendGameMessage(action);
@@ -123,7 +124,6 @@ Meteor.methods({
                break; // this breaks the loop, not the switch
           }
         }
-        console.log("Winner is: " +winner);
         
         if (winner == "nobody") {
             game.turn+= 1;
@@ -131,8 +131,7 @@ Meteor.methods({
         } else {
             sendGameMessage("Game over! Winner: " +winner);
         }
-},
-
+        },
     rearrange: function(isOpponent) {
         var game = gameCollection.findOne({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]}); //Get the player's active game
         var map = game.map;
