@@ -81,10 +81,7 @@ Meteor.methods({
         ship.__proto__ = new Ship();
        
         var newMap = eval(action)(map, ship, position);
-        newMap.shipDictionary[ship.id] = ship;
-        
-        game.map = newMap;
-        sendGameMessage(action);
+        //game.map = newMap;
 
         ///* Heal ships if they end a turn on a base -- starting from bow and working backward
         //note: the bow is the LAST element in the ship.shipSquares array*/
@@ -111,7 +108,6 @@ Meteor.methods({
                break; // this breaks the loop, not the switch
           }
         }
-        console.log("Winner is: " +winner);
         
         if (winner == "nobody") {
             game.turn+= 1;
@@ -119,8 +115,7 @@ Meteor.methods({
         } else {
             sendGameMessage("Game over! Winner: " +winner);
         }
-},
-
+        },
     rearrange: function(isOpponent) {
         var game = gameCollection.findOne({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]}); //Get the player's active game
         var map = game.map;
