@@ -71,6 +71,11 @@ var healShip = function(map, ship, position) {
     return map;
 }
 
+var selfDestruct = function(map, ship, position) {
+    map.selfDestruct(position);
+    return map;
+}
+
 Meteor.methods({
 
     completeTurn: function(action, ship, position){
@@ -182,8 +187,10 @@ useWeapon: function(gameID, ship, weaponType, targetPosition) {
                     console.log("Preparing to fire torpedo at target position " +targetSquare.coordinateString()+" ("+ship.shipName+")");
                     impactPosition = map.fireTorpedo(ship, targetPosition);//fire torpedo returns an area to damage
                     break;
-                case "selfdestruct":
-                    map.kSuicide(targetPosition); //target square should be the boat's square
+                case "selfDestruct":
+                    map.selfDestruct(targetPosition); //target square should be the boat's square
+                    if (map == undefined) 
+                        console.log("Map got fucked");
                     impactPosition = targetPosition;
                     map.killShip(ship); // kamikazes destruct themselves
                     break;            
