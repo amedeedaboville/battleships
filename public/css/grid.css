@@ -61,13 +61,13 @@
   background-color: dodgerblue;
 }
 
-.ship.challenger.bow {
+.ship.challenger.bow, .ship.challenger.superArmor.bow {
   background-image: url('../img/bow.png');
   background-size: 100% 100%;
   background-color: red;
 }
 
-.ship.opponent.bow {
+.ship.opponent.bow, .ship.opponent.superArmor.bow {
   background-image: url('../img/bow.png');
   background-size: 100% 100%;
   background-color: yellow;
@@ -81,12 +81,12 @@
   background-color: darkblue;
 }
 
-.ship.challenger.damagedSquare, .ship.opponent.damagedSquare {
-  background-color: orange;
+.ship.challenger.superArmor, .ship.opponent.superArmor {
+  background-color: darkgray;
 }
 
-.ship.challenger.slightlyDamagedSquare, ship.opponent.slightlyDamagedSquare {
-  background-color: #FF9933;
+.ship.challenger.damagedSquare, .ship.opponent.damagedSquare, .ship.challenger.base.damagedSquare, .ship.opponent.base.damagedSquare{
+  background-color: orange;
 }
 
 .fog {
