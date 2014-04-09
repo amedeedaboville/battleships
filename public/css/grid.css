@@ -70,16 +70,24 @@
   background-color: dodgerblue;
 }
 
-.ship.challenger.bow, .ship.challenger.superArmor.bow {
+.ship.challenger.bow {
   background-image: url('../img/bow.png');
   background-size: 100% 100%;
   background-color: red;
 }
 
-.ship.opponent.bow, .ship.opponent.superArmor.bow {
+.ship.opponent.bow { 
   background-image: url('../img/bow.png');
   background-size: 100% 100%;
   background-color: yellow;
+}
+
+.ship.challenger.superArmor.bow {
+    background-color: purple;
+}
+
+.ship.opponent.superArmor.bow {
+    background-color: violet;
 }
 
 .ship.challenger.base {

@@ -99,6 +99,7 @@ Template.contextMenu.events({
             var y = movementSquares[i][1];
             $("#"+"\\[" + x + "\\," + y+ "\\]").effect("highlight", {}, 2500)
 
+            // $( "#"+"\\[" + x + "\\," + y+ "\\]" ).css( "background", "red" )
         //I want to highlight a bunch of squares with each position from the ship's movement zone
         }
     },

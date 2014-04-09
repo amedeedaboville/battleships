@@ -40,6 +40,11 @@
         <div class="row top-buffer">
             Speed: {{this.speed}}
         </div>
+        {{#if this.remainingMines}}
+        <div class="row top-buffer">
+            Mines Left: {{this.remainingMines}}
+        </div>
+        {{/if}}
 
         {{#each this.actions}}
         <div class="row top-buffer">

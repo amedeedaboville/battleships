@@ -72,6 +72,10 @@ var healShip = function(map, ship, position) {
     return map;
 }
 
+var selfDestruct = function(map, ship, position) {
+    map.selfDestruct(position);
+    return map;
+}
 var turn180 = function(map, ship, position) {
     map.turn180(ship);
     return map;
@@ -87,9 +91,10 @@ Meteor.methods({
         ship.__proto__ = new Ship();
        
         var newMap = eval(action)(map, ship, position);
-        newMap.shipDictionary[ship.id] = ship;
+        //game.map = newMap;
+   //     newMap.shipDictionary[ship.id] = ship;
         
-        game.map = newMap;
+    //    game.map = newMap;
         
         //instead of sending out notifications all the time, we should simply get each thing to send out a specific notification
         //sendGameMessage(action);
@@ -119,7 +124,6 @@ Meteor.methods({
                break; // this breaks the loop, not the switch
           }
         }
-        console.log("Winner is: " +winner);
         
         if (winner == "nobody") {
             game.turn+= 1;
@@ -127,25 +131,7 @@ Meteor.methods({
         } else {
             sendGameMessage("Game over! Winner: " +winner);
         }
-},
-
-    rearrange: function(isOpponent) {
-        var game = gameCollection.findOne({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]}); //Get the player's active game
-        var map = game.map;
-        map.__proto__ = new Map();
-        map.makeShips(true, !isOpponent, isOpponent);
-        map.drawGrid();
-        gameCollection.update({_id:game._id}, game);
-    },
-
-
-//        if (winner == "nobody") { //Continue incrementing turns if the game is not over
-//            //gameCollection.update({_id: game._id}, {$inc: {turn: 1}}); 
-//        } else { //the game is over
-//            sendGameMessage("Game over! Winner: " +winner);
-//        }
-//},
-
+        },
     rearrange: function(isOpponent) {
         var game = gameCollection.findOne({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]}); //Get the player's active game
         var map = game.map;
@@ -173,13 +159,14 @@ useWeapon: function(gameID, ship, weaponType, targetPosition) {
                
                var impactPosition; //represents the area of effect as produced by a weapon being used
                map.shipDictionary[ship.id] = ship;
+                var impactPosition;
 
                /* Determine what kind of damage function in the map to invoke */
                switch (weaponType){
                 case "cannon":
                     console.log("Preparing to fire cannon at target position " +targetSquare.coordinateString()+" ("+ship.shipName+")");
-                    impactPosition = map.fireCannon(ship, targetPosition);
-                    console.log("map fire cannon complete!");
+                    map.fireCannon(ship, targetPosition);
+                    impactPosition = targetPosition;
                     break;
                 case "mineExplosion":
                     console.log("Preparing to explode mine at position " +targetSquare.coordinateString());
@@ -189,14 +176,18 @@ useWeapon: function(gameID, ship, weaponType, targetPosition) {
                     console.log("Preparing to fire torpedo at target position " +targetSquare.coordinateString()+" ("+ship.shipName+")");
                     impactPosition = map.fireTorpedo(ship, targetPosition);//fire torpedo returns an area to damage
                     break;
-                case "selfdestruct":
-                    impactPosition = map.kSuicide(targetPosition); //target square should be the boat's square
-                    map.killShip(ship); //kamikazes destruct themselves
+                case "selfDestruct":
+                    map.selfDestruct(targetPosition); //target square should be the boat's square
+                    if (map == undefined) 
+                        console.log("Map got fucked");
+                    impactPosition = targetPosition;
+                    map.killShip(ship); // kamikazes destruct themselves
                     break;            
                }
 
                // send message about the impact
-               sendGameMessage("Ship hit! " + impactPosition.coordinateString()); // Alert both players that a ship sank at the bow position
+               if (impactPosition != undefined) 
+                   sendGameMessage("Ship hit! " + "(" + impactPosition[0] + ", " + impactPostion[1] +")"); // Alert both players that a ship sank at the bow position
         } else {
             console.log("Error game does not exist");
             console.log(game);
