@@ -116,8 +116,10 @@ Deps.autorun(function() {
                 }
             }
 
-            else if (fields.turn){
-                Session.set('currentMap', getCurrentGame().map);
+            else{
+                if (getCurrentGame()){
+                    Session.set('currentMap', getCurrentGame().map);
+                }
             }
            //  if(fields.active === false) {
            //      console.log('game changed, not active');

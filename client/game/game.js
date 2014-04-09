@@ -76,7 +76,7 @@ Template.contextMenu.events({
     },
 
     'click #rearrange' : function(evt) {
-        var isOpponent = (Meteor.userId() == Session.get('inGame').opponent);
+        var isOpponent = (Meteor.userId() == getCurrentGame().opponent);
         console.log('rearranging ships');
         Meteor.call('rearrange', isOpponent);
     },
