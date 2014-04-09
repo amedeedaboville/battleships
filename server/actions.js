@@ -36,6 +36,7 @@ var turnShipRight = function(map, ship) {
 
 var fireCannon = function(map, ship, targetPosition) {
     map.fireCannon(ship, targetPosition);
+    sendGameMessage("Shots fired! Impact at position : " + targetPosition)
     return map;
 };
 
@@ -75,6 +76,10 @@ var selfDestruct = function(map, ship, position) {
     map.selfDestruct(position);
     return map;
 }
+var turn180 = function(map, ship, position) {
+    map.turn180(ship);
+    return map;
+}
 
 Meteor.methods({
 
@@ -89,7 +94,9 @@ Meteor.methods({
         newMap.shipDictionary[ship.id] = ship;
         
         game.map = newMap;
-        sendGameMessage(action);
+        
+        //instead of sending out notifications all the time, we should simply get each thing to send out a specific notification
+        //sendGameMessage(action);
 
         ///* Heal ships if they end a turn on a base -- starting from bow and working backward
         //note: the bow is the LAST element in the ship.shipSquares array*/
