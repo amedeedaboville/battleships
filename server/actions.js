@@ -42,6 +42,7 @@ var fireCannon = function(map, ship, targetPosition) {
 
 var explodeMine = function(targetSquare) {
     map.explodeMine(targetSquare);
+    sendGameMessage("You hit a landmine!! It exploded you at: " + targetSquare)
     return map;
 };
 
