@@ -7,20 +7,20 @@ Template.game.helpers({
 
 Template.contextMenu.helpers({
     currentTurn: function() {
-        var turn = (Meteor.userId() == Session.get('inGame').opponent)? 0 : 1;
-        var gameTurn = Session.get('inGame').turn;
+        var turn = (Meteor.userId() == getCurrentGame().opponent)? 0 : 1;
+        var gameTurn = getCurrentGame().turn;
         return (gameTurn %2 == turn);
     },
 
     firstTurn: function() {
-        var gameTurn =  Session.get('inGame').turn;
+        var gameTurn =  getCurrentGame().turn;
         return (gameTurn == 0 || gameTurn == 1);
     },
 
     selectedShip: function(){
         //opponent: pairs, challenger: impairs
-        var turn = (Meteor.userId() == Session.get('inGame').opponent)? 0 : 1;
-        var gameTurn = Session.get('inGame').turn;
+        var turn = (Meteor.userId() == getCurrentGame().opponent)? 0 : 1;
+        var gameTurn = getCurrentGame().turn;
         return Session.get('selectedShip');
     }
 
@@ -76,7 +76,7 @@ Template.contextMenu.events({
     },
 
     'click #rearrange' : function(evt) {
-        var isOpponent = (Meteor.userId() == Session.get('inGame').opponent);
+        var isOpponent = (Meteor.userId() == getCurrentGame().opponent);
         console.log('rearranging ships');
         Meteor.call('rearrange', isOpponent);
     },
