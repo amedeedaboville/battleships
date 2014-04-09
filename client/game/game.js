@@ -86,6 +86,9 @@ Template.contextMenu.events({
     },
     'click #healShip' : function(evt) {
         Meteor.call('completeTurn', 'healShip', Session.get('selectedShip'));
+    },
+    'click #turn180' : function(evt) {
+        Meteor.call('completeTurn', 'turn180', Session.get('selectedShip'));
     }
 
 
