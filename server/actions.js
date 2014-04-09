@@ -36,6 +36,7 @@ var turnShipRight = function(map, ship) {
 
 var fireCannon = function(map, ship, targetPosition) {
     map.fireCannon(ship, targetPosition);
+    sendGameMessage("Shots fired! Impact at position : " + targetPosition)
     return map;
 };
 
@@ -71,6 +72,15 @@ var healShip = function(map, ship, position) {
     return map;
 }
 
+var selfDestruct = function(map, ship, position) {
+    map.selfDestruct(position);
+    return map;
+}
+var turn180 = function(map, ship, position) {
+    map.turn180(ship);
+    return map;
+}
+
 Meteor.methods({
 
     completeTurn: function(action, ship, position){
@@ -84,7 +94,9 @@ Meteor.methods({
         newMap.shipDictionary[ship.id] = ship;
         
         game.map = newMap;
-        sendGameMessage(action);
+        
+        //instead of sending out notifications all the time, we should simply get each thing to send out a specific notification
+        //sendGameMessage(action);
 
         ///* Heal ships if they end a turn on a base -- starting from bow and working backward
         //note: the bow is the LAST element in the ship.shipSquares array*/
@@ -148,13 +160,14 @@ useWeapon: function(gameID, ship, weaponType, targetPosition) {
                
                var impactPosition; //represents the area of effect as produced by a weapon being used
                map.shipDictionary[ship.id] = ship;
+                var impactPosition;
 
                /* Determine what kind of damage function in the map to invoke */
                switch (weaponType){
                 case "cannon":
                     console.log("Preparing to fire cannon at target position " +targetSquare.coordinateString()+" ("+ship.shipName+")");
-                    impactPosition = map.fireCannon(ship, targetPosition);
-                    console.log("map fire cannon complete!");
+                    map.fireCannon(ship, targetPosition);
+                    impactPosition = targetPosition;
                     break;
                 case "mineExplosion":
                     console.log("Preparing to explode mine at position " +targetSquare.coordinateString());
@@ -164,14 +177,18 @@ useWeapon: function(gameID, ship, weaponType, targetPosition) {
                     console.log("Preparing to fire torpedo at target position " +targetSquare.coordinateString()+" ("+ship.shipName+")");
                     impactPosition = map.fireTorpedo(ship, targetPosition);//fire torpedo returns an area to damage
                     break;
-                case "selfdestruct":
-                    impactPosition = map.kSuicide(targetPosition); //target square should be the boat's square
-                    map.killShip(ship); //kamikazes destruct themselves
+                case "selfDestruct":
+                    map.selfDestruct(targetPosition); //target square should be the boat's square
+                    if (map == undefined) 
+                        console.log("Map got fucked");
+                    impactPosition = targetPosition;
+                    map.killShip(ship); // kamikazes destruct themselves
                     break;            
                }
 
                // send message about the impact
-               sendGameMessage("Ship hit! " + impactPosition.coordinateString()); // Alert both players that a ship sank at the bow position
+               if (impactPosition != undefined) 
+                   sendGameMessage("Ship hit! " + "(" + impactPosition[0] + ", " + impactPostion[1] +")"); // Alert both players that a ship sank at the bow position
         } else {
             console.log("Error game does not exist");
             console.log(game);
