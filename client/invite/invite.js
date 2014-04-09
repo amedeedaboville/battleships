@@ -116,7 +116,7 @@ Deps.autorun(function() {
                 }
             }
 
-            else if (fields.turn){
+            else{
                 Session.set('currentMap', getCurrentGame().map);
             }
            //  if(fields.active === false) {
