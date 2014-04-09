@@ -15,7 +15,7 @@ Template.grid.helpers({
 });
 
 Template.grid.rendered = function(){
-    var currentGame = Session.get('inGame');
+    var currentGame = getCurrentGame();
     var map = getCurrentMap();
     if (currentGame != undefined && map != undefined) {
         var visibleSquares;
@@ -41,18 +41,28 @@ Template.grid.rendered = function(){
 Template.grid.events({
     'click .square' : function(evt) {
         var action = Session.get('selectedAction');
-        var currentGame = getCurrentGame();
         console.log(action);
 
         if(action != undefined && action != "" && action != "turnShipLeft" && action != "turnShipRight") {
             var position = JSON.parse(evt.target.id);
             console.log("completing action " + action + " with position " + position);
             Meteor.call('completeTurn', action, Session.get('selectedShip'), position);
-            // Meteor.call(action, currentGame._id, Session.get('selectedShip'), position, function(error,result){if(result)$.UIkit.notify('Cruiser fired a cannonShot at position (' + position[0] + "," + position[1]+')')});
+
+            //Don't forget to update the ship session variable!
+
+            //delete it
+            //Session.set('selectedShip', undefined); 
+
+            //reset it
+            // var ship = getCurrentMap().shipDictionary[Session.get('selectedShip').shipName];
+            // Session.set('selectedShip', ship); 
+
+
         }
         Session.set('selectedAction', "");
     },
     'click .square.ship.challenger' : function (evt) {
+        console.log(evt);
         var currentGame = getCurrentGame();
         var currentMap  = getCurrentMap();
         if (currentGame.challenger == Meteor.userId()) { //get shipName from this square and find the ship
@@ -65,6 +75,7 @@ Template.grid.events({
     },
 
     'click .square.ship.opponent' : function (evt) {
+        console.log(evt);
         var currentGame = getCurrentGame();
         var currentMap  = getCurrentMap();
         if (currentGame.opponent == Meteor.userId()){
@@ -75,6 +86,7 @@ Template.grid.events({
     },
 
     'click .square.sea' : function (evt) {
+        console.log(evt);
         Session.set('selectedShip', undefined); 
     },
 
