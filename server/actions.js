@@ -35,8 +35,10 @@ var turnShipRight = function(map, ship) {
 };
 
 var fireCannon = function(map, ship, targetPosition) {
-    map.fireCannon(ship, targetPosition);
-    sendGameMessage("Shots fired! Impact at position : " + targetPosition)
+    var hit = map.fireCannon(ship, targetPosition);
+    if (hit) {
+        sendGameMessage("Shots fired! Impact at position : " + targetPosition);
+    }
     return map;
 };
 
