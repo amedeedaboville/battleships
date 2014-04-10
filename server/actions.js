@@ -44,6 +44,7 @@ var fireCannon = function(map, ship, targetPosition) {
 
 var explodeMine = function(targetSquare) {
     map.explodeMine(targetSquare);
+    sendGameMessage("You hit a landmine!! It exploded you at: " + targetSquare)
     return map;
 };
 
@@ -93,9 +94,10 @@ Meteor.methods({
         ship.__proto__ = new Ship();
        
         var newMap = eval(action)(map, ship, position);
-        newMap.shipDictionary[ship.id] = ship;
+        //game.map = newMap;
+   //     newMap.shipDictionary[ship.id] = ship;
         
-        game.map = newMap;
+    //    game.map = newMap;
         
         //instead of sending out notifications all the time, we should simply get each thing to send out a specific notification
         //sendGameMessage(action);
@@ -125,7 +127,6 @@ Meteor.methods({
                break; // this breaks the loop, not the switch
           }
         }
-        console.log("Winner is: " +winner);
         
         if (winner == "nobody") {
             game.turn+= 1;
@@ -133,25 +134,7 @@ Meteor.methods({
         } else {
             sendGameMessage("Game over! Winner: " +winner);
         }
-},
-
-    rearrange: function(isOpponent) {
-        var game = gameCollection.findOne({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]}); //Get the player's active game
-        var map = game.map;
-        map.__proto__ = new Map();
-        map.makeShips(true, !isOpponent, isOpponent);
-        map.drawGrid();
-        gameCollection.update({_id:game._id}, game);
-    },
-
-
-//        if (winner == "nobody") { //Continue incrementing turns if the game is not over
-//            //gameCollection.update({_id: game._id}, {$inc: {turn: 1}}); 
-//        } else { //the game is over
-//            sendGameMessage("Game over! Winner: " +winner);
-//        }
-//},
-
+        },
     rearrange: function(isOpponent) {
         var game = gameCollection.findOne({$and: [{$or: [{opponent :this.userId}, {challenger: this.userId}]}, {active : true} ]}); //Get the player's active game
         var map = game.map;
